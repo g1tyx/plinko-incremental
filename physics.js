@@ -1,5 +1,4 @@
 var ballList,
-    despawn,
     l,
     pegarea;
 document.addEventListener('DOMContentLoaded', function () {
@@ -9,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
         ballcheckphysical,
         ballcheck,
         angle,
+        str,
+        decimalplaces,
         j,
         k,
         pegs,
@@ -16,23 +17,63 @@ document.addEventListener('DOMContentLoaded', function () {
         audiotrack,
         peg,
         touching,
+        num,
         touching2,
         touch,
+        balldrop,
+        pegtouch,
+        specialpegnumber,
+        specialpeglocation,
+        specialpegpermission,
+        specialpeglist,
+        balldropallow,
         audiorepeat,
         obj,
         cooldowncheck,
         gravity,
         spawnindex;
     spawnindex = -1;
-	gravity = 0.01;
+    gravity = 0.01;
     cooldowncheck = 0;
     despawn = 0;
     audiorepeat = 0;
+    specialpeglist = [];
     ballList = [];
+    balldropallow = 1;
     pegarea = document.getElementById('pegs');
+
+    function decimalToString(num) {
+        str = '';
+        if (num.exponent >= 6) {
+            if (Math.floor(num.mantissa.valueOf()) === num.mantissa.valueOf()) {
+                decimalplaces = 0;
+            } else {
+                decimalplaces = num.mantissa.toString().split(".")[1].length;
+            }
+            if (decimalplaces < 3) {
+                str = num.mantissa.toString() + 'e' + num.exponent.toString();
+            } else {
+                str = num.mantissa.toFixed(3).toString() + 'e' + num.exponent.toString();
+            }
+        } else {
+            if (Math.floor(num.mantissa.valueOf()) === num.mantissa.valueOf()) {
+                decimalplaces = 0;
+            } else {
+                decimalplaces = num.mantissa.toString().split(".")[1].length;
+            }
+            if (decimalplaces < 3) {
+                str = num.toString();
+            } else {
+                str = num.toFixed(3).toString();
+            }
+        }
+        return str;
+    }
+
     function wait() {
         if (cooldowncheck === 1) {
             cooldowncheck = 0;
+            balldropallow = 1;
             document.getElementById('balldrop').innerHTML = 'Drop Ball!';
             document.getElementById('balldrop').style.backgroundColor = '#c2c2c2';
             if (audiorepeat === 0) {
@@ -40,11 +81,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+
     function collision() {
         j = 0;
         touch = 0;
         gravity = 0.01;
-		for (j = 0; j < pegs.length; j = j + 1) {
+        for (j = 0; j < pegs.length; j = j + 1) {
             peg = pegs[j];
             touching = (peg.offsetLeft - 5) - (ballcheckphysical.offsetLeft - 20);
             touching = touching * touching;
@@ -53,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
             touching = touching + touching2;
             if (touching <= 400) {
                 touch = 1;
+                pegtouch = j + 1;
             }
         }
         j = 0;
@@ -60,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             touch = 1;
         }
     }
-    
+
     function rectToPolar(x, y) {
         k = [];
         x = x * 100;
@@ -73,57 +116,104 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return k;
     }
+
     function spawnball() {
         spawnindex = spawnindex + 1;
         ball = document.createElement('div');
-		document.getElementById('pegs').appendChild(ball);
+        document.getElementById('pegs').appendChild(ball);
         ball.style.width = '10px';
         ball.style.height = '10px';
         ball.style.borderRadius = "50%";
-		ball.style.position = 'absolute';
-		ball.style.top = '-10%';
-		ball.style.backgroundColor = '#c2c2c2';
-		ball.style.outline = 'black solid 1px';
+        ball.style.position = 'absolute';
+        ball.style.top = '-10%';
+        ball.style.backgroundColor = '#c2c2c2';
+        ball.style.outline = 'black solid 1px';
         ball.setAttribute('id', 'ball' + spawnindex.toString());
-        obj = {'index': spawnindex, 'xvel': 0, 'yvel': 0, 'ypos': -10, 'xpos': 0};
+        obj = {
+            'index': spawnindex,
+            'xvel': 0,
+            'yvel': 0,
+            'ypos': -10,
+            'xpos': 0
+        };
         obj.xpos = Math.random() * 100;
-		ballList.push(obj);
+        ballList.push(obj);
         ball.style.left = obj.xpos;
     }
+
+    function spawnball2() {
+        document.getElementById('balldrop').style.backgroundColor = '#aaaaaa';
+        for (l = 0; l < ballamount; l = l + 1) {
+            spawnball();
+        }
+        document.getElementById('balldrop').innerHTML = 'Waiting... (there are ' + ballList.length.toString() + ' balls left)';
+        if (mutesfx.compare(new Decimal('0')) === 0) {
+            audiotrack = new Audio('ballspawn.mp3');
+            audiotrack.play();
+        }
+        clearTimeout(balldrop);
+    }
+
+    function specialpegspawn() {
+        if (Math.random() <= parseFloat(decimalToString(specialpegchance)) && specialpegunlocked === 1 && specialpeglist.length < 67) {
+            specialpegpermission = 0;
+            for (i = 0; i <= 1.79e308; i = i + 1) {
+                specialpeglocation = Math.ceil(Math.random() * 67);
+                for (k = 0; k < specialpeglist.length; k = k + 1) {
+                    if (specialpeglocation === specialpeglist[k]) {
+                        specialpegpermission = 1;
+                    }
+                }
+                if (specialpegpermission === 0) {
+                    specialpeglist.push(specialpeglocation);
+                    document.getElementById('peg' + specialpeglocation.toString()).style.backgroundColor = 'gold';
+                    break;
+                }
+            }
+
+        }
+    }
+    setInterval(specialpegspawn, 1000);
     document.getElementById('balldrop').addEventListener('click', function () {
         if (ballList.length === 0 && cooldowncheck === 0) {
+            clearTimeout(balldrop);
             audiorepeat = 0;
             document.getElementById('balldrop').style.backgroundColor = '#aaaaaa';
             for (l = 0; l < ballamount; l = l + 1) {
                 spawnball();
             }
             document.getElementById('balldrop').innerHTML = 'Waiting... (there are ' + ballList.length.toString() + ' balls left)';
-            audiotrack = new Audio('ballspawn.mp3');
-            audiotrack.play();
+            if (mutesfx.compare(new Decimal('0')) === 0) {
+                audiotrack = new Audio('ballspawn.mp3');
+                audiotrack.play();
+            }
         }
-	});
-	document.addEventListener('keydown', function (event) {
-		if (event.keyCode === 68 && ballList.length === 0 && cooldowncheck === 0) {
-			audiorepeat = 0;
+    });
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode === 68 && ballList.length === 0 && cooldowncheck === 0) {
+            audiorepeat = 0;
             document.getElementById('balldrop').style.backgroundColor = '#aaaaaa';
             for (l = 0; l < ballamount; l = l + 1) {
                 spawnball();
             }
             document.getElementById('balldrop').innerHTML = 'Waiting... (there are ' + ballList.length.toString() + ' balls left)';
-            audiotrack = new Audio('ballspawn.mp3');
-            audiotrack.play();
-		}
-	});
+            if (mutesfx.compare(new Decimal('0')) === 0) {
+                audiotrack = new Audio('ballspawn.mp3');
+                audiotrack.play();
+            }
+        }
+    });
     document.getElementById('deleteballs').addEventListener('click', function () {
         for (l = 0; l < ballList.length; l = l + 1) {
             pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
         }
         ballList = [];
-		document.getElementById('balldrop').innerHTML = 'Drop Ball!';
+        document.getElementById('balldrop').innerHTML = 'Drop Ball!';
         document.getElementById('balldrop').style.backgroundColor = '#c2c2c2';
     });
+
     function physics() {
-		if (audiorepeat === 1) {
+        if (audiorepeat === 1 && (mutesfx.compare(new Decimal('0')) === 0)) {
             audiotrack = new Audio('balldisappear.mp3');
             audiorepeat = 2;
             audiotrack.play();
@@ -134,22 +224,24 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(wait, cooldown);
         }
         i = 0;
-		for (i = 0; i < ballList.length; i = i + 1) {
+        for (i = 0; i < ballList.length; i = i + 1) {
             ballcheck = ballList[i];
-			ballcheckphysical = document.getElementById('ball' + ballcheck.index.toString());
-			pegs = document.getElementsByClassName('peg');
-			collision();
-			if (touch === 0) {
-				ballcheck.yvel = (ballcheck.yvel * 0.995) + gravity;
-				ballcheck.ypos = ballcheck.ypos + ballcheck.yvel;
-				ballcheck.xvel = ballcheck.xvel * 0.995;
+            ballcheckphysical = document.getElementById('ball' + ballcheck.index.toString());
+            pegs = document.getElementsByClassName('peg');
+            collision();
+            if (touch === 0) {
+                ballcheck.yvel = (ballcheck.yvel * 0.995) + gravity;
+                ballcheck.ypos = ballcheck.ypos + ballcheck.yvel;
+                ballcheck.xvel = ballcheck.xvel * 0.995;
                 ballcheck.xpos = ballcheck.xpos + ballcheck.xvel;
                 gravity = gravity * 1.85;
                 ballcheckphysical.style.left = ballcheck.xpos.toString() + '%';
                 ballcheckphysical.style.top = ballcheck.ypos.toString() + '%';
                 if (ballcheck.ypos >= 90) {
-					audiotrack = new Audio('ballgain.mp3');
-					audiotrack.play();
+                    if (mutesfx.compare(new Decimal('0')) === 0) {
+                        audiotrack = new Audio('ballgain.mp3');
+                        audiotrack.play();
+                    }
                     xposdespawn = ballcheck.xpos;
                     despawn = 1;
                     ballList.splice(i, 1);
@@ -162,8 +254,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
                 }
             } else {
-				audiotrack = new Audio('ballht.mp3');
-				audiotrack.play();
+                if (mutesfx.compare(new Decimal('0')) === 0) {
+                    audiotrack = new Audio('ballht.mp3');
+                    audiotrack.play();
+                }
+                for (j = 0; j < specialpeglist.length; j = j + 1) {
+                    if (pegtouch === specialpeglist[j]) {
+                        document.getElementById('peg' + pegtouch.toString()).style.backgroundColor = '#c2c2c2';
+                        specialpegtouch = 1;
+                    }
+                }
                 while (touch === 1) {
                     gravity = 0.01;
                     angle = rectToPolar(ballcheck.xvel, ballcheck.yvel);
@@ -171,15 +271,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     dotprod = (ballcheck.xvel * Math.sin(angle[1])) + (ballcheck.yvel * Math.cos(angle[1]));
                     ballcheck.xvel = -1.25 * Math.sin(angle[1]) * dotprod;
                     ballcheck.yvel = -1.25 * Math.cos(angle[1]) * dotprod;
-				    ballcheck.ypos = ballcheck.ypos + ballcheck.yvel;
-				    ballcheck.xpos = ballcheck.xpos + ballcheck.xvel;
+                    ballcheck.ypos = ballcheck.ypos + ballcheck.yvel;
+                    ballcheck.xpos = ballcheck.xpos + ballcheck.xvel;
                     ballcheckphysical.style.left = ballcheck.xpos.toString() + '%';
                     ballcheckphysical.style.top = ballcheck.ypos.toString() + '%';
                     collision();
                 }
             }
-		}
-		window.requestAnimationFrame(physics);
-	}
-	window.requestAnimationFrame(physics);
+        }
+        if (balldropunlocked === 1 && ballList.length === 0 && cooldowncheck === 0 && balldropallow === 1 && load === 1) {
+            balldropallow = 0;
+            balldrop = setTimeout(spawnball2, parseFloat(decimalToString(balldropcooldown)) * 1000);
+        }
+        window.requestAnimationFrame(physics);
+    }
+    window.requestAnimationFrame(physics);
 });

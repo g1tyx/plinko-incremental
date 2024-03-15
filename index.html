@@ -5,8 +5,12 @@
     
     <script src="javapiss.js" charset="utf-8"></script>
     <script src="physics.js" charset="utf-8"></script>
+    <script src="newsticker.js" charset="utf-8"></script>
 </head>
 <body>
+	<div id='loading'>
+		<button id='loadingbutton'>Play!</button>
+	</div>
 	<div id='screen0'>
 		<button id='import'>Export!</button>
 		<button id='export' value=''>Import!</button>
@@ -30,12 +34,14 @@
             <a href='https://github.com/Patashu/break_infinity.js'>break_infinity.js</a> used (shocker)
 		</p>
         <p class='p' id='version'>
-            Version: 1.0.1
+            Version: 1.1.0
             <br><br>
-            Endgame: Level 16 (Boxify)
+            Endgame: Level 30 (Roll)
             <br><br>
             Join our <a href='https://discord.gg/XjncY4BBMz'>discord server</a> for bug reporting and other stuff
         </p>
+        <button id='mutemusic'>Mute Music</button>
+        <button id='mutesfx'>Mute SFX</button>
 	</div>
 	<div id='screen1'>
 		<div id='wall'></div>
@@ -170,7 +176,10 @@
 		<div id='level'>
 			<div id='levelbar'>
 			</div>
-			<p id='leveldisplay'>
+            <p id='leveldisplay'>
+                :3
+            </p>
+            <p id='leveldisplayxp'>
 				:3
 			</p>
 		</div>
@@ -270,6 +279,11 @@
 				Use arrow keys to move!
 			</p>
 		</div>
+        <div id='newsticker'>
+			<p id='newstickertext'>
+				:3 hewwo!
+            </p>
+		</div>
 	</div>
 	<div id='screen2'>
         <div id='boxifyreset'>
@@ -280,5 +294,308 @@
             </p>
             <button id='boxifyresetbutton'>:3</button>
         </div>
-    </div>
+        <div id='boxifyupgradebuilding'>
+            <div id='bbuildingtitle' class='buildingtitle'>
+					Boxify Upgrades
+			</div>
+			<button id='barrow1' class='arrow1'>
+					&lt;
+			</button>
+			<button id='barrow2' class='arrow2'>
+					>
+			</button>
+			<div id='bupgrade1'>
+				<p id='bupgrade1title' class='bupgradetitle'>
+					Red Box Value
+				</p>
+				<img src='bupgrade1.png' class='bupgradeimage'>
+				<p id='bupgrade1desc' class='bupgradedesc'>
+					Multiplies the value of the red boxes by +100% per upgrade.
+				</p>
+				<p id='bupgrade1price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade1cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='bupgrade2'>
+				<p id='bupgrade2title' class='bupgradetitle'>
+					Orange Box Value
+				</p>
+				<img src='bupgrade2.png' class='bupgradeimage'>
+				<p id='bupgrade2desc' class='bupgradedesc'>
+					Multiplies the value of the orange boxes by +100% per upgrade.
+				</p>
+				<p id='bupgrade2price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade2cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='bupgrade3'>
+				<p id='bupgrade3title' class='bupgradetitle'>
+					Yellow Box Value
+				</p>
+				<img src='bupgrade3.png' class='bupgradeimage'>
+				<p id='bupgrade3desc' class='bupgradedesc'>
+					Multiplies the value of the yellow boxes by +100% per upgrade.
+				</p>
+				<p id='bupgrade3price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade3cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='bupgrade4'>
+				<p id='bupgrade4title' class='bupgradetitle'>
+					Green Box Value
+				</p>
+				<img src='bupgrade4.png' class='bupgradeimage'>
+				<p id='bupgrade4desc' class='bupgradedesc'>
+					Multiplies the value of the green box by +100% per upgrade.
+				</p>
+				<p id='bupgrade4price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade4cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='bupgrade5'>
+				<p id='bupgrade5title' class='bupgradetitle'>
+					Ball Value II
+				</p>
+				<img src='bupgrade5.png' class='bupgradeimage'>
+				<p id='bupgrade5desc' class='bupgradedesc'>
+					Increases base value by +150%.
+				</p>
+				<p id='bupgrade5price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade5cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='bupgrade6'>
+				<p id='bupgrade6title' class='bupgradetitle'>
+					XP Value II
+				</p>
+				<img src='bupgrade6.png' class='bupgradeimage'>
+				<p id='bupgrade6desc' class='bupgradedesc'>
+					Increases XP gain by +150%.
+				</p>
+				<p id='bupgrade6price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade6cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='bupgrade7'>
+				<p id='bupgrade7title' class='bupgradetitle'>
+					Special Pegs I
+				</p>
+				<img src='bupgrade7.png' class='bupgradeimage'>
+				<p id='bupgrade7desc' class='bupgradedesc'>
+					Adds 1 to special peg gain. When upgrade is maxed out, you get x2 special peg chance.
+				</p>
+				<p id='bupgrade7price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade7cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='bupgrade8'>
+				<p id='bupgrade8title' class='bupgradetitle'>
+					BP-Box Synergy
+				</p>
+				<img src='bupgrade8.png' class='bupgradeimage'>
+				<p id='bupgrade8desc' class='bupgradedesc'>
+					BP boosts all box multipliers. Each purchase after the first one boosts the effect of this upgrade by 2.5%.
+				</p>
+				<p id='bupgrade8price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade8cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+			<div class='buttoncontainer'>
+				<button id='bupgradebutton1' class='bupgradebutton'>
+					Buy 1!
+				</button>
+			</div>
+            </div>
+        <div id='specialpegbuilding'>
+            <div id='spbuildingtitle' class='buildingtitle'>
+					Special Peg Upgrades
+			</div>
+			<button id='sparrow1' class='arrow1'>
+					&lt;
+			</button>
+			<button id='sparrow2' class='arrow2'>
+					>
+			</button>
+			<div id='spupgrade1'>
+				<p id='spupgrade1title' class='spupgradetitle'>
+					BP Gain
+				</p>
+				<img src='spupgrade1.png' class='spupgradeimage'>
+				<p id='spupgrade1desc' class='spupgradedesc'>
+					Multiplies BP gain by 2.
+				</p>
+				<p id='spupgrade1price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade1cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='spupgrade2'>
+				<p id='spupgrade2title' class='spupgradetitle'>
+					XP Gain III
+				</p>
+				<img src='spupgrade2.png' class='spupgradeimage'>
+				<p id='spupgrade2desc' class='spupgradedesc'>
+					Multiplies XP gain by 2.
+				</p>
+				<p id='spupgrade2price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade2cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='spupgrade3'>
+				<p id='spupgrade3title' class='spupgradetitle'>
+					Ball Value III
+				</p>
+				<img src='spupgrade3.png' class='spupgradeimage'>
+				<p id='spupgrade3desc' class='spupgradedesc'>
+					Multiples ball value by 2.
+				</p>
+				<p id='spupgrade3price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade3cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='spupgrade4'>
+				<p id='spupgrade4title' class='spupgradetitle'>
+					Red Box Value II
+				</p>
+				<img src='spupgrade4.png' class='spupgradeimage'>
+				<p id='spupgrade4desc' class='spupgradedesc'>
+					Multiplies the value of the red boxes by 2.
+				</p>
+				<p id='spupgrade4price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade4cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='spupgrade5'>
+				<p id='spupgrade5title' class='spupgradetitle'>
+					Orange Box Value II
+				</p>
+				<img src='spupgrade5.png' class='spupgradeimage'>
+				<p id='spupgrade5desc' class='spupgradedesc'>
+					Multiplies the value of the orange boxes by 2.
+				</p>
+				<p id='spupgrade5price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade5cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='spupgrade6'>
+				<p id='spupgrade6title' class='spupgradetitle'>
+					Yellow Box Value II
+				</p>
+				<img src='spupgrade6.png' class='spupgradeimage'>
+				<p id='spupgrade6desc' class='spupgradedesc'>
+					Multiplies the value of the yellow boxes by 2.
+				</p>
+				<p id='spupgrade6price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade6cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='spupgrade7'>
+				<p id='spupgrade7title' class='spupgradetitle'>
+					Green Box Value II
+				</p>
+				<img src='spupgrade7.png' class='spupgradeimage'>
+				<p id='spupgrade7desc' class='spupgradedesc'>
+					Multiplies the value of the green box by 2.
+				<p id='spupgrade7price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade7cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+			<div class='buttoncontainer'>
+				<button id='spupgradebutton1' class='spupgradebutton'>
+					Buy 1!
+				</button>
+			</div>
+        </div>
+        <div id='qolbuilding'>
+            <div id='qolbuildingtitle' class='buildingtitle'>
+					Quality of Life Upgrades
+			</div>
+			<button id='qolarrow1' class='arrow1'>
+					&lt;
+			</button>
+			<button id='qolarrow2' class='arrow2'>
+					>
+			</button>
+			<div id='qolupgrade1'>
+				<p id='qolupgrade1title' class='qolupgradetitle'>
+					Drop Automation
+				</p>
+				<img src='qolupgrade1.png' class='qolupgradeimage'>
+				<p id='qolupgrade1desc' class='qolupgradedesc'>
+					Automatically drops the ball if on the plinko screen and unlocking offline time. Starting at 5s, each level after 1 reduces the cooldown by 0.5s.
+				</p>
+				<p id='qolupgrade1price' class='qolupgradeprice'>
+					:3
+				</p>
+				<p id='qolupgrade1cap' class='qolupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='qolupgrade2'>
+				<p id='qolupgrade2title' class='qolupgradetitle'>
+					Keep I
+				</p>
+				<img src='qolupgrade2.png' class='qolupgradeimage'>
+				<p id='qolupgrade2desc' class='qolupgradedesc'>
+					Keep 25% (rounded down) of plinko upgrades on boxify.
+				</p>
+				<p id='qolupgrade2price' class='qolupgradeprice'>
+					:3
+				</p>
+				<p id='qolupgrade2cap' class='qolupgradecap'>
+					:3
+				</p>
+			</div>
+
+			<div class='buttoncontainer'>
+				<button id='qolupgradebutton1' class='qolupgradebutton'>
+					Buy 1!
+				</button>
+			</div>
+        </div>
+        </div>
 </body>

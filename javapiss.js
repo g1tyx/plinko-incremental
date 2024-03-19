@@ -132,10 +132,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 'qolupgrade1': decimalToString(qolupgradelist[0]),
                 'qolupgrade2': decimalToString(qolupgradelist[1])
             };
-            savefile = JSON.stringify(savefile);
-            savefile = JSON.stringify(savefile);
-            localStorage.setItem('save', savefile);
-            autosavetimer = 0;
+            if (JSON.stringify(savefile) != '[object Object]') {
+                savefile = JSON.stringify(savefile);
+                localStorage.setItem('save', savefile);
+                autosavetimer = 0;
+            } else {
+                alert('save failed!');
+            }
         } else {
             autosavetimer = autosavetimer + 1;
         }
@@ -419,10 +422,14 @@ document.addEventListener('DOMContentLoaded', function () {
             'qolupgrade1': decimalToString(qolupgradelist[0]),
             'qolupgrade2': decimalToString(qolupgradelist[1])
         };
-        savefile = JSON.stringify(savefile);
-        savefile = btoa(savefile);
-        navigator.clipboard.writeText(savefile);
-        alert('Copied to clipboard!');
+        if (JSON.stringify(savefile) != '[object Object]') {
+            savefile = JSON.stringify(savefile);
+            savefile = btoa(savefile);
+            navigator.clipboard.writeText(savefile);
+            alert('Copied to clipboard!');
+        } else {
+            alert('save failed!');
+        }
     });
     document.getElementById('export').addEventListener('click', function () {
         savefile = window.prompt('Paste your save here:', 'save file entering box');
@@ -622,8 +629,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 'qolupgrade1': decimalToString(qolupgradelist[0]),
                 'qolupgrade2': decimalToString(qolupgradelist[1])
             };
-            savefile = JSON.stringify(savefile);
-            localStorage.setItem('save', savefile);
+            if (JSON.stringify(savefile) != '[object Object]') {
+                savefile = JSON.stringify(savefile);
+                localStorage.setItem('save', savefile);
+            } else {
+                alert('save failed!');
+            }
         }
         if (event.keyCode === 39 && screen < 2) {
             for (l = 0; l < ballList.length; l = l + 1) {

@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[1])));
         boxpointgain = (new Decimal('1.2').pow(level.minus(new Decimal('16')))).times(new Decimal('3').pow(level.minus('16').divideBy(10).floor()))
             .times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[0])));
-        levelreq = new Decimal('1.5').pow(level).times(new Decimal('3').pow(level.divideBy(new Decimal('10')).floor()));
+        levelreq = new Decimal('1.3').pow(level).times(new Decimal('1.8').pow(level.divideBy(new Decimal('10')).floor()));
         boxvalues = [new Decimal('1').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[1]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[4]))), new Decimal('1.5').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[2]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[5]))), new Decimal('0.5').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[0]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[3]))), new Decimal('5').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[6]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[3])))];
         for (m = 0; m < boxvalues.length; m = m + 1) {
             boxvalues[m] = boxvalues[m].times(new Decimal('1').plus(new Decimal('1.02').times(bupgradelist[7]).times(new Decimal(new Decimal('1').add(boxpoints).log10()).divideBy(new Decimal('3')))));

@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
         obj,
         cooldowncheck,
         gravity,
+        fps,
+        fps1,
+        fps2,
         spawnindex;
     spawnindex = -1;
     gravity = 0.01;
@@ -45,21 +48,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function decimalToString(num) {
         str = '';
         if (num.exponent >= 6) {
-            if (Math.floor(num.mantissa.valueOf()) === num.mantissa.valueOf()) {
-                decimalplaces = 0;
-            } else {
-                decimalplaces = num.mantissa.toString().split(".")[1].length;
-            }
-            if (decimalplaces < 3) {
-                str = num.mantissa.toString() + 'e' + num.exponent.toString();
-            } else {
-                str = num.mantissa.toFixed(3).toString() + 'e' + num.exponent.toString();
-            }
+            str = num.mantissa.toFixed(3).toString() + 'e' + num.exponent.toString();
         } else {
             if (Math.floor(num.mantissa.valueOf()) === num.mantissa.valueOf()) {
                 decimalplaces = 0;
             } else {
                 decimalplaces = num.mantissa.toString().split(".")[1].length;
+                decimalplaces = decimalplaces - num.exponent;
             }
             if (decimalplaces < 3) {
                 str = num.toString();
@@ -155,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function specialpegspawn() {
-        if (Math.random() <= parseFloat(decimalToString(specialpegchance)) && specialpegunlocked === 1 && specialpeglist.length < 67) {
+        if ((Math.random() <= parseFloat(decimalToString(specialpegchance)) && specialpegchance != undefined) && specialpegunlocked === 1 && specialpeglist.length < 67) {
             specialpegpermission = 0;
             for (i = 0; i <= 1.79e308; i = i + 1) {
                 specialpeglocation = Math.ceil(Math.random() * 67);
@@ -211,8 +206,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('balldrop').innerHTML = 'Drop Ball!';
         document.getElementById('balldrop').style.backgroundColor = '#c2c2c2';
     });
-
+    fps1 = new Date();
     function physics() {
+        if (typeof ballamount != 'string') {
+            ballamount = decimalToString(ballamount);
+        }
         if (audiorepeat === 1 && (mutesfx.compare(new Decimal('0')) === 0)) {
             audiotrack = new Audio('balldisappear.mp3');
             audiorepeat = 2;
@@ -279,11 +277,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
-        if (balldropunlocked === 1 && ballList.length === 0 && cooldowncheck === 0 && balldropallow === 1 && load === 1) {
+        if (disableautodrop.compare(new Decimal('0')) === 0) {
+            balldropallow = 1;
+            balldrop = 0;
+        }
+        if (sscreen !== 1) {
+            balldropallow = -1;
+            balldrop = 0;
+        } else if (balldropallow === -1) {
+            balldropallow = 1;
+        }
+        if (balldropunlocked === 1 && ballList.length === 0 && cooldowncheck === 0 && balldropallow === 1 && load === 1 && disableautodrop.compare(new Decimal('1')) === 0) {
             balldropallow = 0;
             balldrop = setTimeout(spawnball2, parseFloat(decimalToString(balldropcooldown)) * 1000);
         }
-        window.requestAnimationFrame(physics);
+        fps2 = new Date();
+        fps = fps2 - fps1;
+        fps1 = fps2;
+        if (fps <= 16.7) {
+            fps = 16.7;
+            window.setTimeout(physics, fps);
+        } else {
+            window.requestAnimationFrame(physics);
+        }
     }
     window.requestAnimationFrame(physics);
 });

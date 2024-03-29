@@ -24,6 +24,10 @@
 			Arrow Keys - Move
             <br>
             B - Boxify
+            <br>
+            R - Roll
+            <br>
+            V - Stop Revolutions Wheel
 		</p>
         <button id='deletesave'>Delete Save (!)</button>
         <p class='p' id='credits'>
@@ -36,14 +40,21 @@
             Music "remixed" from <a href='https://www.youtube.com/watch?v=JS05TCUpMSs&t=0s'>here</a> (remix by me shocker)
 		</p>
         <p class='p' id='version'>
-            Version: 1.1.3
+            Version: 1.2.0
             <br><br>
-            Endgame: Level 30 (Roll)
+            Endgame: 10 RollPoints (Bounce)
             <br><br>
             Join our <a href='https://discord.gg/XjncY4BBMz'>discord server</a> for bug reporting and other stuff
         </p>
         <button id='mutemusic'>Mute Music</button>
         <button id='mutesfx'>Mute SFX</button>
+        <button id='disableplinkoauto'>Disable Auto Plinko Upgrades</button>
+        <button id='disableautodrop'>Disable Auto Drop</button>
+        <div id="ballcompsetting">
+            <p id='ballcompdisplay'>Ball Compaction Start: 10 Balls</p>
+            <input type="range" min="1" max="100" value="10" step="1" class="slider" id="ballcomp">
+        </div>
+
 	</div>
 	<div id='screen1'>
 		<div id='wall'></div>
@@ -426,6 +437,36 @@
 					:3
 				</p>
 			</div>
+            <div id='bupgrade9'>
+				<p id='bupgrade9title' class='bupgradetitle'>
+					BP-RP Synergy
+				</p>
+				<img src='bupgrade9.png' class='bupgradeimage'>
+				<p id='bupgrade9desc' class='bupgradedesc'>
+                    BoxPoints lowers the RollPoint requirement.
+				</p>
+				<p id='bupgrade9price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade9cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='bupgrade10'>
+				<p id='bupgrade10title' class='bupgradetitle'>
+					RP-Box Synergy
+				</p>
+				<img src='bupgrade10.png' class='bupgradeimage'>
+				<p id='bupgrade10desc' class='bupgradedesc'>
+					RollPoints boost box value.
+				</p>
+				<p id='bupgrade10price' class='bupgradeprice'>
+					:3
+				</p>
+				<p id='bupgrade10cap' class='bupgradecap'>
+					:3
+				</p>
+			</div>
 			<div class='buttoncontainer'>
 				<button id='bupgradebutton1' class='bupgradebutton'>
 					Buy 1!
@@ -546,6 +587,48 @@
 					:3
 				</p>
 			</div>
+            <div id='spupgrade8'>
+				<p id='spupgrade8title' class='spupgradetitle'>
+					Rotation Boost
+				</p>
+				<img src='spupgrade8.png' class='spupgradeimage'>
+				<p id='spupgrade8desc' class='spupgradedesc'>
+					Multiplies rotation gain by 2.
+				<p id='spupgrade8price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade8cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='spupgrade9'>
+				<p id='spupgrade9title' class='spupgradetitle'>
+					Revolutions Boost
+				</p>
+				<img src='spupgrade9.png' class='spupgradeimage'>
+				<p id='spupgrade9desc' class='spupgradedesc'>
+					Multiplies revolution gain by 2.
+				<p id='spupgrade9price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade9cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='spupgrade10'>
+				<p id='spupgradetitle' class='spupgradetitle'>
+					More Balls
+				</p>
+				<img src='spupgrade10.png' class='spupgradeimage'>
+				<p id='spupgrade10desc' class='spupgradedesc'>
+					Adds an extra ball. After 10 (can be changed in settings) ball compaction occurs (to reduce lag).
+				<p id='spupgrade10price' class='spupgradeprice'>
+					:3
+				</p>
+				<p id='spupgrade10cap' class='spupgradecap'>
+					:3
+				</p>
+			</div>
 			<div class='buttoncontainer'>
 				<button id='spupgradebutton1' class='spupgradebutton'>
 					Buy 1!
@@ -592,7 +675,36 @@
 					:3
 				</p>
 			</div>
-
+            <div id='qolupgrade3'>
+				<p id='qolupgrade3title' class='qolupgradetitle'>
+					Keep II
+				</p>
+				<img src='qolupgrade3.png' class='qolupgradeimage'>
+				<p id='qolupgrade3desc' class='qolupgradedesc'>
+					Keep another 25% (rounded down) of plinko upgrades on boxify and 25% on roll.
+				</p>
+				<p id='qolupgrade3price' class='qolupgradeprice'>
+					:3
+				</p>
+				<p id='qolupgrade3cap' class='qolupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='qolupgrade4'>
+				<p id='qolupgrade4title' class='qolupgradetitle'>
+					Automation I
+				</p>
+				<img src='qolupgrade4.png' class='qolupgradeimage'>
+				<p id='qolupgrade4desc' class='qolupgradedesc'>
+					Plinko upgrades are now automatically bought (without spending).
+				</p>
+				<p id='qolupgrade4price' class='qolupgradeprice'>
+					:3
+				</p>
+				<p id='qolupgrade4cap' class='qolupgradecap'>
+					:3
+				</p>
+			</div>
 			<div class='buttoncontainer'>
 				<button id='qolupgradebutton1' class='qolupgradebutton'>
 					Buy 1!
@@ -600,4 +712,221 @@
 			</div>
         </div>
         </div>
+    <div id='screen3'>
+        <div id='rollreset'>
+            <p class='p' id='rollresettext'>
+                Roll
+                <br><br>
+                :3
+            </p>
+            <button id='rollresetbutton'>:3</button>
+        </div>
+        <div id='rollupgradebuilding'>
+            <img src='rotationsgear.png' id='rotationgear'>
+            <div id='rbuildingtitle' class='buildingtitle'>
+					Roll Upgrades
+			</div>
+			<button id='rarrow1' class='arrow1'>
+					&lt;
+			</button>
+			<button id='rarrow2' class='arrow2'>
+					>
+			</button>
+			<div id='rupgrade1'>
+				<p id='rupgrade1title' class='rupgradetitle'>
+					Rotated BallPoints
+				</p>
+				<img src='rupgrade1.png' class='rupgradeimage'>
+				<p id='rupgrade1desc' class='rupgradedesc'>
+					Rotations boost BallPoints gain.
+				</p>
+				<p id='rupgrade1price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade1cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='rupgrade2'>
+				<p id='rupgrade2title' class='rupgradetitle'>
+					Rotated XP
+				</p>
+				<img src='rupgrade2.png' class='rupgradeimage'>
+				<p id='rupgrade2desc' class='rupgradedesc'>
+					Rotations boost XP gain.
+				</p>
+				<p id='rupgrade2price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade2cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='rupgrade3'>
+				<p id='rupgrade3title' class='rupgradetitle'>
+					Rotated BP
+				</p>
+				<img src='rupgrade3.png' class='rupgradeimage'>
+				<p id='rupgrade3desc' class='rupgradedesc'>
+					Rotations boost BoxPoint gain.
+				</p>
+				<p id='rupgrade3price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade3cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='rupgrade4'>
+				<p id='rupgrade4title' class='rupgradetitle'>
+					Uncapped I
+				</p>
+				<img src='rupgrade4.png' class='rupgradeimage'>
+				<p id='rupgrade4desc' class='rupgradedesc'>
+					The caps for 'Point Synergy' and 'Level-XP Synergy' are increased by 10.
+				</p>
+				<p id='rupgrade4price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade4cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+			<div id='rupgrade5'>
+				<p id='rupgrade5title' class='rupgradetitle'>
+					Rotation Speed
+				</p>
+				<img src='rupgrade5.png' class='rupgradeimage'>
+				<p id='rupgrade5desc' class='rupgradedesc'>
+					Rotation gain is boosted by +100%.
+				</p>
+				<p id='rupgrade5price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade5cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='rupgrade6'>
+				<p id='rupgrade6title' class='rupgradetitle'>
+					QoL+
+				</p>
+				<img src='rupgrade6.png' class='rupgradeimage'>
+				<p id='rupgrade6desc' class='rupgradedesc'>
+					Adds a couple of new QoL upgrades.
+				</p>
+				<p id='rupgrade6price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade6cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='rupgrade7'>
+				<p id='rupgrade7title' class='rupgradetitle'>
+					Boxify+
+				</p>
+				<img src='rupgrade7.png' class='rupgradeimage'>
+				<p id='rupgrade7desc' class='rupgradedesc'>
+					Adds a couple of new Boxify upgrades.
+				</p>
+				<p id='rupgrade7price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade7cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='rupgrade8'>
+				<p id='rupgrade8title' class='rupgradetitle'>
+					Rotated Rotations
+				</p>
+				<img src='rupgrade8.png' class='rupgradeimage'>
+				<p id='rupgrade8desc' class='rupgradedesc'>
+					Rotations boost... themselves.
+				</p>
+				<p id='rupgrade8price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade8cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='rupgrade9'>
+				<p id='rupgrade9title' class='rupgradetitle'>
+					Roll+
+				</p>
+				<img src='rupgrade9.png' class='rupgradeimage'>
+				<p id='rupgrade9desc' class='rupgradedesc'>
+					Adds a new feature!
+				</p>
+				<p id='rupgrade9price' class='rupgradeprice'>
+					:3
+				</p>
+				<p id='rupgrade9cap' class='rupgradecap'>
+					:3
+				</p>
+			</div>
+			<div class='buttoncontainer'>
+				<button id='rupgradebutton1' class='rupgradebutton'>
+					Buy 1!
+				</button>
+			</div>
+            </div>
+        <div id='revolutionsbuilding'>
+            <p id='revolutionstitle'>Revolutions Building (you have :3 revolutions)</p>
+            <img id='revolutioncircle' src='revcircle.png'>
+            <div id='revolutionline'></div>
+            <div id='revpowerbar'></div>
+            <div id='revpowerbar2'></div>
+            <div id='revpowerdisplay'>
+                <p id='revpowertext'>Streak: <br> Boost:</p>
+            </div>
+            <button id='revbutton'>Stop!</button>
+            <div id='revdesc'>
+                <p>
+                    Press stop when the blue line is in the yellow area and earn revolutions! You gain more revolutions based on your streak.
+                </p>
+            </div>
+        </div>
+        <div id='revolutionsselect'>
+            <p id='reveffecttitle'>Revolutions Effects</p>
+            <button id='reveffect1' class='reveffect'>:3</button>
+            <button id='reveffect2' class='reveffect'>:3</button>
+            <button id='reveffect3' class='reveffect'>:3</button>
+            <button id='reveffect4' class='reveffect'>:3</button>
+            <button id='reveffect5' class='reveffect'>:3</button>
+        </div>
+        <div id='revupgradebuilding'>
+            <div id='revbuildingtitle' class='buildingtitle'>
+					Revolution Upgrades
+			</div>
+			<button id='revarrow1' class='arrow1'>
+					&lt;
+			</button>
+			<button id='revarrow2' class='arrow2'>
+					>
+			</button>
+			<div id='revupgrade1'>
+				<p id='revupgrade1title' class='revupgradetitle'>
+					Special Pegs+
+				</p>
+				<img src='revupgrade1.png' class='revupgradeimage'>
+				<p id='revupgrade1desc' class='revupgradedesc'>
+					Unlock 3 Special Peg upgrades! 
+				</p>
+				<p id='revupgrade1price' class='revupgradeprice'>
+					:3
+				</p>
+				<p id='revupgrade1cap' class='revupgradecap'>
+					:3
+				</p>
+			</div>
+            <div class='buttoncontainer'>
+				<button id='revupgradebutton1' class='revupgradebutton'>
+					Buy 1!
+				</button>
+			</div>
+        </div>
+    </div>
 </body>

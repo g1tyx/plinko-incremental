@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return str;
     }
     function missingvar() {
-        if (savefile.version === undefined) {
+        if (savefile.version == undefined) {
             savefile.bupgrade9 = '0';
             savefile.bupgrade10 = '0';
             savefile.qolupgrade3 = '0';
@@ -182,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function save() {
         timelaston = new Date().getTime();
         timelaston = Math.floor(timelaston / 1000);
-        missingvar();
         savefile = {
             'timelaston': timelaston.toString(),
             'version': version,
@@ -395,13 +394,13 @@ document.addEventListener('DOMContentLoaded', function () {
             ballpoints = ballpoints.add(ballpointgain.times(boxvalues[0].times(new Decimal('2')).add(boxvalues[1].times(new Decimal('2')).add((boxvalues[2].times(new Decimal('2')).add((boxvalues[3]))))).divideBy(new Decimal('7'))).times(new Decimal(timelaston)));
             xp = xp.add(xpgain.times(boxvalues[0].times(new Decimal('2')).add(boxvalues[1].times(new Decimal('2')).add((boxvalues[2].times(new Decimal('2')).add((boxvalues[3]))))).divideBy(new Decimal('7'))).times(new Decimal(timelaston)));
             rotations = rotations.add(rotationgain);
-            save();
-            if (JSON.stringify(savefile) !== '[object Object]') {
-                localStorage.setItem('save', JSON.stringify(savefile));
-            } else {
-                alert('save failed!');
-            }
         }
+    }
+    save();
+    if (JSON.stringify(savefile) !== '[object Object]') {
+        localStorage.setItem('save', JSON.stringify(savefile));
+    } else {
+        alert('save failed!');
     }
     //price/cap setups
     pcaplist = [new Decimal('400'), new Decimal('400'), new Decimal('25'), new Decimal('4'), new Decimal('25')];
@@ -720,6 +719,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('invalid save :(')
         }
         if (JSON.stringify(JSON.parse(atob(savefile))) !== '[object Object]') {
+            missingvar();
             localStorage.setItem('save', JSON.stringify(JSON.parse(atob(savefile))));
             alert('save file loaded!');
             location.reload();

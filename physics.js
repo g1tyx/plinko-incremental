@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
         obj,
         cooldowncheck,
         gravity,
+        pegseperationlist,
+        pegsepstart,
         fps,
         fps1,
         fps2,
@@ -43,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
     specialpeglist = [];
     ballList = [];
     balldropallow = 1;
+    pegseperationlist = [0, 0, 10, 19, 29, 38, 48, 57, 67, 67];
+    pegsepstart = 1;
     pegarea = document.getElementById('pegs');
 
     function decimalToString(num) {
@@ -76,12 +80,28 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
     function collision() {
+        //broken atm :3
         j = 0;
         touch = 0;
         gravity = 0.01;
-        for (j = 0; j < pegs.length; j = j + 1) {
+        pegsepstart = 0;
+        if (ballcheckphysical.offsetTop <= pegs[0].offsetTop || (ballcheckphysical.offsetTop >= pegs[0].offsetTop && ballcheckphysical.offsetTop <= pegs[9].offsetTop)) {
+            pegsepstart = 1;
+        } else if ((ballcheckphysical.offsetTop >= pegs[0].offsetTop && ballcheckphysical.offsetTop <= pegs[9].offsetTop) || (ballcheckphysical.offsetTop >= pegs[9].offsetTop && ballcheckphysical.offsetTop <= pegs[18].offsetTop)) {
+            pegsepstart = 2;
+        } else if ((ballcheckphysical.offsetTop >= pegs[9].offsetTop && ballcheckphysical.offsetTop <= pegs[18].offsetTop) || (ballcheckphysical.offsetTop >= pegs[18].offsetTop && ballcheckphysical.offsetTop <= pegs[28].offsetTop)) {
+            pegsepstart = 3;
+        } else if ((ballcheckphysical.offsetTop >= pegs[18].offsetTop && ballcheckphysical.offsetTop <= pegs[28].offsetTop) || (ballcheckphysical.offsetTop >= pegs[28].offsetTop && ballcheckphysical.offsetTop <= pegs[37].offsetTop)) {
+            pegsepstart = 4;
+        } else if ((ballcheckphysical.offsetTop >= pegs[28].offsetTop && ballcheckphysical.offsetTop <= pegs[37].offsetTop) || (ballcheckphysical.offsetTop >= pegs[37].offsetTop && ballcheckphysical.offsetTop <= pegs[47].offsetTop)) {
+            pegsepstart = 5;
+        } else if ((ballcheckphysical.offsetTop >= pegs[37].offsetTop && ballcheckphysical.offsetTop <= pegs[47].offsetTop) || (ballcheckphysical.offsetTop >= pegs[47].offsetTop && ballcheckphysical.offsetTop <= pegs[56].offsetTop)) {
+            pegsepstart = 6;
+        } else if ((ballcheckphysical.offsetTop >= pegs[47].offsetTop && ballcheckphysical.offsetTop <= pegs[56].offsetTop) || (ballcheckphysical.offsetTop >= pegs[56].offsetTop && ballcheckphysical.offsetTop <= pegs[66].offsetTop)) {
+            pegsepstart = 7;
+        }
+        for (j = pegseperationlist[pegsepstart - 1]; j < pegseperationlist[pegsepstart + 1]; j = j + 1) {
             peg = pegs[j];
             touching = (peg.offsetLeft - 5) - (ballcheckphysical.offsetLeft - 20);
             touching = touching * touching;
@@ -293,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         fps2 = new Date();
         fps = fps2 - fps1;
-        fps1 = fps2;
+        fps1 = fps2
         if (fps <= 16.7) {
             fps = 16.7;
             window.setTimeout(physics, fps);

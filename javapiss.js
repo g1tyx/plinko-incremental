@@ -719,8 +719,9 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('invalid save :(')
         }
         if (JSON.stringify(JSON.parse(atob(savefile))) !== '[object Object]') {
+            savefile = JSON.parse(atob(savefile));
             missingvar();
-            localStorage.setItem('save', JSON.stringify(JSON.parse(atob(savefile))));
+            localStorage.setItem('save', JSON.stringify(savefile));
             alert('save file loaded!');
             location.reload();
         } else {

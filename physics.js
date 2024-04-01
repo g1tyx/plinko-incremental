@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', function () {
             pegsepstart = 6;
         } else if ((ballcheckphysical.offsetTop >= pegs[47].offsetTop && ballcheckphysical.offsetTop <= pegs[56].offsetTop) || (ballcheckphysical.offsetTop >= pegs[56].offsetTop && ballcheckphysical.offsetTop <= pegs[66].offsetTop)) {
             pegsepstart = 7;
+        } else if (ballcheckphysical.offsetTop >= pegs[66].offsetTop) {
+            pegsepstart = 8;
         }
         for (j = pegseperationlist[pegsepstart - 1]; j < pegseperationlist[pegsepstart + 1]; j = j + 1) {
             peg = pegs[j];

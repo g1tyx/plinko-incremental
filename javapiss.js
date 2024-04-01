@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
         boxpoints = new Decimal(savefile.boxpoints);
         specialpegs = new Decimal(savefile.specialpegs);
         bupgradelist = [new Decimal(savefile.bupgrade1), new Decimal(savefile.bupgrade2), new Decimal(savefile.bupgrade3), new Decimal(savefile.bupgrade4), new Decimal(savefile.bupgrade5), new Decimal(savefile.bupgrade6), new Decimal(savefile.bupgrade7), new Decimal(savefile.bupgrade8), new Decimal(savefile.bupgrade9), new Decimal(savefile.bupgrade10)];
-        spupgradelist = [new Decimal(savefile.spupgrade1), new Decimal(savefile.spupgrade2), new Decimal(savefile.spupgrade3), new Decimal(savefile.spupgrade4), new Decimal(savefile.spupgrade5), new Decimal(savefile.spupgrade6), new Decimal(savefile.spupgrade7), new Decimal(savefile.supgrade8), new Decimal(savefile.supgrade9), new Decimal(savefile.supgrade10)];
+        spupgradelist = [new Decimal(savefile.spupgrade1), new Decimal(savefile.spupgrade2), new Decimal(savefile.spupgrade3), new Decimal(savefile.spupgrade4), new Decimal(savefile.spupgrade5), new Decimal(savefile.spupgrade6), new Decimal(savefile.spupgrade7), new Decimal(savefile.spupgrade8), new Decimal(savefile.spupgrade9), new Decimal(savefile.spupgrade10)];
         qolupgradelist = [new Decimal(savefile.qolupgrade1), new Decimal(savefile.qolupgrade2), new Decimal(savefile.qolupgrade3), new Decimal(savefile.qolupgrade4)];
         rotations = new Decimal(savefile.rotations);
         rollpoints = new Decimal(savefile.rollpoints);
@@ -625,6 +625,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } else {
             pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        }
+        for (m = 1; m <= pupgradelist.length; m = m + 1) {
+            document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
+            document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
         }
     }
     function rollreset() {

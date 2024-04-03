@@ -90,7 +90,9 @@ body {
 #plinko {
     background-color: gainsboro;
     width: calc(44% - 2px);
-    height: 100%
+    height: 100%;
+    position: relative;
+    z-index: -1;
 }
 #balldrop {
 	position: absolute;
@@ -1159,4 +1161,12 @@ button:hover {
     height: 10px;
     border-radius: 5px; 
     background-color: #A1A1A1;
+}
+.popuptext {
+    display: inline;
+    color: indianred;
+    position: absolute;
+	font-size: 100%;
+	font-family: 'Roboto';
+    opacity: 0.5;
 }

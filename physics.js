@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     function collision() {
-        //broken atm :3
         j = 0;
         touch = 0;
         gravity = 0.01;
@@ -155,13 +154,13 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         obj.xpos = Math.random() * 100;
         ballList.push(obj);
-        ball.style.left = obj.xpos;
+        ball.style.left = obj.xpos.toString() + '%';
     }
 
     function spawnball2() {
         document.getElementById('balldrop').style.backgroundColor = '#aaaaaa';
         for (l = 0; l < ballamount; l = l + 1) {
-            spawnball();
+             spawnball();
         }
         document.getElementById('balldrop').innerHTML = 'Waiting... (there are ' + ballList.length.toString() + ' balls left)';
         if (mutesfx.compare(new Decimal('0')) === 0) {
@@ -261,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (mutesfx.compare(new Decimal('0')) === 0) {
                         audiotrack = new Audio('ballgain.mp3');
                         audiotrack.play();
+
                     }
                     xposdespawn = ballcheck.xpos;
                     despawn = 1;
@@ -313,9 +313,12 @@ document.addEventListener('DOMContentLoaded', function () {
             balldropallow = 0;
             balldrop = setTimeout(spawnball2, parseFloat(decimalToString(balldropcooldown)) * 1000);
         }
+        if (cooldowncheck === 1) {
+            clearTimeout(balldrop);
+        }
         fps2 = new Date();
         fps = fps2 - fps1;
-        fps1 = fps2
+        fps1 = fps2;
         if (fps <= 16.7) {
             fps = 16.7;
             window.setTimeout(physics, fps);

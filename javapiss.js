@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         m,
         decimalplaces,
         ballpointgain,
+        y,
         ballpoints,
         bupgradelist,
         bcaplist,
@@ -82,6 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
         maxrevselect,
         ballcap,
         ballcomp,
+        ballpointgaindisplay,
+        xpgaindisplay,
+        popup,
+        popupid,
         price;
     //other variable setups
     sscreen = -1;
@@ -109,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     revselectlist = [];
     ballcap = 10;
     ballcomp = 1;
+    popupid = 0;
     function decimalToString(num) {
         str = '';
         if (num.exponent >= 6) {
@@ -311,6 +317,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[2]).times(rotations.pow(new Decimal(0.5))).times(new Decimal('0.8'))))
             .times(new Decimal('1').plus(new Decimal('1.13').times(revolutions.pow(new Decimal('0.59'))).times(Number(revselectlist.includes(3)))));
         levelreq = new Decimal('1.3').pow(level).times(new Decimal('1.8').pow(level.divideBy(new Decimal('10')).floor()));
+        if (level > 80) {
+            levelreq = new Decimal('1.4').pow(level).times(new Decimal('3').pow(level.divideBy(new Decimal('10')).floor()));
+        }
         boxvalues = [new Decimal('1').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[1]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[4]))), new Decimal('1.5').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[2]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[5]))), new Decimal('0.5').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[0]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[3]))), new Decimal('5').times(new Decimal('1').plus(new Decimal('1').times(bupgradelist[3]))).times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[6])))];
         for (m = 0; m < boxvalues.length; m = m + 1) {
             boxvalues[m] = boxvalues[m].times(new Decimal('1').plus(new Decimal('1.02').times(bupgradelist[7]).times(new Decimal(new Decimal('1').add(boxpoints).log10()).divideBy(new Decimal('3')))))
@@ -333,6 +342,20 @@ document.addEventListener('DOMContentLoaded', function () {
             .minus(new Decimal(boxpoints.log10()).floor().times(bupgradelist[8]));
         revgain = new Decimal('1');
         maxrevselect = new Decimal('1');
+    }
+    function despawnpopuptext(a) {
+        document.getElementById('pegs').removeChild(document.getElementById('popup' + a.toString()));
+    }
+    function spawnpopuptext(bpdisplay, xpdisplay, b) {
+        popupid = popupid + 1;
+        popup = document.createElement('p');
+        document.getElementById('pegs').appendChild(popup);
+        popup.setAttribute('id', 'popup' + popupid.toString());
+        popup.setAttribute('class', 'popuptext');
+        popup.style.left = b.toString() + '%';
+        popup.style.top = (80 - (5 * Math.random())).toString() + '%';
+        popup.innerHTML = '+' + decimalToString(bpdisplay) + ' BallPoints, +' + decimalToString(xpdisplay) + ' XP';
+        setTimeout(despawnpopuptext, 1000, popupid);
     }
     //new save setup
     timelaston = new Date().getTime();
@@ -529,6 +552,8 @@ document.addEventListener('DOMContentLoaded', function () {
         //ball desapwn code
         if (despawn === 1) {
             xposdespawn = xposdespawn / 100;
+            ballpointgaindisplay = ballpoints;
+            xpgaindisplay = xp;
             if (xposdespawn <= 1 / 7 || (xposdespawn > 6 / 7)) {
                 ballpoints = ballpointgain.times(boxvalues[0]).plus(ballpoints);
                 xp = xpgain.times(boxvalues[0]).plus(xp);
@@ -545,8 +570,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 ballpoints = ballpointgain.times(boxvalues[3]).plus(ballpoints);
                 xp = xpgain.times(boxvalues[3]).plus(xp);
             }
+            ballpointgaindisplay = ballpoints.minus(ballpointgaindisplay);
+            xpgaindisplay = xp.minus(xpgaindisplay);
+            spawnpopuptext(ballpointgaindisplay, xpgaindisplay, xposdespawn * 100);
             despawn = 0;
             xposdespawn = 0;
+            
         }
         //various features
         if (specialpegtouch === 1) {
@@ -609,6 +638,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ballpoints = new Decimal('0');
         xp = new Decimal('0');
         level = new Decimal('1');
+        pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
         if (qolupgradelist[2].compare(1) === 0) {
             pupgradelist = [pupgradelist[0].divideBy(2).floor(), pupgradelist[1].divideBy(2).floor(), pupgradelist[2].divideBy(2).floor(), pupgradelist[3].divideBy(2).floor(), pupgradelist[4].divideBy(2).floor()];
             pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
@@ -719,8 +749,8 @@ document.addEventListener('DOMContentLoaded', function () {
         savefile = window.prompt('Paste your save here:', 'save file entering box');
         try {
             window.atob(savefile);
-        } catch(e) {
-            alert('invalid save :(')
+        } catch (e) {
+            alert('invalid save :(');
         }
         if (JSON.stringify(JSON.parse(atob(savefile))) !== '[object Object]') {
             savefile = JSON.parse(atob(savefile));
@@ -952,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('reveffect1').style.backgroundColor = 'salmon';
             for (m = 0; m < revselectlist.length; m = m + 1) {
                 if (revselectlist[m] === 1) {
-                    revselectlist.splice(m, 1)
+                    revselectlist.splice(m, 1);
                 }
             }
         } else if (maxrevselect.compare(revselectlist.length)) {
@@ -965,7 +995,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('reveffect2').style.backgroundColor = 'salmon';
             for (m = 0; m < revselectlist.length; m = m + 1) {
                 if (revselectlist[m] === 2) {
-                    revselectlist.splice(m, 1)
+                    revselectlist.splice(m, 1);
                 }
             }
         } else if (maxrevselect.compare(revselectlist.length)) {
@@ -978,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('reveffect3').style.backgroundColor = 'salmon';
             for (m = 0; m < revselectlist.length; m = m + 1) {
                 if (revselectlist[m] === 3) {
-                    revselectlist.splice(m, 1)
+                    revselectlist.splice(m, 1);
                 }
             }
         } else if (maxrevselect.compare(revselectlist.length)) {
@@ -991,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('reveffect4').style.backgroundColor = 'salmon';
             for (m = 0; m < revselectlist.length; m = m + 1) {
                 if (revselectlist[m] === 4) {
-                    revselectlist.splice(m, 1)
+                    revselectlist.splice(m, 1);
                 }
             }
         } else if (maxrevselect.compare(revselectlist.length)) {
@@ -1004,7 +1034,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('reveffect5').style.backgroundColor = 'salmon';
             for (m = 0; m < revselectlist.length; m = m + 1) {
                 if (revselectlist[m] === 5) {
-                    revselectlist.splice(m, 1)
+                    revselectlist.splice(m, 1);
                 }
             }
         } else if (maxrevselect.compare(revselectlist.length)) {
@@ -1052,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('save failed!');
             }
         }
-        if (event.keyCode === 39 && sscreen <3) {
+        if (event.keyCode === 39 && sscreen < 3) {
             for (l = 0; l < ballList.length; l = l + 1) {
                 pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
             }
@@ -1110,5 +1140,5 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('ballcomp').oninput = function () {
         document.getElementById('ballcompdisplay').innerHTML = 'Ball Compaction Start: ' + this.value.toString() + ' Balls';
         ballcap = this.value;
-    }
+    };
 });

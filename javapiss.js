@@ -231,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
             savefile.revupgrade4 = '0';
             savefile.revupgrade5 = '0';
             savefile.disableautoboxify = '0';
+            savefile.irev = '0';
             bounceresets = new Decimal('0');
             bounceresettime = new Decimal('0');
             jumps = new Decimal('0');

@@ -28,6 +28,8 @@
             R - Roll
             <br>
             V - Stop Revolutions Wheel
+            <br>
+            Shift (hold) - Highlight Bounce Upgrades
 		</p>
         <button id='deletesave'>Delete Save (!)</button>
         <p class='p' id='credits'>
@@ -40,9 +42,9 @@
             Music "remixed" from <a href='https://www.youtube.com/watch?v=JS05TCUpMSs&t=0s'>here</a> (remix by me shocker)
 		</p>
         <p class='p' id='version'>
-            Version: 1.2.2
+            Version: 1.3
             <br><br>
-            Endgame: 10 RollPoints (Bounce)
+            Endgame: Other V (challenges)
             <br><br>
             Join our <a href='https://discord.gg/XjncY4BBMz'>discord server</a> for bug reporting and other stuff
         </p>
@@ -54,7 +56,7 @@
             <p id='ballcompdisplay'>Ball Compaction Start: 10 Balls</p>
             <input type="range" min="1" max="100" value="10" step="1" class="slider" id="ballcomp">
         </div>
-
+        <button id='disableboxifyauto'>Disable Auto Boxify Upgrades</button>
 	</div>
 	<div id='screen1'>
 		<div id='wall'></div>
@@ -884,7 +886,7 @@
             </div>
             <button id='revbutton'>Stop!</button>
             <div id='revdesc'>
-                <p>
+                <p class='p'>
                     Press stop when the blue line is in the yellow area and earn revolutions! You gain more revolutions based on your streak.
                 </p>
             </div>
@@ -896,6 +898,7 @@
             <button id='reveffect3' class='reveffect'>:3</button>
             <button id='reveffect4' class='reveffect'>:3</button>
             <button id='reveffect5' class='reveffect'>:3</button>
+            <button id='reveffect6' class='reveffect'>:3</button>
         </div>
         <div id='revupgradebuilding'>
             <div id='revbuildingtitle' class='buildingtitle'>
@@ -922,11 +925,177 @@
 					:3
 				</p>
 			</div>
+            <div id='revupgrade2'>
+				<p id='revupgrade2title' class='revupgradetitle'>
+					Special Pegs II
+				</p>
+				<img src='revupgrade2.png' class='revupgradeimage'>
+				<p id='revupgrade2desc' class='revupgradedesc'>
+					+x1.25 Special Peg gain. x3 SP every 10 purchases.
+				</p>
+				<p id='revupgrade2price' class='revupgradeprice'>
+					:3
+				</p>
+				<p id='revupgrade2cap' class='revupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='revupgrade3'>
+				<p id='revupgrade3title' class='revupgradetitle'>
+					BP II
+				</p>
+				<img src='revupgrade3.png' class='revupgradeimage'>
+				<p id='revupgrade3desc' class='revupgradedesc'>
+					+50% BP gain. x2 BP every five purchases.
+				</p>
+				<p id='revupgrade3price' class='revupgradeprice'>
+					:3
+				</p>
+				<p id='revupgrade3cap' class='revupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='revupgrade4'>
+				<p id='revupgrade4title' class='revupgradetitle'>
+					Rotations I
+				</p>
+				<img src='revupgrade4.png' class='revupgradeimage'>
+				<p id='revupgrade4desc' class='revupgradedesc'>
+					x2.5 Rotation gain. x5 Rotations every five purchases.
+				</p>
+				<p id='revupgrade4price' class='revupgradeprice'>
+					:3
+				</p>
+				<p id='revupgrade4cap' class='revupgradecap'>
+					:3
+				</p>
+			</div>
+            <div id='revupgrade5'>
+				<p id='revupgrade5title' class='revupgradetitle'>
+					More Balls II
+				</p>
+				<img src='revupgrade5.png' class='revupgradeimage'>
+				<p id='revupgrade5desc' class='revupgradedesc'>
+					More Balls I but part 2... Im not describing what it does again. Read it there.
+				</p>
+				<p id='revupgrade5price' class='revupgradeprice'>
+					:3
+				</p>
+				<p id='revupgrade5cap' class='revupgradecap'>
+					:3
+				</p>
+			</div>
             <div class='buttoncontainer'>
 				<button id='revupgradebutton1' class='revupgradebutton'>
 					Buy 1!
 				</button>
 			</div>
+        </div>
+    </div>
+    <div id='screen4'>
+        <div id='bouncereset'>
+            <p class='p' id='bounceresettext'>
+                Bounce
+                <br><br>
+                :3
+            </p>
+            <button id='bounceresetbutton'>:3</button>
+        </div>
+        <div id='bouncewall'>
+            <p id='bouncewalltext'> Bounce Upgrade Selector </p>
+            <div id='innerbouncewall'>
+                <p class='boupgradelabel'>Progression</p>
+                <button id='boupgrade1icon' class='boupgradeicon1'></button>
+                <button id='boupgrade2icon' class='boupgradeicon1'></button>
+                <button id='boupgrade3icon' class='boupgradeicon1'></button>
+                <button id='boupgrade4icon' class='boupgradeicon1'></button>
+                <button id='boupgrade5icon' class='boupgradeicon1'></button>
+                <p class='boupgradelabel'>QoL</p>
+                <button id='boupgrade6icon' class='boupgradeicon2'></button>
+                <button id='boupgrade7icon' class='boupgradeicon2'></button>
+                <button id='boupgrade8icon' class='boupgradeicon2'></button>
+                <button id='boupgrade9icon' class='boupgradeicon2'></button>
+                <button id='boupgrade10icon' class='boupgradeicon2'></button>
+                <p class='boupgradelabel'>Jump</p>
+                <button id='boupgrade11icon' class='boupgradeicon3'></button>
+                <button id='boupgrade12icon' class='boupgradeicon3'></button>
+                <button id='boupgrade13icon' class='boupgradeicon3'></button>
+                <button id='boupgrade14icon' class='boupgradeicon3'></button>
+                <button id='boupgrade15icon' class='boupgradeicon3'></button>
+                <p class='boupgradelabel'>Synergy</p>
+                <button id='boupgrade16icon' class='boupgradeicon4'></button>
+                <button id='boupgrade17icon' class='boupgradeicon4'></button>
+                <button id='boupgrade18icon' class='boupgradeicon4'></button>
+                <button id='boupgrade19icon' class='boupgradeicon4'></button>
+                <button id='boupgrade20icon' class='boupgradeicon4'></button>
+                <p class='boupgradelabel'>Other</p>
+                <button id='boupgrade21icon' class='boupgradeicon5'></button>
+                <button id='boupgrade22icon' class='boupgradeicon5'></button>
+                <button id='boupgrade23icon' class='boupgradeicon5'></button>
+                <button id='boupgrade24icon' class='boupgradeicon5'></button>
+                <button id='boupgrade25icon' class='boupgradeicon5'></button>
+            </div>
+        </div>
+        <div id='bounceupgradebuilding'>
+            <div id='bouncebuildingtitle' class='buildingtitle'>
+					Bounce Upgrade Viewer
+			</div>
+			<div id='boupgrade'>
+				<p id='boupgradetitle' class='boupgradetitle'>
+					Nothing Selected...
+				</p>
+				<img src='boupgrade.png' class='boupgradeimage'>
+				<p id='boupgradedesc' class='boupgradedesc'>
+					:3
+				</p>
+				<p id='boupgradeprice' class='boupgradeprice'>
+					:3
+				</p>
+				<p id='boupgradecap' class='boupgradecap'>
+					:3
+				</p>
+            </div>
+            <div class='buttoncontainer'>
+				<button id='boupgradebutton1' class='revupgradebutton'>
+					Buy 1!
+				</button>
+			</div>
+        </div>
+        <div id='bounceinforespec'>
+            <p id='infotext'>
+                Bounce upgrades have a special property where the price increases based on the amount of upgrades bought in that row. Since the choices you make on which upgrades to buy and what order can be very bad, there is a respec button below to reset those upgrades. This will force a bounce reset and refund all upgrades. Have fun! :3
+            </p>
+            <button id='respecbutton'>
+                Respec?
+            </button>
+        </div>
+    </div>
+    <div id='screen5'>
+        <div id='irevinfo'>
+            <div id='innerirevinfo'>
+                <span id='irevtext'>
+                    :3
+                </span>
+            </div>
+        </div>
+        <div id='energyreset'>
+            <p class='p' id='energyresettext'>
+                -- Energy --
+                <br><br>
+                :3
+            </p>
+            <button id='energyresetbutton'>:3</button>
+        </div>
+        <div id='tasks'>
+            <button id='task1' class='tasks'>
+                :3
+            </button>
+            <button id='task2' class='tasks'>
+                :3
+            </button>
+            <button id='task3' class='tasks'>
+                :3
+            </button>
         </div>
     </div>
 </body>

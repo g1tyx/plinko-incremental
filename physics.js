@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pegseperationlist,
         pegsepstart,
         fps,
+        z,
         fps1,
         fps2,
         spawnindex;
@@ -52,18 +53,19 @@ document.addEventListener('DOMContentLoaded', function () {
     function decimalToString(num) {
         str = '';
         if (num.exponent >= 6) {
-            str = num.mantissa.toFixed(3).toString() + 'e' + num.exponent.toString();
-        } else {
-            if (Math.floor(num.mantissa.valueOf()) === num.mantissa.valueOf()) {
-                decimalplaces = 0;
-            } else {
-                decimalplaces = num.mantissa.toString().split(".")[1].length;
-                decimalplaces = decimalplaces - num.exponent;
+            str = num.mantissa.toFixed(3).toString();
+            for (z = 1; z <= 4; z = z + 1) {
+                if (str.slice(-1) === '0' || str.slice(-1) === '.') {
+                    str = str.slice(0, -1);
+                }
             }
-            if (decimalplaces < 3) {
-                str = num.toString();
-            } else {
-                str = num.toFixed(3).toString();
+            str = str + 'e' + num.exponent.toString();
+        } else {
+            str = (num.mantissa * Math.pow(10, num.exponent)).toFixed(3).toString();
+            for (z = 1; z <= 4; z = z + 1) {
+                if (str.slice(-1) === '0' || str.slice(-1) === '.') {
+                    str = str.slice(0, -1);
+                }
             }
         }
         return str;
@@ -80,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+
     function collision() {
         j = 0;
         touch = 0;
@@ -152,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'ypos': -10,
             'xpos': 0
         };
-        obj.xpos = Math.random() * 100;
+        obj.xpos = Math.random() * 99;
         ballList.push(obj);
         ball.style.left = obj.xpos.toString() + '%';
     }
@@ -160,7 +163,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function spawnball2() {
         document.getElementById('balldrop').style.backgroundColor = '#aaaaaa';
         for (l = 0; l < ballamount; l = l + 1) {
-             spawnball();
+            if (ballList.length < ballamount) {
+                spawnball();
+            }
         }
         document.getElementById('balldrop').innerHTML = 'Waiting... (there are ' + ballList.length.toString() + ' balls left)';
         if (mutesfx.compare(new Decimal('0')) === 0) {
@@ -228,6 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('balldrop').style.backgroundColor = '#c2c2c2';
     });
     fps1 = new Date();
+
     function physics() {
         if (typeof ballamount != 'string') {
             ballamount = decimalToString(ballamount);
@@ -306,6 +312,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (sscreen !== 1) {
             balldropallow = -1;
             balldrop = 0;
+            clearTimeout(balldrop);
         } else if (balldropallow === -1) {
             balldropallow = 1;
         }

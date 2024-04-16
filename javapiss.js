@@ -11,7 +11,7 @@ var ballamount,
     disableautodrop,
     load,
     cooldown;
-//todo: qol off buttons
+//todo: begin adding challenges
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var savefile,
@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tempcolor,
         respec,
         irevreq,
+        tasktime2,
         price;
     //other variable setups
     sscreen = -1;
@@ -720,6 +721,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (boupgradelist[22] >= 1) {
         document.getElementById('energyreset').style.display = 'inline';
         document.getElementById('tasks').style.display = 'flex';
+        document.getElementById('tasks2').style.display = 'flex';
     }
     if (boupgradelist[21] >= 1) {
         document.getElementById('irevinfo').style.display = 'inline';
@@ -805,12 +807,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('task3').innerHTML = 'Spin the Circle Faster ~ boosting Revolution gain by x' + decimalToString(new Decimal('1.5').pow(tasks[2])) + '. Costs: ' + decimalToString(taskprice[2]) + ' Energy and ' + decimalToString(tasktime[2]) + ' seconds.';
         if (taskprogress[0].compare(0) > 0) {
             document.getElementById('task1').innerHTML = 'Time remaining: ' + decimalToString(taskprogress[0]) + ' seconds...';
+            document.getElementById('task1bar').style.width = decimalToString(taskprogress[0].divideBy(tasktime[0].times(1.25).floor()).times(new Decimal('100'))) + '%';
+        } else {
+             document.getElementById('task1bar').style.width = '0px';
         }
         if (taskprogress[1].compare(0) > 0) {
             document.getElementById('task2').innerHTML = 'Time remaining: ' + decimalToString(taskprogress[1]) + ' seconds...';
+            document.getElementById('task2bar').style.width = decimalToString(taskprogress[1].divideBy(tasktime[1].times(1.3).floor()).times(new Decimal('100'))) + '%';
+        } else {
+             document.getElementById('task2bar').style.width = '0px';
         }
         if (taskprogress[2].compare(0) > 0) {
             document.getElementById('task3').innerHTML = 'Time remaining: ' + decimalToString(taskprogress[2]) + ' seconds...';
+            document.getElementById('task3bar').style.width = decimalToString(taskprogress[2].divideBy(tasktime[2].times(1.35).floor()).times(new Decimal('100'))) + '%';
+        } else {
+             document.getElementById('task3bar').style.width = '0px';
         }
         //ball desapwn code
         if (despawn === 1) {
@@ -943,6 +954,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } else if (boupgradelist[7] < 1) {
             pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+            pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
         }
         for (m = 1; m <= pupgradelist.length; m = m + 1) {
             document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';

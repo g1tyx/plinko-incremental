@@ -1673,6 +1673,21 @@ img {
     grid-row-gap: 2%;
 }
 
+#tasks2 {
+    position: absolute;
+    top: 2.5%;
+    left: 38.5%;
+    width: 35%;
+    height: 45%;
+    background: transparent;
+    font-size: 120%;
+    font-family: 'Roboto';
+    display: none;
+    flex-direction: column;
+    grid-row-gap: 2%;
+    pointer-events: none;
+}
+
 .tasks {
     height: 15%;
     margin: 2% 10%;
@@ -1681,6 +1696,16 @@ img {
     font-size: 75%;
     outline: black solid 3px;
     border: none;
+}
+
+.taskbar {
+    height: 15%;
+    margin: 2% 10%;
+    background-color: #ddbe27;
+    font-family: 'Roboto';
+    font-size: 75%;
+    border: none;
+    opacity: 0.5;
 }
 
 #irevinfo {

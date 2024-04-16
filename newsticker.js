@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function marquee() {
-        left = left + .075;
+        left = left + 0.075;
         newstickerelement.style.left = left.toString() + '%';
         if (left >= 100) {
             newstickerelement.innerHTML = '';

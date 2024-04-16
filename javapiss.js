@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
             savefile.spupgrade10 = '0';
             savefile.disableautodrop = '0';
             savefile.disableautoplinko = '0';
+            savefile.ballcap = '10';
             bupgradelist[8] = new Decimal('0');
             rollpoints = new Decimal('0');
             rotations = new Decimal('0');
@@ -213,8 +214,9 @@ document.addEventListener('DOMContentLoaded', function () {
             disableautodrop = new Decimal('0');
             disableautoplinko = new Decimal('0');
             ballcap = 10;
-            savefile.version = version;
-        } else if (savefile.version === '1.2') {
+            savefile.version = '1.2';
+        }
+        if (savefile.version === '1.2') {
             savefile.bounceresets = '0';
             savefile.bounceresettime = '0';
             savefile.jumps = '0';
@@ -231,7 +233,6 @@ document.addEventListener('DOMContentLoaded', function () {
             savefile.revupgrade4 = '0';
             savefile.revupgrade5 = '0';
             savefile.disableautoboxify = '0';
-            savefile.irev = '0';
             bounceresets = new Decimal('0');
             bounceresettime = new Decimal('0');
             jumps = new Decimal('0');
@@ -243,10 +244,10 @@ document.addEventListener('DOMContentLoaded', function () {
             revupgradelist[2] = new Decimal('0');
             revupgradelist[3] = new Decimal('0');
             revupgradelist[4] = new Decimal('0');
-            savefile.version = version;
             irev = new Decimal('0');
             totaljumps = new Decimal('0');
             disableautoboxify = new Decimal('0');
+            savefile.version = version;
         }
     }
 

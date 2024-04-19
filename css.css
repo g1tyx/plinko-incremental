@@ -1196,7 +1196,7 @@ button:hover {
     position: absolute;
     display: none;
     background: darkred;
-    background: background: linear-gradient(270deg, darkred 0%, crimson 100%);
+    background: linear-gradient(270deg, darkred 0%, crimson 100%);
     top: calc(50.5% - 4px);
     font-size: 90%;
     font-family: 'Roboto';

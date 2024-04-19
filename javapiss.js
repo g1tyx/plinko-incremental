@@ -40,12 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
         boxpointgain,
         specialpegs,
         specialpeggain,
-        offlinetime,
         rollpointreq,
         m,
-        decimalplaces,
         ballpointgain,
-        y,
         ballpoints,
         bupgradelist,
         bcaplist,
@@ -71,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function () {
         revupgradeprice,
         revcaplist,
         revupgrade,
-        revselect,
         gearangle,
         gearangletotal,
         disableautoplinko,
@@ -106,12 +102,10 @@ document.addEventListener('DOMContentLoaded', function () {
         taskprice,
         tasktime,
         taskprogress,
-        borespec,
         bobuttons,
         bobutton,
         bodescriptionlist,
         botitlelist,
-        tempcolor,
         respec,
         irevreq,
         tasktime2,
@@ -144,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ballcomp = 1;
     popupid = 0;
     respec = 0;
+    tasktime2 = [new Decimal('0'), new Decimal('0'), new Decimal('0')];
     
     function decimalToString(num) {
         str = '';
@@ -807,19 +802,19 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('task3').innerHTML = 'Spin the Circle Faster ~ boosting Revolution gain by x' + decimalToString(new Decimal('1.5').pow(tasks[2])) + '. Costs: ' + decimalToString(taskprice[2]) + ' Energy and ' + decimalToString(tasktime[2]) + ' seconds.';
         if (taskprogress[0].compare(0) > 0) {
             document.getElementById('task1').innerHTML = 'Time remaining: ' + decimalToString(taskprogress[0]) + ' seconds...';
-            document.getElementById('task1bar').style.width = decimalToString(taskprogress[0].divideBy(tasktime[0].times(1.25).floor()).times(new Decimal('100'))) + '%';
+            document.getElementById('task1bar').style.width = decimalToString(taskprogress[0].divide(tasktime2[0]).times(new Decimal('100').minus(new Decimal('20')))) + '%';
         } else {
              document.getElementById('task1bar').style.width = '0px';
         }
         if (taskprogress[1].compare(0) > 0) {
             document.getElementById('task2').innerHTML = 'Time remaining: ' + decimalToString(taskprogress[1]) + ' seconds...';
-            document.getElementById('task2bar').style.width = decimalToString(taskprogress[1].divideBy(tasktime[1].times(1.3).floor()).times(new Decimal('100'))) + '%';
+            document.getElementById('task2bar').style.width = decimalToString(taskprogress[1].divide(tasktime2[1]).times(new Decimal('100').minus(new Decimal('20')))) + '%';
         } else {
              document.getElementById('task2bar').style.width = '0px';
         }
         if (taskprogress[2].compare(0) > 0) {
             document.getElementById('task3').innerHTML = 'Time remaining: ' + decimalToString(taskprogress[2]) + ' seconds...';
-            document.getElementById('task3bar').style.width = decimalToString(taskprogress[2].divideBy(tasktime[2].times(1.35).floor()).times(new Decimal('100'))) + '%';
+            document.getElementById('task3bar').style.width = decimalToString(taskprogress[2].divide(tasktime2[2]).times(new Decimal('100').minus(new Decimal('20')))) + '%';
         } else {
              document.getElementById('task3bar').style.width = '0px';
         }
@@ -1534,6 +1529,8 @@ document.addEventListener('DOMContentLoaded', function () {
             price = taskprice[Number(b.id.slice(4)) - 1];
             if (energy.compare(price) >= 0 && taskprogress[Number(b.id.slice(4)) - 1].compare(0) <= 0) {
                 taskprogress[Number(b.id.slice(4)) - 1] = tasktime[Number(b.id.slice(4)) - 1].floor();
+                tasktime2[Number(b.id.slice(4)) - 1] = taskprogress[Number(b.id.slice(4)) - 1];
+                window.console.log(tasktime2[Number(b.id.slice(4)) - 1].floor(), taskprogress[Number(b.id.slice(4)) - 1], taskprogress, tasktime2);
                 energy = energy.minus(price);
             }
         });
@@ -1548,9 +1545,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     //hotkeys
     document.addEventListener('keydown', function (event) {
-        //window.console.log(event.keyCode);
+        //window.console.log(event.code);
         //^^^ keycode testing ^^^
-        if (event.keyCode === 83) {
+        if (event.code === 'KeyS') {
             save();
             if (JSON.stringify(savefile) !== '[object Object]') {
                 localStorage.setItem('save', JSON.stringify(savefile));
@@ -1559,7 +1556,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('save failed!');
             }
         }
-        if (event.keyCode === 39 && (sscreen < 3 || (sscreen < 5 && rollresets.compare(1) >= 0))) {
+        if (event.code === 'ArrowRight' && (sscreen < 3 || (sscreen < 5 && rollresets.compare(1) >= 0))) {
             for (l = 0; l < ballList.length; l = l + 1) {
                 pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
             }
@@ -1570,7 +1567,7 @@ document.addEventListener('DOMContentLoaded', function () {
             sscreen = sscreen + 1;
             document.getElementById('screen' + sscreen.toString()).style.display = 'inline';
         }
-        if (event.keyCode === 37 && sscreen > 0) {
+        if (event.code === 'ArrowLeft' && sscreen > 0) {
             for (l = 0; l < ballList.length; l = l + 1) {
                 pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
             }
@@ -1582,13 +1579,13 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('screen' + sscreen.toString()).style.display = 'inline';
             document.getElementById('screen' + sscreen.toString()).style.display = 'inline';
         }
-        if (event.keyCode === 66 && level >= 16) {
+        if (event.code === 'KeyB' && level >= 16) {
             boxifyreset();
         }
-        if (event.keyCode === 82 && level.compare(rollpointreq) >= 0) {
+        if (event.code === 'KeyR' && level.compare(rollpointreq) >= 0) {
             rollreset();
         }
-        if (event.keyCode === 86 && sscreen === 3) {
+        if (event.code === 'KeyV' && sscreen === 3) {
             if (revrotationallow === 1) {
                 revrotationallow = -4;
                 if (revimgrotation >= 350 || revimgrotation <= 10) {
@@ -1612,10 +1609,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
-        if (event.keyCode === 74 && rollpoints.compare(new Decimal('10')) >= 0) {
+        if (event.code === 'KeyJ' && rollpoints.compare(new Decimal('10')) >= 0) {
             bouncereset();
         }
-        if (event.keyCode === 16) {
+        if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
             for (m = 0; m < boupgradelist.length; m = m + 1) {
                 if (boupgradelist[m] === 1) {
                     document.getElementById('boupgrade' + (m + 1).toString() + 'icon').setAttribute('class', 'green');
@@ -1631,7 +1628,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ballcap = this.value;
     };
     document.addEventListener('keyup', function (e) {
-        if (e.keyCode === 16) {
+        if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
             for (m = 0; m < boupgradelist.length; m = m + 1) {
                 document.getElementById('boupgrade' + (m + 1).toString() + 'icon').setAttribute('class', 'boupgradeicon' + Math.ceil((m + 1) / 5).toString());
                 document.getElementById('boupgrade' + (m + 1).toString() + 'icon').setAttribute('class', 'boupgradeicon' + Math.ceil((m + 1) / 5).toString());

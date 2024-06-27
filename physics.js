@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
     function collision() {
         j = 0;
         touch = 0;
@@ -131,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (x !== 0) {
             k.push(Math.atan(y / x));
         } else {
-            k.push(0);
+            k.push((Math.random() - 0.5) * 10);
         }
         return k;
     }
@@ -211,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     document.addEventListener('keydown', function (event) {
-        if (event.keyCode === 68 && ballList.length === 0 && cooldowncheck === 0) {
+        if (event.code == 'Space' && ballList.length === 0 && cooldowncheck === 0) {
             audiorepeat = 0;
             document.getElementById('balldrop').style.backgroundColor = '#aaaaaa';
             for (l = 0; l < ballamount; l = l + 1) {

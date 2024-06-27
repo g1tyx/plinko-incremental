@@ -11,7 +11,7 @@ var ballamount,
     disableautodrop,
     load,
     cooldown;
-//todo: begin adding challenges
+//todo: add batteries
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var savefile,
@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bocaplist,
         templist,
         irev,
+        respec,
         energy,
         energygain,
         tasks,
@@ -106,10 +107,23 @@ document.addEventListener('DOMContentLoaded', function () {
         bobutton,
         bodescriptionlist,
         botitlelist,
-        respec,
         irevreq,
         tasktime2,
-        price;
+        challengelist,
+        electricity,
+        batteries,
+        chargeamount,
+        electricitygain,
+        transferresets,
+        challengecap,
+        challengetitles,
+        challengedesc,
+        challengegoal,
+        activechallenge,
+        bgmusic,
+        burnoutfunctionality,
+        price,
+        dropdowntoggle;
     //other variable setups
     sscreen = -1;
     load = 0;
@@ -128,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
     balldropcooldown = new Decimal('0');
     gearangletotal = 0;
     gearangle = 0;
-    version = '1.3';
+    version = '1.4';
     revimgrotation = 0;
     revrotationallow = 1;
     revstreak = 0;
@@ -137,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ballcap = 10;
     ballcomp = 1;
     popupid = 0;
-    respec = 0;
+    respec = 1;
     tasktime2 = [new Decimal('0'), new Decimal('0'), new Decimal('0')];
     
     function decimalToString(num) {
@@ -160,7 +174,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return str;
     }
-
+    function sumlist(list) {
+        let sum = new Decimal(0);
+        for (let i = 0; i <= list.length; i += 1) {
+            sum = sum.add(list[i]);
+        }
+        return sum;
+    }
     function missingvar() {
         if (savefile.version == undefined) {
             savefile.bupgrade9 = '0';
@@ -243,6 +263,21 @@ document.addEventListener('DOMContentLoaded', function () {
             irev = new Decimal('0');
             totaljumps = new Decimal('0');
             disableautoboxify = new Decimal('0');
+            savefile.version = '1.3';
+        }
+        if (savefile.version === '1.3') {
+            savefile.challengelist = '[0,0,0,0,0,0,0,0]';
+            savefile.activechallenge = '0';
+            savefile.electricity = '0';
+            savefile.batteries = '0';
+            savefile.chargeamount = '0';
+            savefile.transferresets = '0';
+            challengelist = [0, 0, 0, 0, 0, 0, 0, 0];
+            activechallenge = 0;
+            electricity = new Decimal('0');
+            batteries = new Decimal('0');
+            chargeamount = 0;
+            transferresets = new Decimal('0');
             savefile.version = version;
         }
     }
@@ -324,19 +359,35 @@ document.addEventListener('DOMContentLoaded', function () {
             'revupgrade5': decimalToString(revupgradelist[4]),
             'irev': decimalToString(irev),
             'totaljumps': decimalToString(totaljumps),
-            'disableautoboxify': decimalToString(disableautoboxify)
+            'disableautoboxify': decimalToString(disableautoboxify),
+            'challengelist': JSON.stringify(challengelist),
+            'activechallenge': activechallenge.toString(),
+            'electricity': decimalToString(electricity),
+            'batteries': decimalToString(batteries),
+            'chargeamount': chargeamount.toString(),
+            'transferresets': decimalToString(transferresets)
         };
     }
 
+    function burnout() {
+        if (activechallenge == 4) {
+            ballpoints = ballpoints.minus(new Decimal('0.01').times(new Decimal('1').plus(new Decimal(challengelist[3]))).times(ballpoints));
+            xp = xp.minus(new Decimal('0.01').times(new Decimal('1').plus(new Decimal(challengelist[3]))).times(xp));
+            boxpoints = boxpoints.minus(new Decimal('0.01').times(new Decimal('1').plus(new Decimal(challengelist[3]))).times(boxpoints));
+            specialpegs = specialpegs.minus(new Decimal('0.01').times(new Decimal('1').plus(new Decimal(challengelist[3]))).times(specialpegs));
+            rotations = rotations.minus(new Decimal('0.01').times(new Decimal('1').plus(new Decimal(challengelist[3]))).times(rotations));
+            revolutions = revolutions.minus(new Decimal('0.01').times(new Decimal('1').plus(new Decimal(challengelist[3]))).times(revolutions));
+        }
+    }
     function persecond() {
         rotations = rotations.plus(rotationgain);
         if (qolupgradelist[3].compare(new Decimal('1')) === 0 && disableautoplinko.compare('1') === 0) {
             for (m = 1; m <= pupgradelist.length; m = m + 1) {
                 price = pupgradeprice[m - 1];
                 cap = pcaplist[m - 1];
-                if (ballpoints.compare(price) >= 0 && pupgradelist[m - 1].compare(cap) < 0) {
+                if (ballpoints.compare(price) >= 0 && pupgradelist[m - 1].compare(cap) < 0 && sumlist(pupgradelist).times(new Decimal(parseFloat(new Number(activechallenge === 6)))).compare(10) < 0 && activechallenge !== 7) {
                     pupgradelist[m - 1] = pupgradelist[m - 1].add(new Decimal('1'));
-                    pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
+                    pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
                     document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
                     document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
                 }
@@ -350,12 +401,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 price = bupgradeprice[m - 1];
                 cap = bcaplist[m - 1];
 
-                if (boxpoints.compare(price) >= 0 && bupgradelist[m - 1].compare(cap) < 0) {
+                if (boxpoints.compare(price) >= 0 && bupgradelist[m - 1].compare(cap) < 0 && sumlist(bupgradelist).times(new Decimal(parseFloat(new Number(activechallenge === 6)))).compare(10) < 0 && activechallenge !== 7) {
                     if (boupgradelist[6] < 1) {
                         boxpoints = boxpoints.minus(price);
                     }
                     bupgradelist[m - 1] = bupgradelist[m - 1].add(new Decimal('1'));
-                    bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]), new Decimal('1.5').pow(bupgradelist[1]), new Decimal('1.5').pow(bupgradelist[2]), new Decimal('1.5').pow(bupgradelist[3]), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])), new Decimal('400').times(new Decimal('1.8').pow(bupgradelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])), new Decimal('100'), new Decimal('150')];
+                    bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
                     document.getElementById('bupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(bupgradeprice[m - 1]) + ' BoxPoints';
                     document.getElementById('bupgrade' + m.toString() + 'cap').innerHTML = decimalToString(bupgradelist[m - 1]) + '/' + decimalToString(bcaplist[m - 1]);
                 }
@@ -404,10 +455,10 @@ document.addEventListener('DOMContentLoaded', function () {
             ballamount = ballcap;
         }
         if (ballcomp < 1) {
-            ballcomp = 10;
+            ballcomp = 1;
         }
         ballpointgain = new Decimal('1')
-            .times(new Decimal(ballcomp))
+            .times(new Decimal(ballcomp).divideBy(new Decimal(ballamount)))
             .times(new Decimal('1').plus(new Decimal('1.25').times(pupgradelist[0])))
             .times(new Decimal('2').pow(pupgradelist[0].divideBy(20).floor()));
         ballpointgain = ballpointgain.times(new Decimal('1').plus(new Decimal('1.02').times(pupgradelist[2]).times(new Decimal(new Decimal('1').add(ballpointgain).log10()).divideBy(new Decimal('2')).plus(new Decimal('1')))));
@@ -416,9 +467,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         ballpointgain = ballpointgain.times(new Decimal('1').plus(new Decimal('1.5').times(bupgradelist[4])))
             .times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[2])))
-            .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[0]).times(rotations.pow(new Decimal(0.5)))))
+            .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[0]).times(rotations.pow(new Decimal(0.15)))))
             .times(new Decimal('1').plus(new Decimal('1.38').times(revolutions.pow(new Decimal('0.58'))).times(Number(revselectlist.includes(1))).times(irev.pow(new Decimal('1.25')))))
-            .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))));
+            .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))))
+            .times(new Decimal('1').add(new Decimal('0.1').times(challengelist[3])))
+            .times(new Decimal('1').add(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0))))))
+            .times(new Decimal('1').divideBy(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0)))).plus(1)));
+        if (activechallenge === 5 || activechallenge === 8) {
+            ballpointgain = ballpointgain.pow(0.05);
+        }
         xpgain = new Decimal('1')
             .times(new Decimal(ballcomp))
             .times(new Decimal('1').plus(new Decimal('1.25').times(pupgradelist[1])))
@@ -426,25 +483,41 @@ document.addEventListener('DOMContentLoaded', function () {
             .times(new Decimal('1').plus(new Decimal('1.04').times(pupgradelist[4]).times(new Decimal(level.log(new Decimal('6'))).plus(new Decimal('1')))))
             .times(new Decimal('1').plus(new Decimal('1.5').times(bupgradelist[1])))
             .times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[1])))
-            .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[1]).times(rotations.pow(new Decimal(0.5))).times(new Decimal('0.6666666'))))
+            .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[1]).times(rotations.pow(new Decimal(0.15))).times(new Decimal('0.6666666'))))
             .times(new Decimal('1').plus(new Decimal('1.25').times(revolutions.pow(new Decimal('0.64'))).times(Number(revselectlist.includes(2))).times(irev.pow(new Decimal('1.25')))))
             .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))))
-            .times(new Decimal('1').add(new Decimal('3').times(jumps.plus(new Decimal('1').log10()))));
-        boxpointgain = (new Decimal('1.275').pow(level.minus(new Decimal('16')))).times(new Decimal('3').pow(level.minus('16').divideBy(10).floor()));
-        if (boupgradelist[0] >= 1) {
-            boxpointgain = (new Decimal('1.325').pow(level.minus(new Decimal('15')))).times(new Decimal('3.5').pow(level.minus('15').divideBy(10).floor()));
+            .times(new Decimal('1').add(new Decimal('3').times(jumps.plus(new Decimal('1').log10()))))
+            .times(new Decimal('1').add(new Decimal('0.1').times(challengelist[3])))
+            .times(new Decimal('1').add(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0))))))
+            .times(new Decimal('1').divideBy(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0)))).plus(1)));
+        if (activechallenge !== 3) {
+            boxpointgain = new Decimal(2.5).times(new Decimal('1.275').pow(level.minus(new Decimal('10')))).times(new Decimal('3').pow(level.minus('16').divideBy(10).floor()));
+            if (boupgradelist[0] >= 1) {
+                boxpointgain = (new Decimal('1.325').pow(level.minus(new Decimal('15')))).times(new Decimal('3.5').pow(level.minus('15').divideBy(10).floor()));
+            }
+            if (activechallenge === 5) {
+                xpgain = xpgain.pow(0.05);
+            }
+            boxpointgain = boxpointgain
+                .times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[0])))
+                .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[2]).times(rotations.pow(new Decimal(0.15))).times(new Decimal('0.8'))))
+                .times(new Decimal('1').plus(new Decimal('1.13').times(revolutions.pow(new Decimal('0.59'))).times(Number(revselectlist.includes(3))).times(irev.pow(new Decimal('1.25')))))
+                .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))))
+                .times(new Decimal('1').add(new Decimal('2').times(new Decimal(specialpegs.add(1).log10())).times(new Decimal(boupgradelist[19]))))
+                .times(new Decimal('1').add(new Decimal('1.5').times(new Decimal(bounceresettime.add(1).log10())).times(new Decimal(boupgradelist[20]))))
+                .times(new Decimal('1').plus(new Decimal('1.5').times(revupgradelist[2])))
+                .times(new Decimal('2').pow(revupgradelist[2].divideBy(5).floor()))
+                .pow(new Decimal('1').plus(new Decimal('0.0005').times(challengelist[2])))
+                .times(new Decimal('1').add(new Decimal('0.1').times(challengelist[3])))
+                .times(new Decimal('1').add(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0))))))
+                .times(new Decimal('1').divideBy(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0)))).plus(1)));
+        } else {
+            boxpointgain = new Decimal('0');
         }
-        boxpointgain = boxpointgain
-            .times(new Decimal('1').plus(new Decimal('1').times(spupgradelist[0])))
-            .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[2]).times(rotations.pow(new Decimal(0.5))).times(new Decimal('0.8'))))
-            .times(new Decimal('1').plus(new Decimal('1.13').times(revolutions.pow(new Decimal('0.59'))).times(Number(revselectlist.includes(3))).times(irev.pow(new Decimal('1.25')))))
-            .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))))
-            .times(new Decimal('1').add(new Decimal('2').times(new Decimal(specialpegs.add(1).log10())).times(new Decimal(boupgradelist[19]))))
-            .times(new Decimal('1').add(new Decimal('1.5').times(new Decimal(bounceresettime.add(1).log10())).times(new Decimal(boupgradelist[20]))))
-            .times(new Decimal('1').plus(new Decimal('1.5').times(revupgradelist[2])))
-            .times(new Decimal('2').pow(revupgradelist[2].divideBy(5).floor()));
-        
-        levelreq = new Decimal('1.3').pow(level).times(new Decimal('1.8').pow(level.divideBy(new Decimal('10')).floor()));
+        if (activechallenge === 5 || activechallenge === 8) {
+            boxpointgain = boxpointgain.pow(0.05);
+        }
+        levelreq = new Decimal('1.25').pow(level).times(new Decimal('1.65').pow(level.divideBy(new Decimal('10')).floor()));
         if (level > 80) {
             levelreq = new Decimal('1.4').pow(level).times(new Decimal('3').pow(level.divideBy(new Decimal('10')).floor()));
             if (boupgradelist[4] >= 1) {
@@ -460,8 +533,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 .times(new Decimal('1').plus(rollpoints.divideBy(new Decimal('2')).times(bupgradelist[9])))
                 .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))))
                 .times(new Decimal('1.25').pow(tasks[1]));
+            if (m !== 3 && chargeamount !== 0) {
+                boxvalues[m] = boxvalues[m]
+                    .times(new Decimal('1').add(new Decimal('4').times(new Decimal(electricity.times(batteries).log(new Decimal('10'))).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0)))))))
+                    .times(new Decimal('1').divideBy(new Decimal('4').times(new Decimal(electricity.times(batteries).log(new Decimal('10'))).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0)))).plus(1))));
+            } else if (chargeamount !== 0) {
+                boxvalues[m] = boxvalues[m]
+                    .times(new Decimal('1').add(new Decimal('4').times(new Decimal(electricity.times(batteries).log(new Decimal('10'))).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0)))))))
+                    .times(new Decimal('1').divideBy(new Decimal('4').times(new Decimal(electricity.times(batteries).log(new Decimal('10'))).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0)))).plus(1))));
+            }
+            if (activechallenge === 5 || activechallenge === 8) {
+               boxvalues[m] = boxvalues[m].pow(0.05);
+            }
         }
-        rotationgain = new Decimal('0.01').times(rollpoints)
+        rotationgain = new Decimal('1').times(rollpoints)
             .times(new Decimal('1').plus(new Decimal('1').times(rupgradelist[4])))
             .times(new Decimal('1').plus(rupgradelist[7].times(new Decimal('1.3').pow(rollpoints))))
             .times(new Decimal('1').plus(new Decimal('3').times(revolutions.pow(new Decimal('0.61'))).times(Number(revselectlist.includes(5))).times(irev.pow(new Decimal('1.25')))))
@@ -472,14 +557,30 @@ document.addEventListener('DOMContentLoaded', function () {
             .times(new Decimal('1').add(new Decimal('1.25').times(new Decimal(bounceresettime.add(1).log10())).times(new Decimal(boupgradelist[23]))))
             .times(new Decimal('1.5').pow(tasks[0]))
             .times(new Decimal('1').plus(new Decimal('2.25').times(revupgradelist[3])))
-            .times(new Decimal('5').pow(revupgradelist[3].divideBy(5).floor()));
+            .times(new Decimal('5').pow(revupgradelist[3].divideBy(5).floor()))
+            .times(new Decimal('1.5').pow(challengelist[0]))
+            .times(new Decimal('1').add(new Decimal('0.1').times(challengelist[3])))
+            .times(new Decimal('1').add(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0))))))
+            .times(new Decimal('1').divideBy(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0)))).plus(1)));
+        if (activechallenge === 1) {
+            rotationgain = rotationgain.pow(0.5)
+        }
+        if (activechallenge === 5 || activechallenge === 8) {
+            rotationgain = rotationgain.pow(0.5);
+        }
         specialpeggain = new Decimal('1')
             .add(bupgradelist[6])
             .times(new Decimal('1').plus(new Decimal('2').times(revolutions.pow(new Decimal('0.62'))).times(Number(revselectlist.includes(4))).times(irev.pow(new Decimal('1.25')))))
             .times(new Decimal('1').plus(new Decimal('2').times(spupgradelist[8])))
             .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))))
             .times(new Decimal('1').plus(new Decimal('1.25').times(revupgradelist[1])))
-            .times(new Decimal('3').pow(revupgradelist[1].divideBy(10).floor()));
+            .times(new Decimal('3').pow(revupgradelist[1].divideBy(10).floor()))
+            .times(new Decimal('1').add(new Decimal('0.1').times(challengelist[3])))
+            .times(new Decimal('1').add(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0))))))
+            .times(new Decimal('1').divideBy(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0)))).plus(1)));
+        if (activechallenge === 5 || activechallenge === 8) {
+            specialpeggain = specialpeggain.pow(0.05);
+        }
         specialpegchance = new Decimal('0.005')
             .times(new Decimal('2').pow(bupgradelist[6].divideBy(25).floor()));
         templist = boupgradelist.slice(5, 10);
@@ -502,7 +603,17 @@ document.addEventListener('DOMContentLoaded', function () {
             .times(new Decimal('1').plus(new Decimal('1').times(boupgradelist[2])))
             .times(new Decimal('1').add(new Decimal('4').times(new Decimal(boupgradelist[4]))))
             .times(new Decimal('1').add(new Decimal('0.2').times(level).times(new Decimal(boupgradelist[15]))))
-            .times(new Decimal('1.5').pow(tasks[2]));
+            .times(new Decimal('1.5').pow(tasks[2]))
+            .times(new Decimal('1').plus(new Decimal('2').times(new Decimal('1.2').pow(challengelist[1])).minus(2)))
+            .times(new Decimal('1').add(new Decimal('0.1').times(challengelist[3])))
+            .times(new Decimal('1').add(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0))))))
+            .times(new Decimal('1').divideBy(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0)))).plus(1)));
+        if (activechallenge === 2) {
+            revgain = new Decimal('1');
+        }
+        if (activechallenge === 5 || activechallenge === 8) {
+            revgain = revgain.pow(0.05);
+        }
         maxrevselect = new Decimal('1');
         jumpgain = new Decimal('1').plus(new Decimal('1').times(new Decimal('1.25').pow(rollpoints.minus(new Decimal('10'))).times(rollpoints.minus(new Decimal('10')).pow(1.25).times(new Decimal('2')))));
         if (boupgradelist[11] >= 1) {
@@ -515,10 +626,17 @@ document.addEventListener('DOMContentLoaded', function () {
         jumpgain = jumpgain.times(new Decimal('1').plus(new Decimal('1.25').pow(new Decimal(jumps.times(new Decimal('2')).plus(new Decimal('1')).log10())).times(boupgradelist[10])))
             .times(new Decimal('1').plus(new Decimal('1.05').pow(new Decimal(templist.length)).times(boupgradelist[12])))
             .times(new Decimal('1').plus(new Decimal('1').times(revolutions.pow(new Decimal('0.5')).divideBy('10')).times(Number(revselectlist.includes(6))).times(irev.pow(new Decimal('1.25')))))
-            .times(new Decimal('1').plus(new Decimal('1').times(new Decimal('2')).times(bounceresets.pow(new Decimal('0.5'))).times(new Decimal(boupgradelist[14]))));
-        energygain = new Decimal('2').pow(new Decimal(rotations.plus(new Decimal('1')).log10())).times(new Decimal('1.2').times(new Decimal(rotations.plus(new Decimal('1')).log10())));
+            .times(new Decimal('1').plus(new Decimal('1').times(new Decimal('2')).times(bounceresets.pow(new Decimal('0.5'))).times(new Decimal(boupgradelist[14]))))
+            .times(new Decimal('1').add(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount <= 0))))))
+            .times(new Decimal('1').divideBy(new Decimal('2').times(electricity.times(batteries).pow(0.5)).times(Math.abs(chargeamount / 100)).times(new Decimal(parseFloat(new Number(chargeamount >= 0)))).plus(1)));
+        energygain = new Decimal('2').pow(new Decimal(rotations.plus(new Decimal('1')).log10())).times(new Decimal('1.2').times(new Decimal(rotations.plus(new Decimal('1')).log10())))
+            .times(new Decimal(1.1).pow(challengelist[6]));
+        if (activechallenge === 8) {
+            energygain = energygain.pow(0.05);
+        }
         irevreq = new Decimal('2.5').pow(irev);
-        //2^log(x+1) * 1.2log(x+1)
+        electricitygain = new Decimal(1.005).pow(energy.pow(0.5)).minus(1)
+            .times(new Decimal(1.1).pow(challengelist[6]));
     }
 
     function despawnpopuptext(a) {
@@ -570,6 +688,12 @@ document.addEventListener('DOMContentLoaded', function () {
     irev = new Decimal('0');
     ballcap = 10;
     totaljumps = new Decimal('0');
+    challengelist = [0, 0, 0, 0, 0, 0, 0, 0];
+    activechallenge = 0;
+    electricity = new Decimal('0');
+    batteries = new Decimal('0');
+    chargeamount = 0;
+    transferresets = new Decimal('0');
     //save loading!!!
     if (localStorage.getItem('save') !== null) {
         savefile = JSON.parse(localStorage.getItem('save'));
@@ -609,6 +733,12 @@ document.addEventListener('DOMContentLoaded', function () {
         revupgradelist[4] = new Decimal(savefile.revupgrade5);
         irev = new Decimal(savefile.irev);
         totaljumps = new Decimal(savefile.totaljumps);
+        challengelist = JSON.parse(savefile.challengelist);
+        activechallenge = JSON.parse(savefile.activechallenge);
+        electricity = new Decimal(savefile.electricity);
+        batteries = new Decimal(savefile.batteries);
+        chargeamount = JSON.parse(savefile.chargeamount);
+        transferresets = new Decimal(savefile.transferresets);
         if ((qolupgradelist[0].compare(1) >= 0 || rollresets.compare(1) >= 0) && timelaston <= Math.floor(new Date().getTime() / 1000)) {
             //offline prog
             window.console.log('offline progress added!');
@@ -618,7 +748,9 @@ document.addEventListener('DOMContentLoaded', function () {
             gaincalc();
             ballpoints = ballpoints.add(ballpointgain.times(boxvalues[0].times(new Decimal('2')).add(boxvalues[1].times(new Decimal('2')).add((boxvalues[2].times(new Decimal('2')).add((boxvalues[3]))))).divideBy(new Decimal('7'))).times(new Decimal(timelaston)));
             xp = xp.add(xpgain.times(boxvalues[0].times(new Decimal('2')).add(boxvalues[1].times(new Decimal('2')).add((boxvalues[2].times(new Decimal('2')).add((boxvalues[3]))))).divideBy(new Decimal('7'))).times(new Decimal(timelaston)));
-            rotations = rotations.add(rotationgain);
+            if (activechallenge !== 1) {
+                rotations = rotations.add(rotationgain);
+            }
             if (bounceresets.compare(1) >= 0) {
                 bounceresettime = bounceresettime.add(new Decimal(timelaston));
             }
@@ -635,6 +767,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
+            if (activechallenge === 4) {
+                burnoutfunctionality = setInterval(burnout, 1000);
+            }
         }
     }
     save();
@@ -644,7 +779,6 @@ document.addEventListener('DOMContentLoaded', function () {
         alert('save failed!');
     }
     //price/cap setups
-    //revolution things have placeholders atm
     pcaplist = [new Decimal('400'), new Decimal('400'), new Decimal('25'), new Decimal('4'), new Decimal('25')];
     spcaplist = [new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1.79e308')];
     bcaplist = [new Decimal('999'), new Decimal('999'), new Decimal('999'), new Decimal('999'), new Decimal('400'), new Decimal('400'), new Decimal('25'), new Decimal('50'), new Decimal('1'), new Decimal('1')];
@@ -652,17 +786,21 @@ document.addEventListener('DOMContentLoaded', function () {
     rcaplist = [new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1')];
     revcaplist = [new Decimal('1'), new Decimal('20'), new Decimal('25'), new Decimal('25'), new Decimal('1.79e308')];
     bocaplist = [new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1'), new Decimal('1')];
-    pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
-    bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]), new Decimal('1.5').pow(bupgradelist[1]), new Decimal('1.5').pow(bupgradelist[2]), new Decimal('1.5').pow(bupgradelist[3]), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])), new Decimal('400').times(new Decimal('1.8').pow(bupgradelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])), new Decimal('100'), new Decimal('150')];
-    spupgradeprice = [new Decimal('5'), new Decimal('5'), new Decimal('5'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('25'), new Decimal('25'), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9]))];
-    qolupgradeprice = [new Decimal('50').times(new Decimal('5').pow(qolupgradelist[0])), new Decimal('1000'), new Decimal('5000'), new Decimal('10000')];
-    rupgradeprice = [new Decimal('1'), new Decimal('5'), new Decimal('20'), new Decimal('100'), new Decimal('200'), new Decimal('250'), new Decimal('500'), new Decimal('1000'), new Decimal('3000')];
-    revupgradeprice = [new Decimal('100'), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4]))];
+    challengecap = [10, 25, 10, 100, 1, 10, 5, 1];
+    challengegoal = [1000 * (3 ** challengelist[0]), 20 * (2 ** challengelist[1]), challengelist[2] + 1, 120 + (2 * challengelist[3]), 20, 100 + (2 * challengelist[5]), 95 + (2 * challengelist[6]), 20];
+    pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+    bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
+    spupgradeprice = [new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9])).times(new Decimal(0.99).pow(challengelist[5]))];
+    qolupgradeprice = [new Decimal('10').times(new Decimal('5').pow(qolupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10000').times(new Decimal(0.99).pow(challengelist[5]))];
+    rupgradeprice = [new Decimal('1').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('500').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('3000').times(new Decimal(0.99).pow(challengelist[5]))];
+    revupgradeprice = [new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
     boupgradeprice = [new Decimal('1'), new Decimal('2'), new Decimal('20'), new Decimal('200'), new Decimal('2000'), new Decimal('1'), new Decimal('2'), new Decimal('20'), new Decimal('200'), new Decimal('2000'), new Decimal('1'), new Decimal('2'), new Decimal('20'), new Decimal('200'), new Decimal('2000'), new Decimal('1'), new Decimal('2'), new Decimal('20'), new Decimal('200'), new Decimal('2000'), new Decimal('10'), new Decimal('100'), new Decimal('500'), new Decimal('10000'), new Decimal('1000000')];
     taskprice = [new Decimal('10').times(new Decimal('1.25').pow(tasks[0])), new Decimal('25').times(new Decimal('1.65').pow(tasks[1])), new Decimal('50').times(new Decimal('1.75').pow(tasks[2]))];
     tasktime = [new Decimal('1.25').pow(tasks[0]), new Decimal('5').times(new Decimal('1.3').pow(tasks[1])), new Decimal('7.5').times(new Decimal('1.35').pow(tasks[2]))];
     botitlelist = ['Progression', 'Qol', 'Jump', 'Synergy', 'Other', 'V', 'I', 'II', 'III', 'IV'];
-    bodescriptionlist = ["Boxify's equation is better.", "Point Synergy’s equation is better. Also every automation upgrade lowers Roll requirement by 2.", 'Double Rotations and Revolutions gain. Also doubles the effect of “More Balls”.', "Level scaling is weaker. +50% Progression II’s second effect.", 'x5 everything below bounce (except for RP). This includes: Points, XP, BP, Boxes, SP, Rotations, and Revolutions. Post-80 Level scaling is weakened. +100% Progression II’s second effect.', "Gain 1% of BP per second.", 'Boxify upgrades spend nothing.', 'Boxify doesn’t reset point upgrades.', 'Automates BP Upgrades.', 'Rotation upgrades don’t spend Rotations. Keep all point upgrades on Roll.', 'Jumps boost Jumps.', 'Jump formula is better.', 'Bounce upgrades boost Jumps.', 'Unlock a new revolutions effect.', 'Jumps are boosted by number of Bounce resets.', 'Level boosts Revolution gain.', 'Revolutions boost Rotations.', 'BallPoints lower Roll requirement.', 'Jumps boost XP gain.', 'Special Pegs boost BP.', 'Boost BP gain based on time since bounce reset.', 'Unlock Imaginary Revolutions. They add to the revolution and streak effect.', 'Unlocks Energy.', 'Boost Rotation gain based on time since bounce reset.', 'nothing atm (if you buy this you won for now)'];
+    bodescriptionlist = ["Boxify's equation is better.", "Point Synergy’s equation is better. Also every automation upgrade lowers Roll requirement by 2.", 'Double Rotations and Revolutions gain. Also doubles the effect of “More Balls”.', "Level scaling is weaker. +50% Progression II’s second effect.", 'x5 everything below bounce (except for RP). This includes: Points, XP, BP, Boxes, SP, Rotations, and Revolutions. Post-80 Level scaling is weakened. +100% Progression II’s second effect.', "Gain 1% of BP per second.", 'Boxify upgrades spend nothing.', 'Boxify doesn’t reset point upgrades.', 'Automates BP Upgrades.', 'Rotation upgrades don’t spend Rotations. Keep all point upgrades on Roll.', 'Jumps boost Jumps.', 'Jump formula is better.', 'Bounce upgrades boost Jumps.', 'Unlock a new revolutions effect.', 'Jumps are boosted by number of Bounce resets.', 'Level boosts Revolution gain.', 'Revolutions boost Rotations.', 'BallPoints lower Roll requirement.', 'Jumps boost XP gain.', 'Special Pegs boost BP.', 'Boost BP gain based on time since bounce reset.', 'Unlock Imaginary Revolutions. They add to the revolution and streak effect.', 'Unlocks Energy.', 'Boost Rotation gain based on time since bounce reset.', 'Unlock Challenges.'];
+    challengetitles = ['Broken Gear', 'Revolving Hell', 'No Boxes', 'Burnout', 'Final I', 'Upgrade Drought', 'No Upgrades', 'Final II']
+    challengedesc = ['"not my fault it is not centered" <br> Square root rotation gain. Rotations can not be gained by offline progress. <br> Reward: x1.5^(completions) rotation gain. New challenge unlocked at first completion.', '"i dont like rhythm games tbh" <br> Revolution gain is set to 1. Revolution speed is higher. <br> Reward: x2(1.2^(completions)) revolutions. Unlock a new challenge at 2 completions.', '"boxify was useless anyway" <br> Boxify is removed. You can not gain any BoxPoints. <br> Reward: ^(1+0.0005(completions)) BP gain. Unlock a new challenge at 1 completion.', '"meowfest simulator" <br> You lose 0.1 * (completions + 1)% of BallPoints, XP, BoxPoints, Special Pegs, Rotations and Revolutions per second. <br> Reward: x(1+(completions * 0.1)) currencies that the challenge affects. Unlock a new challenge at 10 completions.', '"why is there a I at the end of the final challenge" <br> Raise BallPoints, XP, BP, RP, Rotations, Revolutions, Special Pegs and Box Value to the 0.05th power. <br> Reward: New Reset!', '"who needs these anyway lol" <br> You can buy only 10 upgrades per upgrade building (except for QoL). <br> Reward: x0.99^(completions) upgrade prices for all upgrades before bounce.', '"who ACTUALLY needs them lmao" <br> You cannot buy upgrades (except QoL). <br> Reward: x1.1^(completions) energy and electricity.', '"there is no way a third one exists" <br> Applies Final I but you cannot buy bounce upgrades. Forces a respec as well as adding energy to the Final I nerf. <br> Reward: ???']
     //displays
     for (m = 1; m <= pupgradelist.length; m = m + 1) {
         document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
@@ -730,8 +868,37 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('reveffect' + m.toString()).style.backgroundColor = 'salmon';
         }
     }
-    
+    for (m = 1; m <= challengelist.length; m = m + 1) {
+        document.getElementById('challenge' + m.toString()).innerHTML = challengetitles[m - 1] + ' ' + challengelist[m - 1] + '/' + challengecap[m - 1];
+    }
+    if (activechallenge !== 0) {
+        document.getElementById('challengestart').innerHTML = 'Exit!';
+        document.body.style.backgroundColor = '#729cb0';
+    }
+    if (challengelist[0] >= 1) {
+        document.getElementById('challenge2').style.display = 'block';
+    }
+    if (challengelist[1] >= 2) {
+        document.getElementById('challenge3').style.display = 'block';
+    }
+    if (challengelist[2] >= 1) {
+        document.getElementById('challenge4').style.display = 'block';
+    }
+    if (challengelist[3] >= 10) {
+        document.getElementById('challenge5').style.display = 'block';
+    }
+    if (batteries.compare(10) >= 0) {
+        document.getElementById('challenge6').style.display = 'block';
+        document.getElementById('challenge7').style.display = 'block';
+        document.getElementById('challenge8').style.display = 'block';
+    }
     //actual program time!!!
+    let challengegoalcurr = ['Rotations', 'Revolutions', 'RollPoints', 'Levels', 'Levels', 'Levels', 'Levels', 'Levels'];
+    if (activechallenge !== 0) {
+        document.getElementById('challengeinfo').innerHTML = challengedesc[activechallenge - 1] + '<br> Goal: ' + challengegoal[activechallenge - 1]  + ' ' + challengegoalcurr[activechallenge - 1];
+    }
+    document.getElementById('transferamount').innerHTML = 'Current Setting: ' + chargeamount.toString();
+    document.getElementById('transferslider').value = chargeamount;
     fps1 = new Date();
 
     function tick() {
@@ -739,14 +906,14 @@ document.addEventListener('DOMContentLoaded', function () {
         //more displays...
         taskprice = [new Decimal('10').times(new Decimal('1.25').pow(tasks[0])), new Decimal('25').times(new Decimal('1.65').pow(tasks[1])), new Decimal('50').times(new Decimal('1.75').pow(tasks[2]))];
         tasktime = [new Decimal('1.25').pow(tasks[0]), new Decimal('5').times(new Decimal('1.3').pow(tasks[1])), new Decimal('7.5').times(new Decimal('1.35').pow(tasks[2]))];
-        if (rupgradeprice[3].compare(new Decimal('1'))) {
+        if (rupgradelist[3].compare(new Decimal('1')) >= 0) {
             pcaplist[2] = new Decimal('35');
             for (m = 1; m <= pupgradelist.length; m = m + 1) {
                 document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
                 document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
             }
         }
-        if (rupgradeprice[3].compare(new Decimal('1'))) {
+        if (rupgradelist[3].compare(new Decimal('1')) >= 0) {
             pcaplist[4] = new Decimal('35');
             for (m = 1; m <= pupgradelist.length; m = m + 1) {
                 document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
@@ -761,7 +928,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('reddisplay2').innerHTML = 'x' + decimalToString(boxvalues[2]);
         document.getElementById('greendisplay').innerHTML = 'x' + decimalToString(boxvalues[3]);
         document.getElementById('ballpointsdisplay').innerHTML = 'You have ' + decimalToString(ballpoints) + ' BallPoints!';
-        document.getElementById('levelbar').style.width = decimalToString(xp.divideBy(levelreq).times(new Decimal('100'))) + '%';
+        if (xp.divideBy(levelreq) >= 1) {
+            document.getElementById('levelbar').style.width = '100%';
+        } else {
+            document.getElementById('levelbar').style.width = decimalToString(xp.divideBy(levelreq).times(new Decimal('100'))) + '%';
+        }
         document.getElementById('leveldisplay').innerHTML = 'Level: ' + decimalToString(level);
         document.getElementById('leveldisplayxp').innerHTML = 'XP: ' + decimalToString(xp) + ' / ' + decimalToString(levelreq);
         if (boxifyresets.compare(1) >= 0) {
@@ -795,6 +966,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (bounceresets.compare(new Decimal('1')) >= 0) {
             document.getElementById('bouncewall').style.display = 'inline';
             document.getElementById('bounceupgradebuilding').style.display = 'inline';
+            document.getElementById('bounceinforespec').style.display = 'inline';
             document.getElementById('bouncebuildingtitle').innerHTML = 'Bounce Upgrade Viewer (you have ' + decimalToString(jumps) + ' jumps)';
         }
         document.getElementById('task1').innerHTML = 'Oil the Gear ~ boosting Rotation gain by x' + decimalToString(new Decimal('1.5').pow(tasks[0])) + '. Costs: ' + decimalToString(taskprice[0]) + ' Energy and ' + decimalToString(tasktime[0]) + ' seconds.';
@@ -817,6 +989,17 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('task3bar').style.width = decimalToString(taskprogress[2].divide(tasktime2[2]).times(new Decimal('100').minus(new Decimal('20')))) + '%';
         } else {
              document.getElementById('task3bar').style.width = '0px';
+        }
+        if (boupgradelist[24] === 1) {
+            document.getElementById('challengebuilding').style.display = 'flex';
+            document.getElementById('challengeselector').style.display = 'block';
+        }
+        if (challengelist[4] > 0) {
+            document.getElementById('transferbuilding').style.display = 'block';
+            document.getElementById('transferreset').style.display = 'block';
+        }
+        if (batteries.compare(10) >= 0) {
+            document.getElementById('challenge6').style.display = 'block';
         }
         //ball desapwn code
         if (despawn === 1) {
@@ -861,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', function () {
             xp = xp.minus(levelreq);
             level = level.plus(new Decimal('1'));
         }
-        if (rotations.compare(irevreq) >= 0) {
+        if (rotations.compare(irevreq) >= 0 && boupgradelist[21] > 1) {
             irev = irev.plus(1);
         }
         if (level.compare(new Decimal('16')) >= 0) {
@@ -890,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (rollpoints.compare(new Decimal('1')) >= 0) {
             document.getElementById('energyresetbutton').innerHTML = 'Energize!';
-            document.getElementById('energyresettext').innerHTML = '-- Energy --<br><br>Energize for ' + decimalToString(energygain) + ' Energy. Spend Energy and time on tasks to get buffs. Energizing resets Level, XP, BallPoints, Point Upgrades, Box Upgrades, Special Peg Upgrades, Special Pegs and BoxPoints. Currently you have: ' + decimalToString(energy) + ' Energy!';
+            document.getElementById('energyresettext').innerHTML = '-- Energy --<br><br>Energize for ' + decimalToString(energygain) + ' Energy. Spend Energy and time on tasks to get buffs. Energizing resets Level, XP, BallPoints, Point Upgrades, Box Upgrades, Special Peg Upgrades, Special Pegs and BoxPoints and Roll content. Currently you have: ' + decimalToString(energy) + ' Energy!';
         } else {
             document.getElementById('energyresetbutton').innerHTML = 'Locked...';
             document.getElementById('energyresettext').innerHTML = '-- Energy --<br><br>You need at least 1 RollPoint to Energize. Currently you have: ' + decimalToString(energy) + ' Energy!';
@@ -898,7 +1081,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (boupgradelist[21] >= 1) {
             document.getElementById('irevtext').innerHTML = 'You currently have ' + decimalToString(irev) + ' Imaginary Revolutions. Earn your next one at ' + decimalToString(irevreq) + ' Rotations. Currently boosting all revolution effects by x' + decimalToString(irev.pow(1.25)) + ', and boosting revolution streak bonus by x' + decimalToString(irev.pow(1.35)) + '.';
         } else {
-            document.getElementById('irevtext').innerHTML = 'Locked...'  
+            document.getElementById('irevtext').innerHTML = 'Locked...';
+            irev = new Decimal(0);
+        }
+        if (challengelist[4] > 0) {
+            document.getElementById('transfertext').innerHTML = 'Reset Level, XP, BallPoints, Point Upgrades, Boxify content, Roll content and Energy content for ' + decimalToString(electricitygain) + ' Electricity. Read the bottom of the slider for more information.'
+            document.getElementById('electricity').innerHTML = decimalToString(electricity) + ' Electricity';
+            document.getElementById('batteries').innerHTML = decimalToString(batteries) + ' Batteries';
+            const transfereffectlist = ['Green Box, SP, BP and BallPoints', 'Red/Orange/Yellow Boxes, Revolutions, Rotations, XP and Jumps']
+            if (chargeamount == 0) {
+                document.getElementById('transfereffect').innerHTML = 'Doing nothing...';
+            } else {
+                document.getElementById('transfereffect').innerHTML = 'Currently boosting: ' + transfereffectlist[new Number(chargeamount < 0)] + ' and nerfing: ' + transfereffectlist[new Number(chargeamount > 0)];
+            }
         }
         gearangle = rotationgain.plus(1).log(10);
         if (gearangle >= 50) {
@@ -907,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         gearangletotal = gearangle + gearangletotal;
         document.getElementById('rotationgear').style.transform = 'rotate(' + gearangletotal.toString() + 'deg)';
         if (revrotationallow === 1) {
-            revimgrotation = revimgrotation + 1.5 + (revstreak * 0.25);
+            revimgrotation = revimgrotation + 1.5 + (revstreak * 0.25) + (new Number(activechallenge === 2) * 3);
             if (revimgrotation >= 360) {
                 revimgrotation = revimgrotation - 360;
             }
@@ -932,24 +1127,24 @@ document.addEventListener('DOMContentLoaded', function () {
         ballpoints = new Decimal('0');
         xp = new Decimal('0');
         level = new Decimal('1');
-        pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
+        pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
         if (qolupgradelist[2].compare(1) === 0 && boupgradelist[7] < 1) {
             pupgradelist = [pupgradelist[0].divideBy(2).floor(), pupgradelist[1].divideBy(2).floor(), pupgradelist[2].divideBy(2).floor(), pupgradelist[3].divideBy(2).floor(), pupgradelist[4].divideBy(2).floor()];
-            pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
+            pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
             for (m = 1; m <= pupgradelist.length; m = m + 1) {
                 document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
                 document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
             }
         } else if (qolupgradelist[1].compare(1) === 0 && boupgradelist[7] < 1) {
             pupgradelist = [pupgradelist[0].divideBy(4).floor(), pupgradelist[1].divideBy(4).floor(), pupgradelist[2].divideBy(4).floor(), pupgradelist[3].divideBy(4).floor(), pupgradelist[4].divideBy(4).floor()];
-            pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
+            pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
             for (m = 1; m <= pupgradelist.length; m = m + 1) {
                 document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
                 document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
             }
         } else if (boupgradelist[7] < 1) {
             pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
-            pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
+            pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
         }
         for (m = 1; m <= pupgradelist.length; m = m + 1) {
             document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
@@ -971,9 +1166,9 @@ document.addEventListener('DOMContentLoaded', function () {
         pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
         bupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
         spupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
-        pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
-        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]), new Decimal('1.5').pow(bupgradelist[1]), new Decimal('1.5').pow(bupgradelist[2]), new Decimal('1.5').pow(bupgradelist[3]), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])), new Decimal('400').times(new Decimal('1.8').pow(bupgradelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])), new Decimal('100'), new Decimal('150')];
-        spupgradeprice = [new Decimal('5'), new Decimal('5'), new Decimal('5'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('25'), new Decimal('25'), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9]))];
+        pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
+        spupgradeprice = [new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9])).times(new Decimal(0.99).pow(challengelist[5]))];
         for (m = 1; m <= pupgradelist.length; m = m + 1) {
             document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
             document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
@@ -992,11 +1187,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (bounceresets.compare(1) < 0) {
             qolupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
-            qolupgradeprice = [new Decimal('50').times(new Decimal('5').pow(qolupgradelist[0])), new Decimal('1000'), new Decimal('5000'), new Decimal('10000')];
+            qolupgradeprice = [new Decimal('10').times(new Decimal('5').pow(qolupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10000').times(new Decimal(0.99).pow(challengelist[5]))];
         }
         if (qolupgradelist[2].compare(1) === 0 && boupgradelist[9] < 1) {
             pupgradelist = [pupgradelist[0].divideBy(4).floor(), pupgradelist[1].divideBy(4).floor(), pupgradelist[2].divideBy(4).floor(), pupgradelist[3].divideBy(4).floor(), pupgradelist[4].divideBy(4).floor()];
-            pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
+            pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
             for (m = 1; m <= pupgradelist.length; m = m + 1) {
                 document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
                 document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
@@ -1010,12 +1205,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (bounceresets.compare(1) < 0) {
             qolupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
         }
-        if (respec = 1) {
-            bounceresets = rollpoints.plus(new Decimal('1'));
+        if (transferresets.compare(1) >= 0) {
+            batteries = batteries.plus(1);
+        }
+        if (respec === 1) {
+            bounceresets = bounceresets.plus(new Decimal('1'));
             bounceresettime = new Decimal('0');
             jumps = jumps.add(jumpgain);
             totaljumps = totaljumps.add(jumpgain);
-            respec = 0;
         }
         ballpoints = new Decimal('0');
         xp = new Decimal('0');
@@ -1025,16 +1222,16 @@ document.addEventListener('DOMContentLoaded', function () {
         pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
         bupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
         spupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
-        pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
-        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]), new Decimal('1.5').pow(bupgradelist[1]), new Decimal('1.5').pow(bupgradelist[2]), new Decimal('1.5').pow(bupgradelist[3]), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])), new Decimal('400').times(new Decimal('1.8').pow(bupgradelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])), new Decimal('100'), new Decimal('150')];
-        spupgradeprice = [new Decimal('5'), new Decimal('5'), new Decimal('5'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('25'), new Decimal('25'), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9]))];
+        pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
+        spupgradeprice = [new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9])).times(new Decimal(0.99).pow(challengelist[5]))];
         rupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
-        rupgradeprice = [new Decimal('1'), new Decimal('5'), new Decimal('20'), new Decimal('100'), new Decimal('200'), new Decimal('250'), new Decimal('500'), new Decimal('1000'), new Decimal('3000')];
+        rupgradeprice = [new Decimal('1').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('500').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('3000').times(new Decimal(0.99).pow(challengelist[5]))];
         rotations = new Decimal('0');
         rollpoints = new Decimal('0');
         revolutions = new Decimal('0');
         revupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
-        revupgradeprice = [new Decimal('100'), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4]))];
+        revupgradeprice = [new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
         for (m = 1; m <= pupgradelist.length; m = m + 1) {
             document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
             document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
@@ -1055,6 +1252,13 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('revupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(revupgradeprice[m - 1]) + ' Revolutions';
             document.getElementById('revupgrade' + m.toString() + 'cap').innerHTML = decimalToString(revupgradelist[m - 1]) + '/' + decimalToString(revcaplist[m - 1]);
         }
+        document.getElementById('revolutionstitle').innerHTML = 'Revolutions Building (you have ' + decimalToString(revolutions) + ' revolutions)';
+        document.getElementById('reveffect1').innerHTML = 'BallPoints boost: +x' + decimalToString(new Decimal('1.38').times(revolutions.pow(new Decimal('0.58'))));
+        document.getElementById('reveffect2').innerHTML = 'XP boost: +x' + decimalToString(new Decimal('1.25').times(revolutions.pow(new Decimal('0.64'))));
+        document.getElementById('reveffect3').innerHTML = 'BoxPoints boost: +x' + decimalToString(new Decimal('1.13').times(revolutions.pow(new Decimal('0.59'))));
+        document.getElementById('reveffect4').innerHTML = 'Special Peg boost: +x' + decimalToString(new Decimal('2').times(revolutions.pow(new Decimal('0.62'))));
+        document.getElementById('reveffect5').innerHTML = 'Rotation boost: +x' + decimalToString(new Decimal('3').times(revolutions.pow(new Decimal('0.61'))));
+        document.getElementById('reveffect6').innerHTML = 'Jumps boost: +x' + decimalToString(new Decimal('0.1').times(revolutions.pow(new Decimal('0.5'))));
     }
     function energyreset() {
         energy = energy.plus(energygain);
@@ -1066,13 +1270,16 @@ document.addEventListener('DOMContentLoaded', function () {
         pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
         bupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
         spupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
-        pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
-        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]), new Decimal('1.5').pow(bupgradelist[1]), new Decimal('1.5').pow(bupgradelist[2]), new Decimal('1.5').pow(bupgradelist[3]), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])), new Decimal('400').times(new Decimal('1.8').pow(bupgradelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])), new Decimal('100'), new Decimal('150')];
-        spupgradeprice = [new Decimal('5'), new Decimal('5'), new Decimal('5'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('25'), new Decimal('25'), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9]))];
+        pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
+        spupgradeprice = [new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9])).times(new Decimal(0.99).pow(challengelist[5]))];
         rupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), rupgradelist[8]];
-        rupgradeprice = [new Decimal('1'), new Decimal('5'), new Decimal('20'), new Decimal('100'), new Decimal('200'), new Decimal('250'), new Decimal('500'), new Decimal('1000'), new Decimal('3000')];
+        rupgradeprice = [new Decimal('1').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('500').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('3000').times(new Decimal(0.99).pow(challengelist[5]))];
         rotations = new Decimal('0');
         rollpoints = new Decimal('0');
+        revolutions = new Decimal('0');
+        revupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        revupgradeprice = [new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
         for (m = 1; m <= pupgradelist.length; m = m + 1) {
             document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
             document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
@@ -1089,6 +1296,121 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('rupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(rupgradeprice[m - 1]) + ' Rotations';
             document.getElementById('rupgrade' + m.toString() + 'cap').innerHTML = decimalToString(rupgradelist[m - 1]) + '/' + decimalToString(rcaplist[m - 1]);
         }
+        for (m = 1; m <= revupgradelist.length; m = m + 1) {
+            document.getElementById('revupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(revupgradeprice[m - 1]) + ' Revolutions';
+            document.getElementById('revupgrade' + m.toString() + 'cap').innerHTML = decimalToString(revupgradelist[m - 1]) + '/' + decimalToString(revcaplist[m - 1]);
+        }
+        document.getElementById('revolutionstitle').innerHTML = 'Revolutions Building (you have ' + decimalToString(revolutions) + ' revolutions)';
+        document.getElementById('reveffect1').innerHTML = 'BallPoints boost: +x' + decimalToString(new Decimal('1.38').times(revolutions.pow(new Decimal('0.58'))));
+        document.getElementById('reveffect2').innerHTML = 'XP boost: +x' + decimalToString(new Decimal('1.25').times(revolutions.pow(new Decimal('0.64'))));
+        document.getElementById('reveffect3').innerHTML = 'BoxPoints boost: +x' + decimalToString(new Decimal('1.13').times(revolutions.pow(new Decimal('0.59'))));
+        document.getElementById('reveffect4').innerHTML = 'Special Peg boost: +x' + decimalToString(new Decimal('2').times(revolutions.pow(new Decimal('0.62'))));
+        document.getElementById('reveffect5').innerHTML = 'Rotation boost: +x' + decimalToString(new Decimal('3').times(revolutions.pow(new Decimal('0.61'))));
+        document.getElementById('reveffect6').innerHTML = 'Jumps boost: +x' + decimalToString(new Decimal('0.1').times(revolutions.pow(new Decimal('0.5'))));
+    }
+    function challengereset() {
+        ballpoints = new Decimal('0');
+        xp = new Decimal('0');
+        level = new Decimal('1');
+        boxpoints = new Decimal('0');
+        specialpegs = new Decimal('0');
+        pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        bupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        spupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
+        spupgradeprice = [new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9])).times(new Decimal(0.99).pow(challengelist[5]))];
+        rupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        rupgradeprice = [new Decimal('1').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('500').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('3000').times(new Decimal(0.99).pow(challengelist[5]))];
+        rotations = new Decimal('0');
+        rollpoints = new Decimal('0');
+        revolutions = new Decimal('0');
+        revupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        revupgradeprice = [new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+        energy = new Decimal('0');
+        tasks = [new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        taskprogress = [new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        irev = new Decimal('0');
+
+        for (m = 1; m <= pupgradelist.length; m = m + 1) {
+            document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
+            document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
+        }
+        for (m = 1; m <= bupgradelist.length; m = m + 1) {
+            document.getElementById('bupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(bupgradeprice[m - 1]) + ' BoxPoints';
+            document.getElementById('bupgrade' + m.toString() + 'cap').innerHTML = decimalToString(bupgradelist[m - 1]) + '/' + decimalToString(bcaplist[m - 1]);
+        }
+        for (m = 1; m <= spupgradelist.length; m = m + 1) {
+            document.getElementById('spupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(spupgradeprice[m - 1]) + ' Special Pegs';
+            document.getElementById('spupgrade' + m.toString() + 'cap').innerHTML = decimalToString(spupgradelist[m - 1]) + '/' + decimalToString(spcaplist[m - 1]);
+        }
+        for (m = 1; m <= rupgradelist.length; m = m + 1) {
+            document.getElementById('rupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(rupgradeprice[m - 1]) + ' Rotations';
+            document.getElementById('rupgrade' + m.toString() + 'cap').innerHTML = decimalToString(rupgradelist[m - 1]) + '/' + decimalToString(rcaplist[m - 1]);
+        }
+        for (m = 1; m <= revupgradelist.length; m = m + 1) {
+            document.getElementById('revupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(revupgradeprice[m - 1]) + ' Revolutions';
+            document.getElementById('revupgrade' + m.toString() + 'cap').innerHTML = decimalToString(revupgradelist[m - 1]) + '/' + decimalToString(revcaplist[m - 1]);
+        }
+        document.getElementById('revolutionstitle').innerHTML = 'Revolutions Building (you have ' + decimalToString(revolutions) + ' revolutions)';
+        document.getElementById('reveffect1').innerHTML = 'BallPoints boost: +x' + decimalToString(new Decimal('1.38').times(revolutions.pow(new Decimal('0.58'))));
+        document.getElementById('reveffect2').innerHTML = 'XP boost: +x' + decimalToString(new Decimal('1.25').times(revolutions.pow(new Decimal('0.64'))));
+        document.getElementById('reveffect3').innerHTML = 'BoxPoints boost: +x' + decimalToString(new Decimal('1.13').times(revolutions.pow(new Decimal('0.59'))));
+        document.getElementById('reveffect4').innerHTML = 'Special Peg boost: +x' + decimalToString(new Decimal('2').times(revolutions.pow(new Decimal('0.62'))));
+        document.getElementById('reveffect5').innerHTML = 'Rotation boost: +x' + decimalToString(new Decimal('3').times(revolutions.pow(new Decimal('0.61'))));
+        document.getElementById('reveffect6').innerHTML = 'Jumps boost: +x' + decimalToString(new Decimal('0.1').times(revolutions.pow(new Decimal('0.5'))));
+    }
+    function transferreset() {
+        electricity = electricity.plus(electricitygain);
+        transferresets = transferresets.plus(1);
+        ballpoints = new Decimal('0');
+        xp = new Decimal('0');
+        level = new Decimal('1');
+        boxpoints = new Decimal('0');
+        specialpegs = new Decimal('0');
+        pupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        bupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        spupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+        bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
+        spupgradeprice = [new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9])).times(new Decimal(0.99).pow(challengelist[5]))];
+        rupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), rupgradelist[8]];
+        rupgradeprice = [new Decimal('1').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('500').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('3000').times(new Decimal(0.99).pow(challengelist[5]))];
+        rotations = new Decimal('0');
+        rollpoints = new Decimal('0');
+        energy = new Decimal('0');
+        tasks = [new Decimal(0), new Decimal(0), new Decimal(0)];
+        taskprogress = [new Decimal(0), new Decimal(0), new Decimal(0)];
+        revolutions = new Decimal('0');
+        revupgradelist = [new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0'), new Decimal('0')];
+        revupgradeprice = [new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
+        for (m = 1; m <= pupgradelist.length; m = m + 1) {
+            document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
+            document.getElementById('pupgrade' + m.toString() + 'cap').innerHTML = decimalToString(pupgradelist[m - 1]) + '/' + decimalToString(pcaplist[m - 1]);
+        }
+        for (m = 1; m <= bupgradelist.length; m = m + 1) {
+            document.getElementById('bupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(bupgradeprice[m - 1]) + ' BoxPoints';
+            document.getElementById('bupgrade' + m.toString() + 'cap').innerHTML = decimalToString(bupgradelist[m - 1]) + '/' + decimalToString(bcaplist[m - 1]);
+        }
+        for (m = 1; m <= spupgradelist.length; m = m + 1) {
+            document.getElementById('spupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(spupgradeprice[m - 1]) + ' Special Pegs';
+            document.getElementById('spupgrade' + m.toString() + 'cap').innerHTML = decimalToString(spupgradelist[m - 1]) + '/' + decimalToString(spcaplist[m - 1]);
+        }
+        for (m = 1; m <= rupgradelist.length; m = m + 1) {
+            document.getElementById('rupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(rupgradeprice[m - 1]) + ' Rotations';
+            document.getElementById('rupgrade' + m.toString() + 'cap').innerHTML = decimalToString(rupgradelist[m - 1]) + '/' + decimalToString(rcaplist[m - 1]);
+        }
+        for (m = 1; m <= revupgradelist.length; m = m + 1) {
+            document.getElementById('revupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(revupgradeprice[m - 1]) + ' Revolutions';
+            document.getElementById('revupgrade' + m.toString() + 'cap').innerHTML = decimalToString(revupgradelist[m - 1]) + '/' + decimalToString(revcaplist[m - 1]);
+        }
+        document.getElementById('revolutionstitle').innerHTML = 'Revolutions Building (you have ' + decimalToString(revolutions) + ' revolutions)';
+        document.getElementById('reveffect1').innerHTML = 'BallPoints boost: +x' + decimalToString(new Decimal('1.38').times(revolutions.pow(new Decimal('0.58'))));
+        document.getElementById('reveffect2').innerHTML = 'XP boost: +x' + decimalToString(new Decimal('1.25').times(revolutions.pow(new Decimal('0.64'))));
+        document.getElementById('reveffect3').innerHTML = 'BoxPoints boost: +x' + decimalToString(new Decimal('1.13').times(revolutions.pow(new Decimal('0.59'))));
+        document.getElementById('reveffect4').innerHTML = 'Special Peg boost: +x' + decimalToString(new Decimal('2').times(revolutions.pow(new Decimal('0.62'))));
+        document.getElementById('reveffect5').innerHTML = 'Rotation boost: +x' + decimalToString(new Decimal('3').times(revolutions.pow(new Decimal('0.61'))));
+        document.getElementById('reveffect6').innerHTML = 'Jumps boost: +x' + decimalToString(new Decimal('0.1').times(revolutions.pow(new Decimal('0.5'))));
     }
     document.getElementById('parrow1').addEventListener('click', function () {
         if (pupgrade > 1) {
@@ -1107,10 +1429,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('pupgradebutton1').addEventListener('click', function () {
         price = pupgradeprice[pupgrade - 1];
         cap = pcaplist[pupgrade - 1];
-        if (ballpoints.compare(price) >= 0 && pupgradelist[pupgrade - 1].compare(cap) < 0) {
+        if (ballpoints.compare(price) >= 0 && pupgradelist[pupgrade - 1].compare(cap) < 0 && sumlist(pupgradelist).times(new Decimal(parseFloat(new Number(activechallenge === 6)))).compare(10) < 0 && activechallenge !== 7) {
             ballpoints = ballpoints.minus(price);
             pupgradelist[pupgrade - 1] = pupgradelist[pupgrade - 1].add(new Decimal('1'));
-            pupgradeprice = [new Decimal('5').times(new Decimal('1.95').pow(pupgradelist[0])), new Decimal('50').times(new Decimal('1.95').pow(pupgradelist[1])), new Decimal('1000').times(new Decimal('2.75').pow(pupgradelist[2])), new Decimal('1e4').times(new Decimal('10').pow(pupgradelist[3])), new Decimal('1e5').times(new Decimal('2.8').pow(pupgradelist[4]))];
+            pupgradeprice = [new Decimal('5').times(new Decimal('1.55').pow(pupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10').times(new Decimal('1.6').pow(pupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('50').times(new Decimal('2.75').pow(pupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal('10').pow(pupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.8').pow(pupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
         }
         for (m = 1; m <= pupgradelist.length; m = m + 1) {
             document.getElementById('pupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(pupgradeprice[m - 1]) + ' BallPoints';
@@ -1164,8 +1486,12 @@ document.addEventListener('DOMContentLoaded', function () {
         load = 1;
         setInterval(persecond, 1000);
         if (mutemusic.compare(new Decimal('0')) === 0) {
-            musictrack = new Audio('real.mp3');
-            musictrack.setAttribute('src', 'real.mp3');
+            bgmusic = 'real.mp3';
+            if (activechallenge !== 0) {
+                bgmusic = 'challenge.mp3';
+            }
+            musictrack = new Audio(bgmusic);
+            musictrack.setAttribute('src', bgmusic);
             musictrack.play();
             musictrack.addEventListener('ended', function () {
                 this.currentTime = 0;
@@ -1180,13 +1506,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (document.getElementById('peg2').getBoundingClientRect().left - document.getElementById('peg1').getBoundingClientRect().right >= 45) {
             alert('heyyyy! hiiiiii! hellooo! your window size is TOO BIG and it would help a lot if you uh resize or zoom in a bit thank you (if you dont the game could act weird)');
         }
+        document.getElementById('dropdown').style.display = 'inline';
     });
     document.getElementById('mutemusic').addEventListener('click', function () {
         mutemusic = new Decimal('1').minus(mutemusic);
         if (mutemusic.compare(new Decimal('0')) === 0) {
             document.getElementById('mutemusic').style.backgroundColor = '#b4f277';
-            musictrack = new Audio('real.mp3');
-            musictrack.setAttribute('src', 'real.mp3');
+            bgmusic = 'real.mp3';
+            if (activechallenge !== 0) {
+                bgmusic = 'challenge.mp3';
+            }
+            musictrack = new Audio(bgmusic);
+            musictrack.setAttribute('src', bgmusic);
             musictrack.play();
             musictrack.addEventListener('ended', function () {
                 this.currentTime = 0;
@@ -1227,12 +1558,12 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('bupgradebutton1').addEventListener('click', function () {
         price = bupgradeprice[bupgrade - 1];
         cap = bcaplist[bupgrade - 1];
-        if (boxpoints.compare(price) >= 0 && bupgradelist[bupgrade - 1].compare(cap) < 0) {
+        if (boxpoints.compare(price) >= 0 && bupgradelist[bupgrade - 1].compare(cap) < 0 && sumlist(bupgradelist).times(new Decimal(parseFloat(new Number(activechallenge === 6)))).compare(10) < 0 && activechallenge !== 7) {
             if (boupgradelist[6] < 1) {
                 boxpoints = boxpoints.minus(price);
             }
             bupgradelist[bupgrade - 1] = bupgradelist[bupgrade - 1].add(new Decimal('1'));
-            bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]), new Decimal('1.5').pow(bupgradelist[1]), new Decimal('1.5').pow(bupgradelist[2]), new Decimal('1.5').pow(bupgradelist[3]), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])), new Decimal('400').times(new Decimal('1.8').pow(bupgradelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])), new Decimal('100'), new Decimal('150')];
+            bupgradeprice = [new Decimal('1.5').pow(bupgradelist[0]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[1]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[2]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1.5').pow(bupgradelist[3]).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal('1.75').pow(bupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('40').times(new Decimal('1.8').pow(bupgradelist[5])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('1.6').pow(bupgradelist[6])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1e4').times(new Decimal('1.975').pow(bupgradelist[7])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('150').times(new Decimal(0.99).pow(challengelist[5]))];
         }
         for (m = 1; m <= bupgradelist.length; m = m + 1) {
             document.getElementById('bupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(bupgradeprice[m - 1]) + ' BoxPoints';
@@ -1256,10 +1587,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('spupgradebutton1').addEventListener('click', function () {
         price = spupgradeprice[spupgrade - 1];
         cap = spcaplist[spupgrade - 1];
-        if (specialpegs.compare(price) >= 0 && spupgradelist[spupgrade - 1].compare(cap) < 0) {
+        if (specialpegs.compare(price) >= 0 && spupgradelist[spupgrade - 1].compare(cap) < 0 && sumlist(spupgradelist).times(new Decimal(parseFloat(new Number(activechallenge === 6)))).compare(10) < 0 && activechallenge !== 7) {
             specialpegs = specialpegs.minus(price);
             spupgradelist[spupgrade - 1] = spupgradelist[spupgrade - 1].add(new Decimal('1'));
-            spupgradeprice = [new Decimal('5'), new Decimal('5'), new Decimal('5'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('15'), new Decimal('25'), new Decimal('25'), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9]))];
+            spupgradeprice = [new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('15').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('25').times(new Decimal('1.1').pow(spupgradelist[9])).times(new Decimal(0.99).pow(challengelist[5]))];
         }
         for (m = 1; m <= spupgradelist.length; m = m + 1) {
             document.getElementById('spupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(spupgradeprice[m - 1]) + ' Special Pegs';
@@ -1286,7 +1617,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (boxpoints.compare(price) >= 0 && qolupgradelist[qolupgrade - 1].compare(cap) < 0) {
             boxpoints = boxpoints.minus(price);
             qolupgradelist[qolupgrade - 1] = qolupgradelist[qolupgrade - 1].add(new Decimal('1'));
-            qolupgradeprice = [new Decimal('50').times(new Decimal('5').pow(qolupgradelist[0])), new Decimal('1000'), new Decimal('5000'), new Decimal('10000')];
+            qolupgradeprice = [new Decimal('10').times(new Decimal('5').pow(qolupgradelist[0])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('10000').times(new Decimal(0.99).pow(challengelist[5]))];
         }
         for (m = 1; m <= qolupgradelist.length; m = m + 1) {
             document.getElementById('qolupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(qolupgradeprice[m - 1]) + ' BoxPoints';
@@ -1315,12 +1646,12 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('rupgradebutton1').addEventListener('click', function () {
         price = rupgradeprice[rupgrade - 1];
         cap = rcaplist[rupgrade - 1];
-        if (rotations.compare(price) >= 0 && rupgradelist[rupgrade - 1].compare(cap) < 0) {
+        if (rotations.compare(price) >= 0 && rupgradelist[rupgrade - 1].compare(cap) < 0 && sumlist(rupgradelist).times(new Decimal(parseFloat(new Number(activechallenge === 6)))).compare(10) < 0 && activechallenge !== 7) {
             if (boupgradelist[9] < 1) {
                 rotations = rotations.minus(price);
             }
             rupgradelist[rupgrade - 1] = rupgradelist[rupgrade - 1].add(new Decimal('1'));
-            rupgradeprice = [new Decimal('1'), new Decimal('5'), new Decimal('20'), new Decimal('100'), new Decimal('200'), new Decimal('250'), new Decimal('500'), new Decimal('1000'), new Decimal('3000')];
+            rupgradeprice = [new Decimal('1').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('5').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('20').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('500').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('3000').times(new Decimal(0.99).pow(challengelist[5]))];
         }
         for (m = 1; m <= rupgradelist.length; m = m + 1) {
             document.getElementById('rupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(rupgradeprice[m - 1]) + ' Rotations';
@@ -1349,11 +1680,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (revimgrotation >= 350 || revimgrotation <= 10) {
                 document.getElementById('revolutionline').style.backgroundColor = 'green';
                 document.getElementById('revbutton').innerHTML = 'You Won!';
-                revolutions = revolutions.plus(revgain.times(new Decimal(revstreakeffect)));
+                if (activechallenge === 2) {
+                    revolutions.plus(1);
+                } else {
+                    revolutions = revolutions.plus(revgain.times(new Decimal(revstreakeffect)));
+                }
                 revstreak = revstreak + 1;
-                revstreakeffect = (Math.pow(1.15, revstreak) * Math.pow(parseFloat(decimalToString(irev)), 1.35)).toFixed(2);
+                revstreakeffect = (Math.pow(1.15, revstreak) * ((Math.pow(parseFloat(decimalToString(irev)), 1.35) + 1))).toFixed(2);
                 if (revstreak >= 10) {
-                    revstreakeffect = revstreakeffect = (Math.pow(1.15, 10) * Math.pow(parseFloat(decimalToString(irev)), 1.35)).toFixed(2);
+                    revstreakeffect = (Math.pow(1.15, 10) * ((Math.pow(parseFloat(decimalToString(irev)), 1.35) + 1))).toFixed(2);
                 }
                 document.getElementById('revpowertext').innerHTML = 'Streak: ' + revstreak.toString() + '<br> Boost: x' + revstreakeffect.toString();
                 document.getElementById('revpowerbar2').style.height = (35 - (revstreak * 3.5)).toString() + '%';
@@ -1462,10 +1797,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('revupgradebutton1').addEventListener('click', function () {
         price = revupgradeprice[revupgrade - 1];
         cap = revcaplist[revupgrade - 1];
-        if (revolutions.compare(price) >= 0 && revupgradelist[revupgrade - 1].compare(cap) < 0) {
+        if (revolutions.compare(price) >= 0 && revupgradelist[revupgrade - 1].compare(cap) < 0 && sumlist(revupgradelist).times(new Decimal(parseFloat(new Number(activechallenge === 6)))).compare(10) < 0 && activechallenge !== 7) {
             revolutions = revolutions.minus(price);
             revupgradelist[revupgrade - 1] = revupgradelist[revupgrade - 1].add(new Decimal('1'));
-            revupgradeprice = [new Decimal('100'), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4]))];
+            revupgradeprice = [new Decimal('100').times(new Decimal(0.99).pow(challengelist[5])), new Decimal('200').times(new Decimal('3.16').pow(revupgradelist[1])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('250').times(new Decimal('3.21').pow(revupgradelist[2])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('350').times(new Decimal('3.36').pow(revupgradelist[3])).times(new Decimal(0.99).pow(challengelist[5])), new Decimal('1000').times(new Decimal('2.25').pow(revupgradelist[4])).times(new Decimal(0.99).pow(challengelist[5]))];
         }
         for (m = 1; m <= revupgradelist.length; m = m + 1) {
             document.getElementById('revupgrade' + m.toString() + 'price').innerHTML = 'Cost: ' + decimalToString(revupgradeprice[m - 1]) + ' Revolutions';
@@ -1501,11 +1836,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         price = boupgradeprice[bobutton - 1].times(new Decimal('5').pow(new Decimal(templist.length)));
         cap = decimalToString(bocaplist[bobutton - 1]);
-        if (jumps.compare(price) >= 0 && boupgradelist[bobutton - 1] < cap) {
+        if (jumps.compare(price) >= 0 && boupgradelist[bobutton - 1] < cap && activechallenge !== 8) {
             jumps = jumps.minus(price);
             boupgradelist[bobutton - 1] = boupgradelist[bobutton - 1] + 1;
         }
-        window.console.log(bobutton, boupgradelist[bobutton]);
         document.getElementById('boupgradecap').innerHTML = boupgradelist[bobutton - 1].toString() + '/' + decimalToString(bocaplist[bobutton - 1]);
         document.getElementById('boupgradeprice').innerHTML = 'Cost: ' + decimalToString(price) + ' Jumps';
     });
@@ -1514,7 +1848,7 @@ document.addEventListener('DOMContentLoaded', function () {
             jumps = totaljumps;
             boupgradelist[b] = 0;
         });
-        respec = 1;
+        respec = 0;
         bouncereset();
     });
     document.getElementById('energyresetbutton').addEventListener('click', function () {
@@ -1530,7 +1864,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (energy.compare(price) >= 0 && taskprogress[Number(b.id.slice(4)) - 1].compare(0) <= 0) {
                 taskprogress[Number(b.id.slice(4)) - 1] = tasktime[Number(b.id.slice(4)) - 1].floor();
                 tasktime2[Number(b.id.slice(4)) - 1] = taskprogress[Number(b.id.slice(4)) - 1];
-                window.console.log(tasktime2[Number(b.id.slice(4)) - 1].floor(), taskprogress[Number(b.id.slice(4)) - 1], taskprogress, tasktime2);
+
                 energy = energy.minus(price);
             }
         });
@@ -1543,11 +1877,137 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('disableboxifyauto').style.backgroundColor = '#f27777';
         }
     });
+    let challengeid
+    document.querySelectorAll('.challenge').forEach((b) => {
+        b.addEventListener('click', () => {
+            if (activechallenge == 0) {
+                challengegoal = [1000 * (3 ** challengelist[0]), 20 * (2 ** challengelist[1]), challengelist[2] + 1, 120 + (2 * challengelist[3]), 20, 100 + (2 * challengelist[5]), 95 + (2 * challengelist[6]), 60];
+                let challengegoalcurr = ['Rotations', 'Revolutions', 'RollPoints', 'Levels', 'Levels', 'Levels', 'Levels', 'Levels'];
+                challengegoal.forEach((c, d) => {
+                    challengegoal[d] = challengegoal[d].toString();
+                    challengegoal[d] += ' ' + challengegoalcurr[d];
+                });
+                challengeid = b.id.slice(9);
+                challengeid = new Number(challengeid);
+                document.getElementById('challengeinfo').innerHTML = challengedesc[challengeid - 1] + '<br> Goal: ' + challengegoal[challengeid - 1];
+            }    
+        });
+    });
+    document.getElementById('challengestart').addEventListener('click', () => {
+        if (activechallenge === 0 && challengeid !== undefined) { 
+            activechallenge = parseFloat(challengeid);
+            challengereset();
+            if (activechallenge === 8) {
+                boupgradelist.forEach(function (a, b, c) {
+                    jumps = totaljumps;
+                    boupgradelist[b] = 0;
+                });
+                boupgradelist[24] = 1;
+                respec = 0;
+                bouncereset();
+            }
+            if (mutemusic === 1) {
+                musictrack.pause()
+                musictrack = new Audio('challenge.mp3');
+                musictrack.setAttribute('src', 'challenge.mp3');
+                musictrack.play();
+                musictrack.addEventListener('ended', () => {
+                    this.currentTime = 0;
+                    this.play();
+                }, false);
+            }
+            document.getElementById('challengestart').innerHTML = 'Exit!';
+            document.body.style.backgroundColor = '#729cb0';
+            burnoutfunctionality = setInterval(burnout, 1000);
+        } else if (activechallenge > 0) {
+            challengegoal = [1000 * (3 ** challengelist[0]), 20 * (2 ** challengelist[1]), challengelist[2] + 1, 120 + (2 * challengelist[3]), 20, 100 + (2 * challengelist[5]), 95 + (2 * challengelist[6]), 20];
+            document.body.style.backgroundColor = '#b0def5';
+            if (mutemusic === 1) {
+                musictrack.pause()
+                musictrack = new Audio('real.mp3');
+                musictrack.setAttribute('src', 'real.mp3');
+                musictrack.play();
+                musictrack.addEventListener('ended', () => {
+                    this.currentTime = 0;
+                    this.play();
+                }, false);
+            }
+            challengegoalcurr = ['rotations', 'revolutions', 'rollpoints', 'level', 'level', 'level', 'level', 'level'];
+
+            if (eval(challengegoalcurr[activechallenge - 1] + '.compare(challengegoal[activechallenge - 1]) >= 0') && (challengecap[activechallenge - 1] > challengelist[activechallenge - 1])) {
+                challengelist[activechallenge - 1] += 1;
+                document.getElementById('challenge' + (activechallenge).toString()).innerHTML = challengetitles[activechallenge - 1] + ' ' + challengelist[activechallenge - 1] + '/' + challengecap[activechallenge - 1];
+            }
+            challengegoalcurr = ['Rotations', 'Revolutions', 'RollPoints', 'Levels', 'Levels', 'Levels', 'Levels', 'Levels'];
+            challengegoal.forEach((c, d) => {
+                challengegoal[d] = challengegoal[d].toString();
+                challengegoal[d] += ' ' + challengegoalcurr[d];
+            });
+            document.getElementById('challengeinfo').innerHTML = "No challenges are selected. Select one and start it to apply it's debuffs. Finishing a challenge gives rewards to help you progress. All challenges force a bounce reset (only QoL is kept) with no reward unless specified. If you are stuck in a challenge just press the button below.";
+            activechallenge = 0;
+            challengeid = undefined;
+            document.getElementById('challengestart').innerHTML = 'Start!';
+            if (challengelist[0] >= 1) {
+                document.getElementById('challenge2').style.display = 'block';
+            }
+            if (challengelist[1] >= 2) {
+                document.getElementById('challenge3').style.display = 'block';
+            }
+            if (challengelist[2] >= 1) {
+                document.getElementById('challenge4').style.display = 'block';
+            }
+            if (challengelist[3] >= 10) {
+                document.getElementById('challenge5').style.display = 'block';
+            }
+            clearInterval(burnoutfunctionality);
+        }
+    });
+    document.getElementById('transferbutton').addEventListener('click', () => {
+        if (challengelist[4] > 0) {
+            transferreset();
+        }
+    });
+    document.getElementById('dropdown').addEventListener('click', () => {
+        if (dropdowntoggle) {
+            document.getElementById('menu').style.display = 'none';
+            dropdowntoggle = false;
+        } else {
+            document.getElementById('menu').style.display = 'flex';
+            dropdowntoggle = true;
+        }
+    });
+    document.getElementById('moveleft').addEventListener('click', () => {
+        if (sscreen > 0) {
+            for (l = 0; l < ballList.length; l = l + 1) {
+                pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
+            }
+            ballList = [];
+            document.getElementById('balldrop').innerHTML = 'Drop Ball!';
+            document.getElementById('balldrop').style.backgroundColor = '#c2c2c2';
+            document.getElementById('screen' + sscreen.toString()).style.display = 'none';
+            sscreen = sscreen - 1;
+            document.getElementById('screen' + sscreen.toString()).style.display = 'inline';
+            document.getElementById('screen' + sscreen.toString()).style.display = 'inline';
+        }
+    });
+    document.getElementById('moveright').addEventListener('click', () => {
+        if (sscreen < 3 || (sscreen < 5 && rollresets.compare(1) >= 0) || (sscreen < 6 && boupgradelist[24] === 1)) {
+             for (l = 0; l < ballList.length; l = l + 1) {
+                pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
+            }
+            ballList = [];
+            document.getElementById('balldrop').innerHTML = 'Drop Ball!';
+            document.getElementById('balldrop').style.backgroundColor = '#c2c2c2';
+            document.getElementById('screen' + sscreen.toString()).style.display = 'none';
+            sscreen = sscreen + 1;
+            document.getElementById('screen' + sscreen.toString()).style.display = 'inline';
+        }
+    });
     //hotkeys
     document.addEventListener('keydown', function (event) {
         //window.console.log(event.code);
         //^^^ keycode testing ^^^
-        if (event.code === 'KeyS') {
+        if (event.code === 'KeyQ') {
             save();
             if (JSON.stringify(savefile) !== '[object Object]') {
                 localStorage.setItem('save', JSON.stringify(savefile));
@@ -1556,7 +2016,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('save failed!');
             }
         }
-        if (event.code === 'ArrowRight' && (sscreen < 3 || (sscreen < 5 && rollresets.compare(1) >= 0))) {
+        if ((event.code === 'ArrowRight' || event.code === 'KeyD') && (sscreen < 3 || (sscreen < 5 && rollresets.compare(1) >= 0) || (sscreen < 6 && boupgradelist[24] === 1))) {
             for (l = 0; l < ballList.length; l = l + 1) {
                 pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
             }
@@ -1567,7 +2027,7 @@ document.addEventListener('DOMContentLoaded', function () {
             sscreen = sscreen + 1;
             document.getElementById('screen' + sscreen.toString()).style.display = 'inline';
         }
-        if (event.code === 'ArrowLeft' && sscreen > 0) {
+        if ((event.code === 'ArrowLeft' || event.code === 'KeyA') && sscreen > 0) {
             for (l = 0; l < ballList.length; l = l + 1) {
                 pegarea.removeChild(document.getElementById('ball' + ballList[l].index.toString()));
             }
@@ -1621,12 +2081,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
+        if (event.code === 'KeyE') {
+            if (rollpoints.compare(new Decimal('1')) >= 0) {
+                energyreset();
+            }
+        }
+        if (event.code === 'KeyT') {
+            if (challengelist[4] > 0) {
+                transferreset();
+            }
+        }
     });
     //slider :3
     document.getElementById('ballcomp').oninput = function () {
         document.getElementById('ballcompdisplay').innerHTML = 'Ball Compaction Start: ' + this.value.toString() + ' Balls';
         ballcap = this.value;
     };
+    document.getElementById('transferslider').oninput = function () {
+        document.getElementById('transferamount').innerHTML = 'Current Setting: ' + this.value.toString()
+        chargeamount = this.value;
+    }
     document.addEventListener('keyup', function (e) {
         if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
             for (m = 0; m < boupgradelist.length; m = m + 1) {

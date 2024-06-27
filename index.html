@@ -8,6 +8,11 @@
     <script src="newsticker.js" charset="utf-8"></script>
 </head>
 <body>
+	<button id="dropdown">this is temproary</button>
+	<div id="menu">
+		<button id="moveleft">move left</button>
+		<button id="moveright">move right</button>
+	</div>
 	<div id='loading'>
 		<button id='loadingbutton'>Play!</button>
 	</div>
@@ -17,11 +22,11 @@
 		<p class='p' id='hotkeys'>
 			Hotkeys:
 			<br> <br>
-			S - Save
+			Q - Save
 			<br>
-			D - Drop Ball
+			Space - Drop Ball
 			<br>
-			Arrow Keys - Move
+			Arrow Keys/WASD/the menu - Move
             <br>
             B - Boxify
             <br>
@@ -32,6 +37,10 @@
 			J - Bounce
 			<br>
             Shift (hold) - Highlight Bounce Upgrades
+			<br>
+			E - Energize
+			<br>
+			T - Transfer
 		</p>
         <button id='deletesave'>Delete Save (!)</button>
         <p class='p' id='credits'>
@@ -44,9 +53,9 @@
             Music "remixed" from <a href='https://www.youtube.com/watch?v=JS05TCUpMSs&t=0s'>here</a> (remix by me shocker)
 		</p>
         <p class='p' id='version'>
-            Version: 1.3.1
+            Version: 1.4
             <br><br>
-            Endgame: Other V (challenges)
+            Endgame: Final II completed (strike)
             <br><br>
             Join our <a href='https://discord.gg/XjncY4BBMz'>discord server</a> for bug reporting and other stuff
         </p>
@@ -1105,4 +1114,41 @@
             <div id='task3bar' class='taskbar'></div>
         </div>
     </div>
+	<div id="screen6">
+		<div id="challengebuilding">
+			<div id="innerchallengebuilding">
+				<button id='challenge1' class="challenge"></button>
+				<button id='challenge2' class="challenge"></button>
+				<button id='challenge3' class="challenge"></button>
+				<button id='challenge4' class="challenge"></button>
+				<button id='challenge5' class="challenge"></button>
+				<button id='challenge6' class="challenge"></button>
+				<button id='challenge7' class="challenge"></button>
+				<button id='challenge8' class="challenge"></button>
+			</div>
+		</div>
+		<div id="challengeselector">
+			<div id="innerchallengeselector">
+				<span id="challengeinfo">No challenges are selected. Select one and start it to apply it's debuffs. Finishing a challenge gives rewards to help you progress. All challenges force a bounce reset (only QoL is kept) with no reward unless specified. If you are stuck in a challenge just press the button below.</span>
+			</div>
+			<button id="challengestart">Start!</button>
+		</div>
+		<div id="transferreset">
+			<span id="transfertext">:3</span>
+			<button id="transferbutton">Transfer!</button>
+		</div>
+		<div id="transferbuilding">
+			<span id="transferbuildingcontainer">
+				<span>Positive</span>
+				<input type="range" min="-100" max="100" value="0" step="1" class="slider" id="transferslider">
+				<span>Negative</span>
+				<span id="transferamount"></span>
+				<span id="batteries">:3</span>
+				<span id="electricity">:3</span>
+				<span>Welcome to Transfer! From now on, Bouncing gives you 1 Battery, and that Battery combined with your Electricity amount boosts various currencies in the game! The catch is that you can only boost one chunk of currencies or the other. These chunks are the "Positive" and "Negative" side. With the slider, you can change the effect but go on one side and the other gets nerfed! The further it is on one side the heaver the buff/nerf is. Have fun!!11!11 (also batteries store energy on bounce btw) (also new challenges after 10 batteries)</span>
+				<br>
+				<span id="transfereffect">:3</span>
+			</span>	
+		</div>
+	</div>
 </body>

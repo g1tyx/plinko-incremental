@@ -348,7 +348,7 @@ audio {
     top: 1%;
     left: 13%;
     width: 10%;
-    height: 40%;
+    height: 45%;
     background-color: #dddddd;
     outline: black solid 2px;
     border: none;
@@ -1589,7 +1589,7 @@ img {
     width: 50%;
     height: 30%;
     position: absolute;
-    /** display: none; **/
+    display: none;
     top: 65.5%;
     left: 45%;
     outline: black solid 4px;
@@ -1745,6 +1745,206 @@ img {
     font-size: 110%;
     font-family: 'Roboto';
     text-align: center;
+}
+#screen6 {
+    display: none;
+}
+#challengebuilding {
+    position: absolute;
+    top: 2.5%;
+    left: 2.5%;
+    width: 35%;
+    height: 45%;
+    background: #87160e;
+    outline: black solid 4px;
+    font-size: 120%;
+    font-family: 'Roboto';
+    display: none;
+    flex: 1;
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+#innerchallengebuilding {
+    margin: 2% 2%;
+    width: 96%;
+    height: 200%;
+    background: #c2c2c2;
+    outline: black solid 4px;
+    font-size: 120%;
+    font-family: 'Roboto';
+    flex-direction: column;
+    grid-row-gap: 2%;
+    min-height: min-content;
+}
+.challenge {
+    width: 80%;
+    height: 9.5%;
+    margin: 2% 10%;
+    background-color: #6b100a;
+    font-family: 'Roboto';
+    font-size: 75%;
+    outline: black solid 3px;
+    border: none;
+    display: none;
+}
+#challenge1 {
+    display: block;
+}
+#challengeselector {
+    position: absolute;
+    top: 2.5%;
+    left: 38.5%;
+    width: 35%;
+    height: 45%;
+    background: #87160e;
+    outline: black solid 4px;
+    font-size: 120%;
+    font-family: 'Roboto';
+    display: none; 
+}
+#innerchallengeselector {
+    margin: 2% 2%;
+    width: 96%;
+    height: 94%;
+    background-color: #A1A1A1;
+    outline: black solid 4px;
+    text-align: center;
+}
+#challengestart {
+    position: absolute;
+    top: 75%;
+    left: 10%;
+    width: 80%;
+    height: 10%;
+    background-color: #dddddd;
+    outline: black solid 2px;
+    border: none;
+    font-size: 110%;
+    font-family: 'Roboto';
+    text-align: center;
+}
+#transferreset {
+    position: absolute;
+    top: 52.5%;
+    left: 38.5%;
+    width: 35%;
+    height: 45%;
+    background: #18a74a;
+    outline: black solid 4px;
+    font-size: 120%;
+    font-family: 'Roboto';
+    display: none;
+}
+#transfertext {
+    margin: 5%;
+    width: 90%;
+    height: 85%;
+    background-color: #bbbbbb;
+    outline: black solid 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+#transferbutton {
+    width: 50%;
+    position: absolute;
+    bottom: 10%;
+    left: 25%;
+    background-color: #dddddd;
+    outline: black solid 2px;
+    border: none;
+    font-size: 110%;
+    font-family: 'Roboto';
+    text-align: center;
+}
+#transferbuilding {
+    position: absolute;
+    top: 2.5%;
+    left: 74.5%;
+    width: 24.5%;
+    height: 95%;
+    background: #18a74a;
+    outline: black solid 4px;
+    font-size: 90%;
+    font-family: 'Roboto';
+    text-align: center;
+    display: none;
+}
+#transferbuildingcontainer{
+    margin: 5%;
+    width: 90%;
+    height: 95%;
+    background-color: #bbbbbb;
+    outline: black solid 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+#transferslider {
+    -webkit-appearance: none;
+    width: 1%;
+    height: 60%;
+    border-radius: 15px;
+    opacity: 0.5;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    vertical-align: middle;
+}
+#transferslider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    outline: black solid 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #A1A1A1;
+}
+#transferslider::-webkit-slider-runnable-track {
+    background: rgb(15,209,50);
+    background: linear-gradient(180deg, rgba(15,209,50,1) 0%, rgba(255,255,255,1) 50%, rgba(184,12,12,1) 100%);
+    outline: black 2px solid;
+    border-radius: 0%;
+}
+
+#transferslider::-moz-slider-thumb {
+    -webkit-appearance: none;
+    outline: black solid 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #A1A1A1;
+}
+#electricity {
+    border-bottom: black solid 5px;
+    width: 100%;
+}
+#dropdown {
+    width: 10%;
+    height: 10%;
+    display: none;
+    position: absolute;
+    top: 50%;
+    z-index: 1000;
+}
+#menu {
+    display: none;
+    position: absolute;
+    flex-direction: row;
+    width: 10%;
+    height: 100%;
+    z-index: 999;
+    background: rgb(255,234,132);
+    background: linear-gradient(180deg, rgba(255,234,132,1) 0%, rgba(250,0,255,1) 38%, rgba(0,255,143,1) 74%);
+}
+#moveleft {
+    width: 100%;
+    height: 5%;
+}
+#moveright {
+    width: 100%;
+    height: 5%;
 }
 @keyframes disappear {
     from {

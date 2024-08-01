@@ -44,6 +44,9 @@ document.addEventListener('DOMContentLoaded', function () {
     despawn = 0;
     audiorepeat = 0;
     specialpeglist = [];
+    for (i = 1; i <= 67; i += 1) {
+        specialpeglist.push(i);
+    }
     ballList = [];
     balldropallow = 1;
     pegseperationlist = [0, 0, 10, 19, 29, 38, 48, 57, 67, 67];
@@ -70,7 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return str;
     }
-
+    function distance(x1, y1, x2, y2) {
+        return Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2);
+    }
     function wait() {
         if (cooldowncheck === 1) {
             cooldowncheck = 0;
@@ -106,57 +111,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         for (j = pegseperationlist[pegsepstart - 1]; j < pegseperationlist[pegsepstart + 1]; j = j + 1) {
             peg = pegs[j];
-            touching = (peg.offsetLeft - 5) - (ballcheckphysical.offsetLeft - 20);
-            touching = touching * touching;
-            touching2 = (peg.offsetTop - 5) - (ballcheckphysical.offsetTop - 20);
-            touching2 = touching2 * touching2;
-            touching = touching + touching2;
-            if (touching <= 400) {
+            touching = distance(peg.getBoundingClientRect().left + (peg.getBoundingClientRect().width / 2), peg.getBoundingClientRect().top + (peg.getBoundingClientRect().height / 2), ballcheckphysical.getBoundingClientRect().left + (ballcheckphysical.getBoundingClientRect().width / 2), ballcheckphysical.getBoundingClientRect().top + (ballcheckphysical.getBoundingClientRect().height / 2));
+            // x1.22 is to make up for how css handles subpixels
+            if (touching <= 1.22 * (((peg.getBoundingClientRect().width / 2) + (ballcheckphysical.getBoundingClientRect().width / 2)) * ((peg.getBoundingClientRect().width / 2) + (ballcheckphysical.getBoundingClientRect().width / 2)))) {
                 touch = 1;
                 pegtouch = j + 1;
             }
         }
         j = 0;
-        if (ballcheck.xpos <= 0 || ballcheck.ypos < -10 || ballcheck.ypos >= 99 || ballcheck.xpos >= 99) {
-            touch = 1;
-        }
     }
 
     function rectToPolar(x, y) {
         k = [];
-        x = x * 100;
-        y = y * 100;
         k.push(Math.sqrt((x * x) + (y * y)));
         if (x !== 0) {
             k.push(Math.atan(y / x));
         } else {
-            k.push((Math.random() - 0.5) * 10);
+            k.push(0);
         }
         return k;
     }
-
     function spawnball() {
-        spawnindex = spawnindex + 1;
-        ball = document.createElement('div');
-        document.getElementById('pegs').appendChild(ball);
-        ball.style.width = '10px';
-        ball.style.height = '10px';
-        ball.style.borderRadius = "50%";
-        ball.style.position = 'absolute';
-        ball.style.top = '-10%';
-        ball.style.backgroundColor = '#c2c2c2';
-        ball.style.outline = 'black solid 1px';
-        ball.setAttribute('id', 'ball' + spawnindex.toString());
-        obj = {
-            'index': spawnindex,
-            'xvel': 0,
-            'yvel': 0,
-            'ypos': -10,
-            'xpos': 0
-        };
-        obj.xpos = Math.random() * 99;
-        ballList.push(obj);
-        ball.style.left = obj.xpos.toString() + '%';
+        if (sscreen === 1) {
+            spawnindex = spawnindex + 1;
+            ball = document.createElement('div');
+            document.getElementById('pegs').appendChild(ball);
+            ball.style.width = '10px';
+            ball.style.height = '10px';
+            ball.style.borderRadius = "50%";
+            ball.style.position = 'absolute';
+            ball.style.top = '-10%';
+            ball.style.backgroundColor = '#c2c2c2';
+            ball.style.outline = 'black solid 0.1vmin';
+            ball.setAttribute('id', 'ball' + spawnindex.toString());
+            ball.setAttribute('class', 'ball');
+            obj = {
+                'index': spawnindex,
+                'xvel': 0,
+                'yvel': 0,
+                'ypos': -10,
+                'xpos': 0
+            };
+            obj.xpos = Math.random() * 99;
+            ballList.push(obj);
+            ball.style.left = obj.xpos.toString() + '%';
+        }
     }
 
     function spawnball2() {
@@ -166,6 +165,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 spawnball();
             }
         }
+        document.querySelectorAll('.ball').forEach(b => {
+            if (b.offsetWidth >= 0) {
+                b.style.width = (document.getElementById('peg1').getBoundingClientRect().width / 3).toString() + 'px';
+                b.style.height = b.getBoundingClientRect().width.toString() + 'px';
+            }
+        });
         document.getElementById('balldrop').innerHTML = 'Waiting... (there are ' + ballList.length.toString() + ' balls left)';
         if (mutesfx.compare(new Decimal('0')) === 0) {
             audiotrack = new Audio('ballspawn.mp3');
@@ -175,22 +180,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function specialpegspawn() {
-        if ((Math.random() <= parseFloat(decimalToString(specialpegchance)) && specialpegchance != undefined) && specialpegunlocked === 1 && specialpeglist.length < 67) {
-            specialpegpermission = 0;
-            for (i = 0; i <= 1.79e308; i = i + 1) {
-                specialpeglocation = Math.ceil(Math.random() * 67);
-                for (k = 0; k < specialpeglist.length; k = k + 1) {
-                    if (specialpeglocation === specialpeglist[k]) {
-                        specialpegpermission = 1;
-                    }
-                }
-                if (specialpegpermission === 0) {
-                    specialpeglist.push(specialpeglocation);
-                    document.getElementById('peg' + specialpeglocation.toString()).style.backgroundColor = 'gold';
-                    break;
-                }
-            }
-
+        if ((Math.random() <= parseFloat(decimalToString(specialpegchance)) && specialpegchance != undefined) && specialpegunlocked === 1 && specialpeglist.length !== 0) {
+            specialpegnumber = Math.ceil(Math.random() * specialpeglist.length)
+            specialpeglist = specialpeglist.filter(e => e !== specialpegnumber);
+            document.getElementById('peg' + specialpegnumber.toString()).style.backgroundColor = 'gold';
         }
     }
     setInterval(specialpegspawn, 1000);
@@ -254,11 +247,10 @@ document.addEventListener('DOMContentLoaded', function () {
             pegs = document.getElementsByClassName('peg');
             collision();
             if (touch === 0) {
-                ballcheck.yvel = (ballcheck.yvel * 0.995) + gravity;
+                ballcheck.yvel = (ballcheck.yvel * 0.99) + gravity;
                 ballcheck.ypos = ballcheck.ypos + ballcheck.yvel;
-                ballcheck.xvel = ballcheck.xvel * 0.995;
                 ballcheck.xpos = ballcheck.xpos + ballcheck.xvel;
-                gravity = gravity * 1.85;
+                gravity = gravity * 1.75;
                 ballcheckphysical.style.left = ballcheck.xpos.toString() + '%';
                 ballcheckphysical.style.top = ballcheck.ypos.toString() + '%';
                 if (ballcheck.ypos >= 90) {
@@ -283,13 +275,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     audiotrack = new Audio('ballht.mp3');
                     audiotrack.play();
                 }
-                for (j = 0; j < specialpeglist.length; j = j + 1) {
-                    if (pegtouch === specialpeglist[j]) {
-                        document.getElementById('peg' + pegtouch.toString()).style.backgroundColor = '#c2c2c2';
-                        specialpegtouch = 1;
-                    }
+                if (!specialpeglist.includes(pegtouch)) {
+                   specialpeglist.push(pegtouch);
+                   document.getElementById('peg' + pegtouch.toString()).style.backgroundColor = '#c2c2c2';
+                   specialpegtouch = 1;
                 }
-                while (touch === 1) {
+                while (touch == 1) { 
                     gravity = 0.01;
                     angle = rectToPolar(ballcheck.xvel, ballcheck.yvel);
                     angle[1] = 180 - angle[1];
@@ -302,6 +293,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     ballcheckphysical.style.top = ballcheck.ypos.toString() + '%';
                     collision();
                 }
+            }
+            if (ballcheck.xpos <= 0 || ballcheck.ypos < -10 || ballcheck.ypos >= 99 || ballcheck.xpos >= 99) {
+                gravity = 0.01;
+                ballcheck.xvel *= -1;
+                ballcheck.ypos = ballcheck.ypos + ballcheck.yvel;
+                ballcheck.xpos = ballcheck.xpos + ballcheck.xvel;
+                ballcheckphysical.style.left = ballcheck.xpos.toString() + '%';
+                ballcheckphysical.style.top = ballcheck.ypos.toString() + '%';
             }
         }
         if (disableautodrop.compare(new Decimal('0')) === 0) {
@@ -325,6 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fps2 = new Date();
         fps = fps2 - fps1;
         fps1 = fps2;
+        //16.7 for 60fps
         if (fps <= 16.7) {
             fps = 16.7;
             window.setTimeout(physics, fps);

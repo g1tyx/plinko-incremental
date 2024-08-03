@@ -3093,7 +3093,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		bouncereset();
 	});
 	document.getElementById("energyresetbutton").addEventListener("click", function () {
-		if (rollpoints.compare(new Decimal("1")) >= 0) {
+		if (rollpoints.compare(new Decimal("1")) >= 0 && boupgradelist[22] === 1) {
 			energyreset();
 		}
 	});
@@ -3404,7 +3404,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 		}
 		if (event.code === "KeyE") {
-			if (rollpoints.compare(new Decimal("1")) >= 0) {
+			if (rollpoints.compare(new Decimal("1")) >= 0 && boupgradelist[22] === 1) {
 				energyreset();
 			}
 		}

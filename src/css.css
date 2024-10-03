@@ -213,7 +213,7 @@ audio {
 	position: absolute;
 	top: calc(30% + 0.5vmin);
 	left: calc(2% + 0.5vmin);
-	background-image: url("/assets/img/logbackground.png");
+	background-image: url("plinko-incremental/assets/img/logbackground.png");
 	background-repeat: repeat;
 	background-position: 0% 0px;
 	animation: 1s forwards linear 0s infinite backgroundup;

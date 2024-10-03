@@ -1,1152 +1,1008 @@
 <head>
 	<title>browser plinko incremental</title>
-	<link rel="stylesheet" href="css.css">
-    <script src="https://cdn.jsdelivr.net/npm/break_infinity.js@2"></script>
-    <meta name="description" content="Idle/Incremental game where you drop balls into boxes with tons of content.">
-	<link rel="icon" href="https://yes7933.github.io/plinko-incremental/favicon.ico">
-    <script src="javapiss.js" charset="utf-8"></script>
-    <script src="physics.js" charset="utf-8"></script>
-    <script src="newsticker.js" charset="utf-8"></script>
+	<link rel="stylesheet" href="src/css.css" />
+	<script src="https://cdn.jsdelivr.net/npm/break_infinity.js@2"></script>
+	<meta name="description" content="Idle/Incremental game where you drop balls into boxes with tons of content." />
+	<link rel="icon" href="https://yes7933.github.io/plinko-incremental/assets/img/favicon.ico" />
+	<script src="src/javapiss.js" charset="utf-8"></script>
+	<script src="src/physics.js" charset="utf-8"></script>
+	<script src="src/newsticker.js" charset="utf-8"></script>
 </head>
 <body>
 	<div data-nosnippet>
 		<button id="dropdown">Utility / Movement</button>
 		<div id="menu">
-			<button id='deleteballs'>Delete Balls (if stuck)</button>
-			<div style="flex-direction: row; display: flex;">	
+			<button id="deleteballs">Delete Balls (if stuck)</button>
+			<div style="flex-direction: row; display: flex">
 				<button id="moveleft">&lt; Move Left! &lt;</button>
 				<button id="moveright">&gt; Move Right! &gt;</button>
 			</div>
 			<button id="highlighter">Highlight Certain Upgrades</button>
+			<div id="minimap">
+				<span id="maptitle">Area: Plinko Machine</span>
+				<div id="innermap">
+					<button class="mapbutton" id="map1/-1">-1</button>
+					<button class="mapbutton" id="map1/0">0</button>
+					<button class="mapbutton" id="map1/1">&#9679;</button>
+					<button class="mapbutton" id="map1/2">2</button>
+					<button class="mapbutton" id="map1/3">3</button>
+					<button class="mapbutton" id="map1/4">4</button>
+					<button class="mapbutton" id="map1/5">5</button>
+					<button class="mapbutton" id="map1/6">6</button>
+					<button class="mapbutton" id="map1/7">7</button>
+				</div>
+			</div>
 		</div>
 		<button id="dropdown2">Currencies</button>
 		<div id="menu2">
-			<div id='ballpoints'>
-				<p id='ballpointsdisplay'>
-					:3
-				</p>
+			<div id="ballpoints">
+				<p id="ballpointsdisplay">:3</p>
 			</div>
-			<div id='level'>
-				<div id='levelbar'>
+			<div id="level">
+				<div id="levelbar"></div>
+				<p id="leveldisplay">:3</p>
+				<p id="leveldisplayxp">:3</p>
+			</div>
+			<div id="boxpointdisplay">:3</div>
+			<div id="specialpegdisplay">:3</div>
+			<div id="rollpointdisplay">:3</div>
+			<div id="rotationdisplay">:3</div>
+			<div id="revolutiondisplay">:3</div>
+			<div id="jumpdisplay">:3</div>
+			<div id="energydisplay">:3</div>
+			<div id="electricitydisplay">:3</div>
+			<div id="batterydisplay">:3</div>
+			<div id="hitdisplay">:3</div>
+			<div id="particledisplay">:3</div>
+			<div id="ultrapegdisplay">:3</div>
+			<div id="packagedpointdisplay">:3</div>
+		</div>
+		<div id="loading">
+			<button id="loadingbutton">Play!</button>
+			<button id="loadingbuttonmute">Play (while muted)</button>
+			<img src="assets/img/omg.png" style="position: absolute; top: 20%; width: 40vw; aspect-ratio: 2048 / 253" />
+		</div>
+		<div id="screen-1">
+			<div id="statwall">
+				<div id="sillycontainer">
+					<span class="stat" id="ballpointstats"></span>
+					<span class="stat" id="xpstats"></span>
+					<span class="stat" id="levelreqstats"></span>
+					<span class="stat" id="ballamountstats"></span>
+					<span class="stat" id="boxpointstats"></span>
+					<span class="stat" id="specialpegstats"></span>
+					<span class="stat" id="specialpegchancestats"></span>
+					<span class="stat" id="rollreqstats"></span>
+					<span class="stat" id="rotationstats"></span>
+					<span class="stat" id="revolutionstats"></span>
+					<span class="stat" id="jumpstats"></span>
+					<span class="stat" id="irevstats"></span>
+					<span class="stat" id="energystats"></span>
+					<span class="stat" id="tasktimestats"></span>
+					<span class="stat" id="batterystats"></span>
+					<span class="stat" id="electricitystats"></span>
+					<span class="stat" id="strikereqstats"></span>
+					<span class="stat" id="annihilationstats"></span>
+					<span class="stat" id="ultrapegstats"></span>
+					<span class="stat" id="packagedpointstats"></span>
+					<span class="stat" id="miscstats"></span>
 				</div>
-				<p id='leveldisplay'>
-					:3
-				</p>
-				<p id='leveldisplayxp'>
-					:3
-				</p>
 			</div>
-			<div id='boxpointdisplay'>:3</div>
-			<div id='specialpegdisplay'>:3</div>
-			<div id='rollpointdisplay'>:3</div>
-			<div id='rotationdisplay'>:3</div>
-			<div id='revolutiondisplay'>:3</div>
-			<div id='jumpdisplay'>:3</div>
-			<div id='energydisplay'>:3</div>
-			<div id='electricitydisplay'>:3</div>
-			<div id='batterydisplay'>:3</div>
 		</div>
-		<div id='loading'>
-			<button id='loadingbutton'>Play!</button>
-			<img src="omg.png" style="position: absolute; top: 20%; width: 40vw; aspect-ratio: 2048 / 253;">
-		</div>
-		<div id='screen0'>
-			<button id='import'>Export!</button>
-			<button id='export' value=''>Import!</button>
-			<p class='p' id='hotkeys'>
+		<div id="screen0">
+			<button id="import">Export!</button>
+			<button id="export" value="">Import!</button>
+			<p class="p" id="hotkeys">
 				Hotkeys:
-				<br> <br>
+				<br />
+				<br />
 				Q - Save
-				<br>
+				<br />
 				Space - Drop Ball
-				<br>
+				<br />
 				Arrow Keys/WASD/the menu - Move
-				<br>
+				<br />
 				B - Boxify
-				<br>
+				<br />
 				R - Roll
-				<br>
+				<br />
 				V - Stop Revolutions Wheel
-				<br>
+				<br />
 				J - Bounce
-				<br>
-				Shift (hold) - Highlight Bounce Upgrades
-				<br>
+				<br />
+				Shift (hold) - Highlight Certain Upgrades
+				<br />
 				E - Energize
-				<br>
+				<br />
 				T - Transfer
+				<br />
+				H - Strike
+				<br />
+				P - Annihilate
+				<br />
+				U - Condense
+				<br />
+				O - Package
 			</p>
-			<button id='deletesave'>Delete Save (!)</button>
-			<p class='p' id='credits'>
+			<button id="deletesave">Delete Save (!)</button>
+			<p class="p" id="credits">
 				Game by: Yes7933 (what?? no way!!)
-				<br>
-				<a href='https://www.roblox.com/games/11956378658/plinko-incremental'>Original Game</a> by: meowfest and Yes7933
-				<br>
-				<a href='https://github.com/Patashu/break_infinity.js'>break_infinity.js</a> used for big number!!
-				<br>
-				Music "remixed" from <a href='https://www.youtube.com/watch?v=JS05TCUpMSs&t=0s'>here</a> (remix by me shocker)
+				<br />
+				<a href="https://www.roblox.com/games/11956378658/plinko-incremental">Original Game</a> by: meowfest and Yes7933
+				<br />
+				<a href="https://github.com/Patashu/break_infinity.js">break_infinity.js</a> used for big number!!
+				<br />
+				Music "remixed" from <a href="https://www.youtube.com/watch?v=JS05TCUpMSs&t=0s">here</a> (remix by me shocker)
+				<br />
+				Changelog found <a href="https://github.com/Yes7933/plinko-incremental/releases">here</a>
 			</p>
-			<p class='p' id='version'>
-				Version: 1.4.1
-				<br><br>
-				Endgame: Final II completed (strike)
-				<br><br>
-				Join our <a href='https://discord.gg/XjncY4BBMz'>discord server</a> for bug reporting and help
+			<p class="p" id="version">
+				Version: 1.5
+				<br /><br />
+				Endgame: Layer+++ purchased
+				<br /><br />
+				Join our <a href="https://discord.gg/XjncY4BBMz">discord server</a> for bug reporting, help and suggestions
 			</p>
-			<button id='mutemusic'>Toggle Music</button>
-			<button id='mutesfx'>Toggle SFX</button>
-			<button id='disableplinkoauto'>Disable Auto Plinko Upgrades</button>
-			<button id='disableautodrop'>Disable Auto Drop</button>
+			<button id="mutemusic">Toggle Music</button>
+			<button id="mutesfx">Toggle SFX</button>
+			<button id="disableplinkoauto">Disable Auto Plinko Upgrades</button>
+			<button id="disableautodrop">Disable Auto Drop</button>
 			<div id="ballcompsetting">
-				<p id='ballcompdisplay'>Ball Compaction Start: 10 Balls</p>
-				<input type="range" min="1" max="100" value="10" step="1" class="slider" id="ballcomp">
+				<p id="ballcompdisplay">Ball Compaction Start: 10 Balls</p>
+				<input type="range" min="1" max="100" value="10" step="1" class="slider" id="ballcomp" />
 			</div>
-			<button id='disableboxifyauto'>Disable Auto Boxify Upgrades</button>
+			<button id="disableboxifyauto">Disable Auto Boxify Upgrades</button>
+			<div id="precisionsetting">
+				<p id="precisiondisplay">Digit Precision: 3 Places</p>
+				<input type="range" min="1" max="10" value="3" step="1" class="slider" id="precision" />
+			</div>
+			<div id="notationsetting">
+				<p id="notationdisplay">Number Notation: Scientific</p>
+				<input type="range" min="0" max="9" value="0" step="1" class="slider" id="notation" />
+			</div>
 		</div>
-		<div id='screen1'>
+		<div id="screen1">
 			<div id="board">
-				<div id='pegs'>
-					<div class='pegrow'>
-						<div id='peg1' class='peg'></div>
-						<div id='peg2' class='peg'></div>
-						<div id='peg3' class='peg'></div>
-						<div id='peg4' class='peg'></div>
-						<div id='peg5' class='peg'></div>
-						<div id='peg6' class='peg'></div>
-						<div id='peg7' class='peg'></div>
-						<div id='peg8' class='peg'></div>
-						<div id='peg9' class='peg'></div>
-						<div id='peg10' class='peg'></div>
+				<div id="pegs">
+					<div class="pegrow">
+						<div id="peg1" class="peg"></div>
+						<div id="peg2" class="peg"></div>
+						<div id="peg3" class="peg"></div>
+						<div id="peg4" class="peg"></div>
+						<div id="peg5" class="peg"></div>
+						<div id="peg6" class="peg"></div>
+						<div id="peg7" class="peg"></div>
+						<div id="peg8" class="peg"></div>
+						<div id="peg9" class="peg"></div>
+						<div id="peg10" class="peg"></div>
 					</div>
-					<div class='pegrow2'>
-						<div id='peg11' class='peg'></div>
-						<div id='peg12' class='peg'></div>
-						<div id='peg13' class='peg'></div>
-						<div id='peg14' class='peg'></div>
-						<div id='peg15' class='peg'></div>
-						<div id='peg16' class='peg'></div>
-						<div id='peg17' class='peg'></div>
-						<div id='peg18' class='peg'></div>
-						<div id='peg19' class='peg'></div>
+					<div class="pegrow2">
+						<div id="peg11" class="peg"></div>
+						<div id="peg12" class="peg"></div>
+						<div id="peg13" class="peg"></div>
+						<div id="peg14" class="peg"></div>
+						<div id="peg15" class="peg"></div>
+						<div id="peg16" class="peg"></div>
+						<div id="peg17" class="peg"></div>
+						<div id="peg18" class="peg"></div>
+						<div id="peg19" class="peg"></div>
 					</div>
-					<div class='pegrow'>
-						<div id='peg20' class='peg'></div>
-						<div id='peg21' class='peg'></div>
-						<div id='peg22' class='peg'></div>
-						<div id='peg23' class='peg'></div>
-						<div id='peg24' class='peg'></div>
-						<div id='peg25' class='peg'></div>
-						<div id='peg26' class='peg'></div>
-						<div id='peg27' class='peg'></div>
-						<div id='peg28' class='peg'></div>
-						<div id='peg29' class='peg'></div>
+					<div class="pegrow">
+						<div id="peg20" class="peg"></div>
+						<div id="peg21" class="peg"></div>
+						<div id="peg22" class="peg"></div>
+						<div id="peg23" class="peg"></div>
+						<div id="peg24" class="peg"></div>
+						<div id="peg25" class="peg"></div>
+						<div id="peg26" class="peg"></div>
+						<div id="peg27" class="peg"></div>
+						<div id="peg28" class="peg"></div>
+						<div id="peg29" class="peg"></div>
 					</div>
-					<div class='pegrow2'>
-						<div id='peg30' class='peg'></div>
-						<div id='peg31' class='peg'></div>
-						<div id='peg32' class='peg'></div>
-						<div id='peg33' class='peg'></div>
-						<div id='peg34' class='peg'></div>
-						<div id='peg35' class='peg'></div>
-						<div id='peg36' class='peg'></div>
-						<div id='peg37' class='peg'></div>
-						<div id='peg38' class='peg'></div>
+					<div class="pegrow2">
+						<div id="peg30" class="peg"></div>
+						<div id="peg31" class="peg"></div>
+						<div id="peg32" class="peg"></div>
+						<div id="peg33" class="peg"></div>
+						<div id="peg34" class="peg"></div>
+						<div id="peg35" class="peg"></div>
+						<div id="peg36" class="peg"></div>
+						<div id="peg37" class="peg"></div>
+						<div id="peg38" class="peg"></div>
 					</div>
-					<div class='pegrow'>
-						<div id='peg39' class='peg'></div>
-						<div id='peg40' class='peg'></div>
-						<div id='peg41' class='peg'></div>
-						<div id='peg42' class='peg'></div>
-						<div id='peg43' class='peg'></div>
-						<div id='peg44' class='peg'></div>
-						<div id='peg45' class='peg'></div>
-						<div id='peg46' class='peg'></div>
-						<div id='peg47' class='peg'></div>
-						<div id='peg48' class='peg'></div>
+					<div class="pegrow">
+						<div id="peg39" class="peg"></div>
+						<div id="peg40" class="peg"></div>
+						<div id="peg41" class="peg"></div>
+						<div id="peg42" class="peg"></div>
+						<div id="peg43" class="peg"></div>
+						<div id="peg44" class="peg"></div>
+						<div id="peg45" class="peg"></div>
+						<div id="peg46" class="peg"></div>
+						<div id="peg47" class="peg"></div>
+						<div id="peg48" class="peg"></div>
 					</div>
-					<div class='pegrow2'>
-						<div id='peg49' class='peg'></div>
-						<div id='peg50' class='peg'></div>
-						<div id='peg51' class='peg'></div>
-						<div id='peg52' class='peg'></div>
-						<div id='peg53' class='peg'></div>
-						<div id='peg54' class='peg'></div>
-						<div id='peg55' class='peg'></div>
-						<div id='peg56' class='peg'></div>
-						<div id='peg57' class='peg'></div>
+					<div class="pegrow2">
+						<div id="peg49" class="peg"></div>
+						<div id="peg50" class="peg"></div>
+						<div id="peg51" class="peg"></div>
+						<div id="peg52" class="peg"></div>
+						<div id="peg53" class="peg"></div>
+						<div id="peg54" class="peg"></div>
+						<div id="peg55" class="peg"></div>
+						<div id="peg56" class="peg"></div>
+						<div id="peg57" class="peg"></div>
 					</div>
-					<div class='pegrow'>
-						<div id='peg58' class='peg'></div>
-						<div id='peg59' class='peg'></div>
-						<div id='peg60' class='peg'></div>
-						<div id='peg61' class='peg'></div>
-						<div id='peg62' class='peg'></div>
-						<div id='peg63' class='peg'></div>
-						<div id='peg64' class='peg'></div>
-						<div id='peg65' class='peg'></div>
-						<div id='peg66' class='peg'></div>
-						<div id='peg67' class='peg'></div>
+					<div class="pegrow">
+						<div id="peg58" class="peg"></div>
+						<div id="peg59" class="peg"></div>
+						<div id="peg60" class="peg"></div>
+						<div id="peg61" class="peg"></div>
+						<div id="peg62" class="peg"></div>
+						<div id="peg63" class="peg"></div>
+						<div id="peg64" class="peg"></div>
+						<div id="peg65" class="peg"></div>
+						<div id="peg66" class="peg"></div>
+						<div id="peg67" class="peg"></div>
 					</div>
 				</div>
-				<div id='boxes'>
-					<div id='orangebox' class='box'>
-						<p id='orangedisplay' class='boxdisplay'>
-							:3
-						</p>
+				<div id="boxes">
+					<div id="orangebox" class="box">
+						<p id="orangedisplay" class="boxdisplay">:3</p>
 					</div>
-					<div id='yellowbox' class='box'>
-						<p id='yellowdisplay' class='boxdisplay'>
-							:3
-						</p>
+					<div id="yellowbox" class="box">
+						<p id="yellowdisplay" class="boxdisplay">:3</p>
 					</div>
-					<div id='redbox' class='box'>
-						<p id='reddisplay' class='boxdisplay'>
-							:3
-						</p>
+					<div id="redbox" class="box">
+						<p id="reddisplay" class="boxdisplay">:3</p>
 					</div>
-					<div id='greenbox' class='box'>
-						<p id='greendisplay' class='boxdisplay'>
-							:3
-						</p>
+					<div id="greenbox" class="box">
+						<p id="greendisplay" class="boxdisplay">:3</p>
 					</div>
-					<div id='redbox' class='box'>
-						<p id='reddisplay2' class='boxdisplay'>
-							:3
-						</p>
+					<div id="redbox" class="box">
+						<p id="reddisplay2" class="boxdisplay">:3</p>
 					</div>
-					<div id='yellowbox' class='box'>
-						<p id='yellowdisplay2' class='boxdisplay'>
-							:3
-						</p>
+					<div id="yellowbox" class="box">
+						<p id="yellowdisplay2" class="boxdisplay">:3</p>
 					</div>
-					<div id='orangebox' class='box'>
-						<p id='orangedisplay2' class='boxdisplay'>
-							:3
-						</p>
+					<div id="orangebox" class="box">
+						<p id="orangedisplay2" class="boxdisplay">:3</p>
 					</div>
 				</div>
 			</div>
-			<button id='balldrop'>Drop Ball!</button>
-			<div id='pupgradebuilding'>
-				<div id='pbuildingtitle' class='buildingtitle'>
-						Plinko Upgrades
+			<button id="balldrop">Drop Ball!</button>
+			<div id="pupgradebuilding">
+				<div id="pbuildingtitle" class="buildingtitle">Plinko Upgrades</div>
+				<button id="parrow1" class="arrow1">&lt;</button>
+				<button id="parrow2" class="arrow2">></button>
+				<div id="pupgrade1">
+					<p id="pupgrade1title" class="upgradetitle">Ball Value</p>
+					<img src="assets/img/pupgrade1.png" class="upgradeimage" />
+					<p id="pupgrade1desc" class="upgradedesc">Increases base gain by +125%. Every twenty purchases gives a +2x boost to base gain.</p>
+					<p id="pupgrade1price" class="upgradeprice">:3</p>
+					<p id="pupgrade1cap" class="upgradecap">:3</p>
 				</div>
-				<button id='parrow1' class='arrow1'>
-						&lt;
-				</button>
-				<button id='parrow2' class='arrow2'>
-						>
-				</button>
-				<div id='pupgrade1'>
-					<p id='pupgrade1title' class='upgradetitle'>
-						Ball Value
-					</p>
-					<img src='pupgrade1.png' class='upgradeimage'>
-					<p id='pupgrade1desc' class='upgradedesc'>
-						Increases base gain by +125%. Every twenty purchases gives a +2x boost to base gain.
-					</p>
-					<p id='pupgrade1price' class='upgradeprice'>
-						:3
-					</p>
-					<p id='pupgrade1cap' class='upgradecap'>
-						:3
-					</p>
+				<div id="pupgrade2">
+					<p id="pupgrade2title" class="upgradetitle">XP Gain</p>
+					<img src="assets/img/pupgrade2.png" class="upgradeimage" />
+					<p id="pupgrade2desc" class="upgradedesc">Increases XP gain by +125%. Every 25 purchases gives a +2x boost to XP gain.</p>
+					<p id="pupgrade2price" class="upgradeprice">:3</p>
+					<p id="pupgrade2cap" class="upgradecap">:3</p>
 				</div>
-				<div id='pupgrade2'>
-					<p id='pupgrade2title' class='upgradetitle'>
-						XP Gain
-					</p>
-					<img src='pupgrade2.png' class='upgradeimage'>
-					<p id='pupgrade2desc' class='upgradedesc'>
-						Increases XP gain by +125%. Every 25 purchases gives a +2x boost to XP gain.
-					</p>
-					<p id='pupgrade2price' class='upgradeprice'>
-						:3
-					</p>
-					<p id='pupgrade2cap' class='upgradecap'>
-						:3
-					</p>
+				<div id="pupgrade3">
+					<p id="pupgrade3title" class="upgradetitle">Point Self-Synergy</p>
+					<img src="assets/img/pupgrade3.png" class="upgradeimage" />
+					<p id="pupgrade3desc" class="upgradedesc">Points boost themselves. Each purchase after the first one boosts this upgrade by +1.15x.</p>
+					<p id="pupgrade3price" class="upgradeprice">:3</p>
+					<p id="pupgrade3cap" class="upgradecap">:3</p>
 				</div>
-				<div id='pupgrade3'>
-					<p id='pupgrade3title' class='upgradetitle'>
-						Point Self-Synergy
-					</p>
-					<img src='pupgrade3.png' class='upgradeimage'>
-					<p id='pupgrade3desc' class='upgradedesc'>
-						Points boost themselves. Each purchase after the first one boosts this upgrade by +2%.
-					</p>
-					<p id='pupgrade3price' class='upgradeprice'>
-						:3
-					</p>
-					<p id='pupgrade3cap' class='upgradecap'>
-						:3
-					</p>
+				<div id="pupgrade4">
+					<p id="pupgrade4title" class="upgradetitle">Button Cooldown</p>
+					<img src="assets/img/pupgrade4.png" class="upgradeimage" />
+					<p id="pupgrade4desc" class="upgradedesc">The drop ball button will recharge 25% faster.</p>
+					<p id="pupgrade4price" class="upgradeprice">:3</p>
+					<p id="pupgrade4cap" class="upgradecap">:3</p>
 				</div>
-				<div id='pupgrade4'>
-					<p id='pupgrade4title' class='upgradetitle'>
-						Button Cooldown
+				<div id="pupgrade5">
+					<p id="pupgrade5title" class="upgradetitle">Level-XP Synergy</p>
+					<img src="assets/img/pupgrade5.png" class="upgradeimage" />
+					<p id="pupgrade5desc" class="upgradedesc">
+						Levels boost XP gain. Each purchase after the first one boosts the effect of this upgrade by +1.15x.
 					</p>
-					<img src='pupgrade4.png' class='upgradeimage'>
-					<p id='pupgrade4desc' class='upgradedesc'>
-						The drop ball button will recharge 25% faster.
-					</p>
-					<p id='pupgrade4price' class='upgradeprice'>
-						:3
-					</p>
-					<p id='pupgrade4cap' class='upgradecap'>
-						:3
-					</p>
+					<p id="pupgrade5price" class="upgradeprice">:3</p>
+					<p id="pupgrade5cap" class="upgradecap">:3</p>
 				</div>
-				<div id='pupgrade5'>
-					<p id='pupgrade5title' class='upgradetitle'>
-						Level-XP Synergy
-					</p>
-					<img src='pupgrade5.png' class='upgradeimage'>
-					<p id='pupgrade5desc' class='upgradedesc'>
-						Levels boost XP gain. Each purchase after the first one boosts the effect of this upgrade by +4%.
-					</p>
-					<p id='pupgrade5price' class='upgradeprice'>
-						:3
-					</p>
-					<p id='pupgrade5cap' class='upgradecap'>
-						:3
-					</p>
-				</div>
-				<div class='buttoncontainer'>
-					<button id='pupgradebutton1' class='upgradebutton'>
-						Buy 1!
-					</button>
+				<div class="buttoncontainer">
+					<button id="pupgradebutton1" class="upgradebutton">Buy 1!</button>
 				</div>
 			</div>
-			<div id='movehelp'>
-				<p class='p'>
-					Use WASD to move!
-				</p>
+			<div id="movehelp">
+				<p class="p">Use WASD to move!</p>
 			</div>
-			<div id='newsticker'>
-				<p id='newstickertext'>
-					:3 hewwo!
-				</p>
+			<div id="newsticker">
+				<p id="newstickertext">:3 hewwo!</p>
 			</div>
 			<button id="focus">Focus/Unfocus on board</button>
+			<div id="consolemain">
+				<div id="consoletitle">Log</div>
+				<div id="consoletext">> Welcome!</div>
+			</div>
+			<div id="consoleinner"></div>
 		</div>
-		<div id='screen2'>
-			<div id='boxifyreset'>
-				<p class='p' id='boxifyresettext'>
+		<div id="screen2">
+			<button id="ppswitcher">Packaged Points</button>
+			<div id="boxifyreset">
+				<div id="ppanimation2"></div>
+				<p class="p" id="boxifyresettext">
 					Boxify
-					<br><br>
+					<br /><br />
 					:3
 				</p>
-				<button id='boxifyresetbutton'>:3</button>
+				<button id="boxifyresetbutton">:3</button>
 			</div>
-			<div id='boxifyupgradebuilding'>
-				<div id='bbuildingtitle' class='buildingtitle'>
-						Boxify Upgrades
+			<div id="boxifyupgradebuilding">
+				<div id="ppanimation1"></div>
+				<div id="bbuildingtitle" class="buildingtitle">Boxify Upgrades</div>
+				<button id="barrow1" class="arrow1">&lt;</button>
+				<button id="barrow2" class="arrow2">></button>
+				<div id="bupgrade1">
+					<p id="bupgrade1title" class="bupgradetitle">Red Box Value</p>
+					<img src="assets/img/bupgrade1.png" class="bupgradeimage" />
+					<p id="bupgrade1desc" class="bupgradedesc">Multiplies the value of the red boxes by +100% per upgrade.</p>
+					<p id="bupgrade1price" class="bupgradeprice">:3</p>
+					<p id="bupgrade1cap" class="bupgradecap">:3</p>
 				</div>
-				<button id='barrow1' class='arrow1'>
-						&lt;
-				</button>
-				<button id='barrow2' class='arrow2'>
-						>
-				</button>
-				<div id='bupgrade1'>
-					<p id='bupgrade1title' class='bupgradetitle'>
-						Red Box Value
-					</p>
-					<img src='bupgrade1.png' class='bupgradeimage'>
-					<p id='bupgrade1desc' class='bupgradedesc'>
-						Multiplies the value of the red boxes by +100% per upgrade.
-					</p>
-					<p id='bupgrade1price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade1cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade2">
+					<p id="bupgrade2title" class="bupgradetitle">Orange Box Value</p>
+					<img src="assets/img/bupgrade2.png" class="bupgradeimage" />
+					<p id="bupgrade2desc" class="bupgradedesc">Multiplies the value of the orange boxes by +100% per upgrade.</p>
+					<p id="bupgrade2price" class="bupgradeprice">:3</p>
+					<p id="bupgrade2cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade2'>
-					<p id='bupgrade2title' class='bupgradetitle'>
-						Orange Box Value
-					</p>
-					<img src='bupgrade2.png' class='bupgradeimage'>
-					<p id='bupgrade2desc' class='bupgradedesc'>
-						Multiplies the value of the orange boxes by +100% per upgrade.
-					</p>
-					<p id='bupgrade2price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade2cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade3">
+					<p id="bupgrade3title" class="bupgradetitle">Yellow Box Value</p>
+					<img src="assets/img/bupgrade3.png" class="bupgradeimage" />
+					<p id="bupgrade3desc" class="bupgradedesc">Multiplies the value of the yellow boxes by +100% per upgrade.</p>
+					<p id="bupgrade3price" class="bupgradeprice">:3</p>
+					<p id="bupgrade3cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade3'>
-					<p id='bupgrade3title' class='bupgradetitle'>
-						Yellow Box Value
-					</p>
-					<img src='bupgrade3.png' class='bupgradeimage'>
-					<p id='bupgrade3desc' class='bupgradedesc'>
-						Multiplies the value of the yellow boxes by +100% per upgrade.
-					</p>
-					<p id='bupgrade3price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade3cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade4">
+					<p id="bupgrade4title" class="bupgradetitle">Green Box Value</p>
+					<img src="assets/img/bupgrade4.png" class="bupgradeimage" />
+					<p id="bupgrade4desc" class="bupgradedesc">Multiplies the value of the green box by +100% per upgrade.</p>
+					<p id="bupgrade4price" class="bupgradeprice">:3</p>
+					<p id="bupgrade4cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade4'>
-					<p id='bupgrade4title' class='bupgradetitle'>
-						Green Box Value
-					</p>
-					<img src='bupgrade4.png' class='bupgradeimage'>
-					<p id='bupgrade4desc' class='bupgradedesc'>
-						Multiplies the value of the green box by +100% per upgrade.
-					</p>
-					<p id='bupgrade4price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade4cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade5">
+					<p id="bupgrade5title" class="bupgradetitle">Ball Value II</p>
+					<img src="assets/img/bupgrade5.png" class="bupgradeimage" />
+					<p id="bupgrade5desc" class="bupgradedesc">Increases base value by +150%.</p>
+					<p id="bupgrade5price" class="bupgradeprice">:3</p>
+					<p id="bupgrade5cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade5'>
-					<p id='bupgrade5title' class='bupgradetitle'>
-						Ball Value II
-					</p>
-					<img src='bupgrade5.png' class='bupgradeimage'>
-					<p id='bupgrade5desc' class='bupgradedesc'>
-						Increases base value by +150%.
-					</p>
-					<p id='bupgrade5price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade5cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade6">
+					<p id="bupgrade6title" class="bupgradetitle">XP Value II</p>
+					<img src="assets/img/bupgrade6.png" class="bupgradeimage" />
+					<p id="bupgrade6desc" class="bupgradedesc">Increases XP gain by +150%.</p>
+					<p id="bupgrade6price" class="bupgradeprice">:3</p>
+					<p id="bupgrade6cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade6'>
-					<p id='bupgrade6title' class='bupgradetitle'>
-						XP Value II
-					</p>
-					<img src='bupgrade6.png' class='bupgradeimage'>
-					<p id='bupgrade6desc' class='bupgradedesc'>
-						Increases XP gain by +150%.
-					</p>
-					<p id='bupgrade6price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade6cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade7">
+					<p id="bupgrade7title" class="bupgradetitle">Special Pegs I</p>
+					<img src="assets/img/bupgrade7.png" class="bupgradeimage" />
+					<p id="bupgrade7desc" class="bupgradedesc">Adds 1 to special peg gain. When upgrade is maxed out, you get x2 special peg chance.</p>
+					<p id="bupgrade7price" class="bupgradeprice">:3</p>
+					<p id="bupgrade7cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade7'>
-					<p id='bupgrade7title' class='bupgradetitle'>
-						Special Pegs I
-					</p>
-					<img src='bupgrade7.png' class='bupgradeimage'>
-					<p id='bupgrade7desc' class='bupgradedesc'>
-						Adds 1 to special peg gain. When upgrade is maxed out, you get x2 special peg chance.
-					</p>
-					<p id='bupgrade7price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade7cap' class='bupgradecap'>
-						:3
-					</p>
-				</div>
-				<div id='bupgrade8'>
-					<p id='bupgrade8title' class='bupgradetitle'>
-						BP-Box Synergy
-					</p>
-					<img src='bupgrade8.png' class='bupgradeimage'>
-					<p id='bupgrade8desc' class='bupgradedesc'>
+				<div id="bupgrade8">
+					<p id="bupgrade8title" class="bupgradetitle">BP-Box Synergy</p>
+					<img src="assets/img/bupgrade8.png" class="bupgradeimage" />
+					<p id="bupgrade8desc" class="bupgradedesc">
 						BP boosts all box multipliers. Each purchase after the first one boosts the effect of this upgrade by 2.5%.
 					</p>
-					<p id='bupgrade8price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade8cap' class='bupgradecap'>
-						:3
-					</p>
+					<p id="bupgrade8price" class="bupgradeprice">:3</p>
+					<p id="bupgrade8cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade9'>
-					<p id='bupgrade9title' class='bupgradetitle'>
-						BP-RP Synergy
-					</p>
-					<img src='bupgrade9.png' class='bupgradeimage'>
-					<p id='bupgrade9desc' class='bupgradedesc'>
-						BoxPoints lowers the RollPoint requirement.
-					</p>
-					<p id='bupgrade9price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade9cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade9">
+					<p id="bupgrade9title" class="bupgradetitle">BP-RP Synergy</p>
+					<img src="assets/img/bupgrade9.png" class="bupgradeimage" />
+					<p id="bupgrade9desc" class="bupgradedesc">BoxPoints lowers the RollPoint requirement.</p>
+					<p id="bupgrade9price" class="bupgradeprice">:3</p>
+					<p id="bupgrade9cap" class="bupgradecap">:3</p>
 				</div>
-				<div id='bupgrade10'>
-					<p id='bupgrade10title' class='bupgradetitle'>
-						RP-Box Synergy
-					</p>
-					<img src='bupgrade10.png' class='bupgradeimage'>
-					<p id='bupgrade10desc' class='bupgradedesc'>
-						RollPoints boost box value.
-					</p>
-					<p id='bupgrade10price' class='bupgradeprice'>
-						:3
-					</p>
-					<p id='bupgrade10cap' class='bupgradecap'>
-						:3
-					</p>
+				<div id="bupgrade10">
+					<p id="bupgrade10title" class="bupgradetitle">RP-Box Synergy</p>
+					<img src="assets/img/bupgrade10.png" class="bupgradeimage" />
+					<p id="bupgrade10desc" class="bupgradedesc">RollPoints boost box value.</p>
+					<p id="bupgrade10price" class="bupgradeprice">:3</p>
+					<p id="bupgrade10cap" class="bupgradecap">:3</p>
 				</div>
-				<div class='buttoncontainer'>
-					<button id='bupgradebutton1' class='bupgradebutton'>
-						Buy 1!
-					</button>
+				<div id="bupgrade11">
+					<p id="bupgrade11title" class="bupgradetitle">UP I</p>
+					<img src="assets/img/bupgrade11.png" class="bupgradeimage" />
+					<p id="bupgrade11desc" class="bupgradedesc">Multiply Ultra Peg gain by x1.25.</p>
+					<p id="bupgrade11price" class="bupgradeprice">:3</p>
+					<p id="bupgrade11cap" class="bupgradecap">:3</p>
 				</div>
+				<div id="bupgrade12">
+					<p id="bupgrade12title" class="bupgradetitle">Strike Boost II</p>
+					<img src="assets/img/bupgrade12.png" class="bupgradeimage" />
+					<p id="bupgrade12desc" class="bupgradedesc">BP lowers the Strike requirement.</p>
+					<p id="bupgrade12price" class="bupgradeprice">:3</p>
+					<p id="bupgrade12cap" class="bupgradecap">:3</p>
 				</div>
-			<div id='specialpegbuilding'>
-				<div id='spbuildingtitle' class='buildingtitle'>
-						Special Peg Upgrades
+				<div class="buttoncontainer">
+					<button id="bupgradebutton1" class="bupgradebutton">Buy 1!</button>
 				</div>
-				<button id='sparrow1' class='arrow1'>
-						&lt;
-				</button>
-				<button id='sparrow2' class='arrow2'>
-						>
-				</button>
-				<div id='spupgrade1'>
-					<p id='spupgrade1title' class='spupgradetitle'>
-						BP Gain
-					</p>
-					<img src='spupgrade1.png' class='spupgradeimage'>
-					<p id='spupgrade1desc' class='spupgradedesc'>
-						Multiplies BP gain by 2.
-					</p>
-					<p id='spupgrade1price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade1cap' class='spupgradecap'>
-						:3
-					</p>
+			</div>
+			<div id="ppresetbuilding">
+				<span id="ppresettext">
+					Packaging
+					<br /><br />
+					:3
+				</span>
+				<button id="ppresetbutton">Pack!</button>
+			</div>
+			<div id="packagedpointbuilding">
+				<div id="ppbuildingtitle" class="buildingtitle">Packaged Points Upgrades</div>
+				<button id="pparrow1" class="arrow1">&lt;</button>
+				<button id="pparrow2" class="arrow2">></button>
+				<div id="ppupgrade1">
+					<p id="ppupgrade1title" class="ppupgradetitle">Red Value II</p>
+					<img src="assets/img/ppupgrade1.png" class="ppupgradeimage" />
+					<p id="ppupgrade1desc" class="ppupgradedesc">Multiplies the value of the red boxes by x1.25 per upgrade.</p>
+					<p id="ppupgrade1price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade1cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade2'>
-					<p id='spupgrade2title' class='spupgradetitle'>
-						XP Gain III
-					</p>
-					<img src='spupgrade2.png' class='spupgradeimage'>
-					<p id='spupgrade2desc' class='spupgradedesc'>
-						Multiplies XP gain by 2.
-					</p>
-					<p id='spupgrade2price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade2cap' class='spupgradecap'>
-						:3
-					</p>
+				<div id="ppupgrade2">
+					<p id="ppupgrade2title" class="ppupgradetitle">Orange Value II</p>
+					<img src="assets/img/ppupgrade2.png" class="ppupgradeimage" />
+					<p id="ppupgrade2desc" class="ppupgradedesc">Multiplies the value of the orange boxes by x1.25 per upgrade.</p>
+					<p id="ppupgrade2price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade2cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade3'>
-					<p id='spupgrade3title' class='spupgradetitle'>
-						Ball Value III
-					</p>
-					<img src='spupgrade3.png' class='spupgradeimage'>
-					<p id='spupgrade3desc' class='spupgradedesc'>
-						Multiples ball value by 2.
-					</p>
-					<p id='spupgrade3price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade3cap' class='spupgradecap'>
-						:3
-					</p>
+				<div id="ppupgrade3">
+					<p id="ppupgrade3title" class="ppupgradetitle">Yellow Value II</p>
+					<img src="assets/img/ppupgrade3.png" class="ppupgradeimage" />
+					<p id="ppupgrade3desc" class="ppupgradedesc">Multiplies the value of the yellow boxes by x1.25 per upgrade.</p>
+					<p id="ppupgrade3price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade3cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade4'>
-					<p id='spupgrade4title' class='spupgradetitle'>
-						Red Box Value II
-					</p>
-					<img src='spupgrade4.png' class='spupgradeimage'>
-					<p id='spupgrade4desc' class='spupgradedesc'>
-						Multiplies the value of the red boxes by 2.
-					</p>
-					<p id='spupgrade4price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade4cap' class='spupgradecap'>
-						:3
-					</p>
+				<div id="ppupgrade4">
+					<p id="ppupgrade4title" class="ppupgradetitle">Green Value II</p>
+					<img src="assets/img/ppupgrade4.png" class="ppupgradeimage" />
+					<p id="ppupgrade4desc" class="ppupgradedesc">Multiplies the value of the green boxes by x1.25 per upgrade.</p>
+					<p id="ppupgrade4price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade4cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade5'>
-					<p id='spupgrade5title' class='spupgradetitle'>
-						Orange Box Value II
-					</p>
-					<img src='spupgrade5.png' class='spupgradeimage'>
-					<p id='spupgrade5desc' class='spupgradedesc'>
-						Multiplies the value of the orange boxes by 2.
-					</p>
-					<p id='spupgrade5price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade5cap' class='spupgradecap'>
-						:3
-					</p>
+				<div id="ppupgrade5">
+					<p id="ppupgrade5title" class="ppupgradetitle">Ball Value IV</p>
+					<img src="assets/img/ppupgrade5.png" class="ppupgradeimage" />
+					<p id="ppupgrade5desc" class="ppupgradedesc">Multiplies BallPoint gain by x1.15.</p>
+					<p id="ppupgrade5price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade5cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade6'>
-					<p id='spupgrade6title' class='spupgradetitle'>
-						Yellow Box Value II
-					</p>
-					<img src='spupgrade6.png' class='spupgradeimage'>
-					<p id='spupgrade6desc' class='spupgradedesc'>
-						Multiplies the value of the yellow boxes by 2.
-					</p>
-					<p id='spupgrade6price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade6cap' class='spupgradecap'>
-						:3
-					</p>
+				<div id="ppupgrade6">
+					<p id="ppupgrade6title" class="ppupgradetitle">XP Value IV</p>
+					<img src="assets/img/ppupgrade6.png" class="ppupgradeimage" />
+					<p id="ppupgrade6desc" class="ppupgradedesc">Multiplies XP gain by x1.2.</p>
+					<p id="ppupgrade6price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade6cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade7'>
-					<p id='spupgrade7title' class='spupgradetitle'>
-						Green Box Value II
+				<div id="ppupgrade7">
+					<p id="ppupgrade7title" class="ppupgradetitle">Special Pegs III</p>
+					<img src="assets/img/ppupgrade7.png" class="ppupgradeimage" />
+					<p id="ppupgrade7desc" class="ppupgradedesc">
+						Multiplies Special Peg gain by x1.15. When this upgrade is maxed, get +4% special peg chance.
 					</p>
-					<img src='spupgrade7.png' class='spupgradeimage'>
-					<p id='spupgrade7desc' class='spupgradedesc'>
-						Multiplies the value of the green box by 2.
-					<p id='spupgrade7price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade7cap' class='spupgradecap'>
-						:3
-					</p>
+					<p id="ppupgrade7price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade7cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade8'>
-					<p id='spupgrade8title' class='spupgradetitle'>
-						Rotation Boost
+				<div id="ppupgrade8">
+					<p id="ppupgrade8title" class="ppupgradetitle">SP-UP Synergy II</p>
+					<img src="assets/img/ppupgrade8.png" class="ppupgradeimage" />
+					<p id="ppupgrade8desc" class="ppupgradedesc">
+						Special Peg gain affects Ultra Peg gain at a very reduced rate. After 1 upgrade boost this effect by +5%.
 					</p>
-					<img src='spupgrade8.png' class='spupgradeimage'>
-					<p id='spupgrade8desc' class='spupgradedesc'>
-						Multiplies rotation gain by 2.
-					<p id='spupgrade8price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade8cap' class='spupgradecap'>
-						:3
-					</p>
+					<p id="ppupgrade8price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade8cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade9'>
-					<p id='spupgrade9title' class='spupgradetitle'>
-						Revolutions Boost
-					</p>
-					<img src='spupgrade9.png' class='spupgradeimage'>
-					<p id='spupgrade9desc' class='spupgradedesc'>
-						Multiplies revolution gain by 2.
-					<p id='spupgrade9price' class='spupgradeprice'>
-						:3
-					</p>
-					<p id='spupgrade9cap' class='spupgradecap'>
-						:3
-					</p>
+				<div id="ppupgrade9">
+					<p id="ppupgrade9title" class="ppupgradetitle">PP-Strike Synergy</p>
+					<img src="assets/img/ppupgrade9.png" class="ppupgradeimage" />
+					<p id="ppupgrade9desc" class="ppupgradedesc">Packaged Points reduce Strike reqirement.</p>
+					<p id="ppupgrade9price" class="ppupgradeprice">:3</p>
+					<p id="ppupgrade9cap" class="ppupgradecap">:3</p>
 				</div>
-				<div id='spupgrade10'>
-					<p id='spupgradetitle' class='spupgradetitle'>
-						More Balls
-					</p>
-					<img src='spupgrade10.png' class='spupgradeimage'>
-					<p id='spupgrade10desc' class='spupgradedesc'>
+				<div class="buttoncontainer">
+					<button id="ppupgradebutton1" class="upupgradebutton">Buy 1!</button>
+				</div>
+			</div>
+			<button id="upswitcher">Ultra Pegs</button>
+			<div id="specialpegbuilding">
+				<div id="upanimation1"></div>
+				<div id="spbuildingtitle" class="buildingtitle">Special Peg Upgrades</div>
+				<button id="sparrow1" class="arrow1">&lt;</button>
+				<button id="sparrow2" class="arrow2">></button>
+				<div id="spupgrade1">
+					<p id="spupgrade1title" class="spupgradetitle">BP Gain</p>
+					<img src="assets/img/spupgrade1.png" class="spupgradeimage" />
+					<p id="spupgrade1desc" class="spupgradedesc">Multiplies BP gain by 2.</p>
+					<p id="spupgrade1price" class="spupgradeprice">:3</p>
+					<p id="spupgrade1cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade2">
+					<p id="spupgrade2title" class="spupgradetitle">XP Gain III</p>
+					<img src="assets/img/spupgrade2.png" class="spupgradeimage" />
+					<p id="spupgrade2desc" class="spupgradedesc">Multiplies XP gain by 2.</p>
+					<p id="spupgrade2price" class="spupgradeprice">:3</p>
+					<p id="spupgrade2cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade3">
+					<p id="spupgrade3title" class="spupgradetitle">Ball Value III</p>
+					<img src="assets/img/spupgrade3.png" class="spupgradeimage" />
+					<p id="spupgrade3desc" class="spupgradedesc">Multiples ball value by 2.</p>
+					<p id="spupgrade3price" class="spupgradeprice">:3</p>
+					<p id="spupgrade3cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade4">
+					<p id="spupgrade4title" class="spupgradetitle">Red Box Value II</p>
+					<img src="assets/img/spupgrade4.png" class="spupgradeimage" />
+					<p id="spupgrade4desc" class="spupgradedesc">Multiplies the value of the red boxes by 2.</p>
+					<p id="spupgrade4price" class="spupgradeprice">:3</p>
+					<p id="spupgrade4cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade5">
+					<p id="spupgrade5title" class="spupgradetitle">Orange Box Value II</p>
+					<img src="assets/img/spupgrade5.png" class="spupgradeimage" />
+					<p id="spupgrade5desc" class="spupgradedesc">Multiplies the value of the orange boxes by 2.</p>
+					<p id="spupgrade5price" class="spupgradeprice">:3</p>
+					<p id="spupgrade5cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade6">
+					<p id="spupgrade6title" class="spupgradetitle">Yellow Box Value II</p>
+					<img src="assets/img/spupgrade6.png" class="spupgradeimage" />
+					<p id="spupgrade6desc" class="spupgradedesc">Multiplies the value of the yellow boxes by 2.</p>
+					<p id="spupgrade6price" class="spupgradeprice">:3</p>
+					<p id="spupgrade6cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade7">
+					<p id="spupgrade7title" class="spupgradetitle">Green Box Value II</p>
+					<img src="assets/img/spupgrade7.png" class="spupgradeimage" />
+					<p id="spupgrade7desc" class="spupgradedesc">Multiplies the value of the green box by 2.</p>
+
+					<p id="spupgrade7price" class="spupgradeprice">:3</p>
+					<p id="spupgrade7cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade8">
+					<p id="spupgrade8title" class="spupgradetitle">Rotation Boost II</p>
+					<img src="assets/img/spupgrade8.png" class="spupgradeimage" />
+					<p id="spupgrade8desc" class="spupgradedesc">Multiplies rotation gain by 2.</p>
+
+					<p id="spupgrade8price" class="spupgradeprice">:3</p>
+					<p id="spupgrade8cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade9">
+					<p id="spupgrade9title" class="spupgradetitle">Revolutions Boost</p>
+					<img src="assets/img/spupgrade9.png" class="spupgradeimage" />
+					<p id="spupgrade9desc" class="spupgradedesc">Multiplies revolution gain by 2.</p>
+
+					<p id="spupgrade9price" class="spupgradeprice">:3</p>
+					<p id="spupgrade9cap" class="spupgradecap">:3</p>
+				</div>
+				<div id="spupgrade10">
+					<p id="spupgradetitle" class="spupgradetitle">More Balls</p>
+					<img src="assets/img/spupgrade10.png" class="spupgradeimage" />
+					<p id="spupgrade10desc" class="spupgradedesc">
 						Adds an extra ball. After 10 (can be changed in settings) ball compaction occurs (to reduce lag).
-					<p id='spupgrade10price' class='spupgradeprice'>
-						:3
 					</p>
-					<p id='spupgrade10cap' class='spupgradecap'>
-						:3
-					</p>
+
+					<p id="spupgrade10price" class="spupgradeprice">:3</p>
+					<p id="spupgrade10cap" class="spupgradecap">:3</p>
 				</div>
-				<div class='buttoncontainer'>
-					<button id='spupgradebutton1' class='spupgradebutton'>
-						Buy 1!
-					</button>
+				<div class="buttoncontainer">
+					<button id="spupgradebutton1" class="spupgradebutton">Buy 1!</button>
 				</div>
 			</div>
-			<div id='qolbuilding'>
-				<div id='qolbuildingtitle' class='buildingtitle'>
-						Quality of Life Upgrades
+			<div id="qolbuilding">
+				<div id="upanimation2"></div>
+				<div id="qolbuildingtitle" class="buildingtitle">Quality of Life Upgrades</div>
+				<button id="qolarrow1" class="arrow1">&lt;</button>
+				<button id="qolarrow2" class="arrow2">></button>
+				<div id="qolupgrade1">
+					<p id="qolupgrade1title" class="qolupgradetitle">Drop Automation</p>
+					<img src="assets/img/qolupgrade1.png" class="qolupgradeimage" />
+					<p id="qolupgrade1desc" class="qolupgradedesc">
+						Automatically drops the ball if on the plinko screen and unlocking offline time. Starting at 5s, each level after 1 reduces the cooldown
+						by 0.5s.
+					</p>
+					<p id="qolupgrade1price" class="qolupgradeprice">:3</p>
+					<p id="qolupgrade1cap" class="qolupgradecap">:3</p>
 				</div>
-				<button id='qolarrow1' class='arrow1'>
-						&lt;
-				</button>
-				<button id='qolarrow2' class='arrow2'>
-						>
-				</button>
-				<div id='qolupgrade1'>
-					<p id='qolupgrade1title' class='qolupgradetitle'>
-						Drop Automation
-					</p>
-					<img src='qolupgrade1.png' class='qolupgradeimage'>
-					<p id='qolupgrade1desc' class='qolupgradedesc'>
-						Automatically drops the ball if on the plinko screen and unlocking offline time. Starting at 5s, each level after 1 reduces the cooldown by 0.5s.
-					</p>
-					<p id='qolupgrade1price' class='qolupgradeprice'>
-						:3
-					</p>
-					<p id='qolupgrade1cap' class='qolupgradecap'>
-						:3
-					</p>
+				<div id="qolupgrade2">
+					<p id="qolupgrade2title" class="qolupgradetitle">Keep I</p>
+					<img src="assets/img/qolupgrade2.png" class="qolupgradeimage" />
+					<p id="qolupgrade2desc" class="qolupgradedesc">Keep 25% (rounded down) of plinko upgrades on boxify.</p>
+					<p id="qolupgrade2price" class="qolupgradeprice">:3</p>
+					<p id="qolupgrade2cap" class="qolupgradecap">:3</p>
 				</div>
-				<div id='qolupgrade2'>
-					<p id='qolupgrade2title' class='qolupgradetitle'>
-						Keep I
-					</p>
-					<img src='qolupgrade2.png' class='qolupgradeimage'>
-					<p id='qolupgrade2desc' class='qolupgradedesc'>
-						Keep 25% (rounded down) of plinko upgrades on boxify.
-					</p>
-					<p id='qolupgrade2price' class='qolupgradeprice'>
-						:3
-					</p>
-					<p id='qolupgrade2cap' class='qolupgradecap'>
-						:3
-					</p>
+				<div id="qolupgrade3">
+					<p id="qolupgrade3title" class="qolupgradetitle">Keep II</p>
+					<img src="assets/img/qolupgrade3.png" class="qolupgradeimage" />
+					<p id="qolupgrade3desc" class="qolupgradedesc">Keep another 25% (rounded down) of plinko upgrades on boxify and 25% on roll.</p>
+					<p id="qolupgrade3price" class="qolupgradeprice">:3</p>
+					<p id="qolupgrade3cap" class="qolupgradecap">:3</p>
 				</div>
-				<div id='qolupgrade3'>
-					<p id='qolupgrade3title' class='qolupgradetitle'>
-						Keep II
-					</p>
-					<img src='qolupgrade3.png' class='qolupgradeimage'>
-					<p id='qolupgrade3desc' class='qolupgradedesc'>
-						Keep another 25% (rounded down) of plinko upgrades on boxify and 25% on roll.
-					</p>
-					<p id='qolupgrade3price' class='qolupgradeprice'>
-						:3
-					</p>
-					<p id='qolupgrade3cap' class='qolupgradecap'>
-						:3
-					</p>
+				<div id="qolupgrade4">
+					<p id="qolupgrade4title" class="qolupgradetitle">Automation I</p>
+					<img src="assets/img/qolupgrade4.png" class="qolupgradeimage" />
+					<p id="qolupgrade4desc" class="qolupgradedesc">Plinko upgrades are now automatically bought (without spending).</p>
+					<p id="qolupgrade4price" class="qolupgradeprice">:3</p>
+					<p id="qolupgrade4cap" class="qolupgradecap">:3</p>
 				</div>
-				<div id='qolupgrade4'>
-					<p id='qolupgrade4title' class='qolupgradetitle'>
-						Automation I
-					</p>
-					<img src='qolupgrade4.png' class='qolupgradeimage'>
-					<p id='qolupgrade4desc' class='qolupgradedesc'>
-						Plinko upgrades are now automatically bought (without spending).
-					</p>
-					<p id='qolupgrade4price' class='qolupgradeprice'>
-						:3
-					</p>
-					<p id='qolupgrade4cap' class='qolupgradecap'>
-						:3
-					</p>
-				</div>
-				<div class='buttoncontainer'>
-					<button id='qolupgradebutton1' class='qolupgradebutton'>
-						Buy 1!
-					</button>
+				<div class="buttoncontainer">
+					<button id="qolupgradebutton1" class="qolupgradebutton">Buy 1!</button>
 				</div>
 			</div>
+			<div id="upresetbuilding">
+				<span id="upresettext">
+					Condense
+					<br /><br />
+					:3
+				</span>
+				<button id="upresetbutton">Condense!</button>
 			</div>
-		<div id='screen3'>
-			<div id='rollreset'>
-				<p class='p' id='rollresettext'>
+			<div id="ultrapegbuilding">
+				<div id="upbuildingtitle" class="buildingtitle">Ultra Peg Upgrades</div>
+				<button id="uparrow1" class="arrow1">&lt;</button>
+				<button id="uparrow2" class="arrow2">></button>
+				<div id="upupgrade1">
+					<p id="upupgrade1title" class="upupgradetitle">RP Gain</p>
+					<img src="assets/img/upupgrade1.png" class="upupgradeimage" />
+					<p id="upupgrade1desc" class="upupgradedesc">Lower the Roll requirement based on itself.</p>
+					<p id="upupgrade1price" class="upupgradeprice">:3</p>
+					<p id="upupgrade1cap" class="upupgradecap">:3</p>
+				</div>
+				<div id="upupgrade2">
+					<p id="upupgrade2title" class="upupgradetitle">Box Synergy II</p>
+					<img src="assets/img/upupgrade2.png" class="upupgradeimage" />
+					<p id="upupgrade2desc" class="upupgradedesc">Box Synergy's effect is boosted by box multipliers.</p>
+					<p id="upupgrade2price" class="upupgradeprice">:3</p>
+					<p id="upupgrade2cap" class="upupgradecap">:3</p>
+				</div>
+				<div id="upupgrade3">
+					<p id="upupgrade3title" class="upupgradetitle">Rotation Boost III</p>
+					<img src="assets/img/upupgrade3.png" class="upupgradeimage" />
+					<p id="upupgrade3desc" class="upupgradedesc">Boost rotation gain based on Energy.</p>
+					<p id="upupgrade3price" class="upupgradeprice">:3</p>
+					<p id="upupgrade3cap" class="upupgradecap">:3</p>
+				</div>
+				<div id="upupgrade4">
+					<p id="upupgrade4title" class="upupgradetitle">Revolutions Boost II</p>
+					<img src="assets/img/upupgrade4.png" class="upupgradeimage" />
+					<p id="upupgrade4desc" class="upupgradedesc">Negative terminals boost to Revolutions is boosted.</p>
+					<p id="upupgrade4price" class="upupgradeprice">:3</p>
+					<p id="upupgrade4cap" class="upupgradecap">:3</p>
+				</div>
+				<div id="upupgrade5">
+					<p id="upupgrade5title" class="upupgradetitle">More Balls III</p>
+					<img src="assets/img/upupgrade5.png" class="upupgradeimage" />
+					<p id="upupgrade5desc" class="upupgradedesc">Gain another ball.</p>
+					<p id="upupgrade5price" class="upupgradeprice">:3</p>
+					<p id="upupgrade5cap" class="upupgradecap">:3</p>
+				</div>
+				<div id="upupgrade6">
+					<p id="upupgrade6title" class="upupgradetitle">Strike Boost</p>
+					<img src="assets/img/upupgrade6.png" class="upupgradeimage" />
+					<p id="upupgrade6desc" class="upupgradedesc">Lower the Strike requirement by 2 levels.</p>
+					<p id="upupgrade6price" class="upupgradeprice">:3</p>
+					<p id="upupgrade6cap" class="upupgradecap">:3</p>
+				</div>
+				<div class="buttoncontainer">
+					<button id="upupgradebutton1" class="upupgradebutton">Buy 1!</button>
+				</div>
+			</div>
+		</div>
+		<div id="screen3">
+			<div id="rollreset">
+				<p class="p" id="rollresettext">
 					Roll
-					<br><br>
+					<br /><br />
 					:3
 				</p>
-				<button id='rollresetbutton'>:3</button>
+				<button id="rollresetbutton">:3</button>
 			</div>
-			<div id='rollupgradebuilding'>
-				<img src='rotationsgear.png' id='rotationgear'>
-				<div id='rbuildingtitle' class='buildingtitle'>
-						Roll Upgrades
+			<div id="rollupgradebuilding">
+				<img src="assets/img/rotationsgear.png" id="rotationgear" />
+				<div id="rbuildingtitle" class="buildingtitle">Roll Upgrades</div>
+				<button id="rarrow1" class="arrow1">&lt;</button>
+				<button id="rarrow2" class="arrow2">></button>
+				<div id="rupgrade1">
+					<p id="rupgrade1title" class="rupgradetitle">Rotated BallPoints</p>
+					<img src="assets/img/rupgrade1.png" class="rupgradeimage" />
+					<p id="rupgrade1desc" class="rupgradedesc">Rotations boost BallPoints gain.</p>
+					<p id="rupgrade1price" class="rupgradeprice">:3</p>
+					<p id="rupgrade1cap" class="rupgradecap">:3</p>
 				</div>
-				<button id='rarrow1' class='arrow1'>
-						&lt;
-				</button>
-				<button id='rarrow2' class='arrow2'>
-						>
-				</button>
-				<div id='rupgrade1'>
-					<p id='rupgrade1title' class='rupgradetitle'>
-						Rotated BallPoints
-					</p>
-					<img src='rupgrade1.png' class='rupgradeimage'>
-					<p id='rupgrade1desc' class='rupgradedesc'>
-						Rotations boost BallPoints gain.
-					</p>
-					<p id='rupgrade1price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade1cap' class='rupgradecap'>
-						:3
-					</p>
+				<div id="rupgrade2">
+					<p id="rupgrade2title" class="rupgradetitle">Rotated XP</p>
+					<img src="assets/img/rupgrade2.png" class="rupgradeimage" />
+					<p id="rupgrade2desc" class="rupgradedesc">Rotations boost XP gain.</p>
+					<p id="rupgrade2price" class="rupgradeprice">:3</p>
+					<p id="rupgrade2cap" class="rupgradecap">:3</p>
 				</div>
-				<div id='rupgrade2'>
-					<p id='rupgrade2title' class='rupgradetitle'>
-						Rotated XP
-					</p>
-					<img src='rupgrade2.png' class='rupgradeimage'>
-					<p id='rupgrade2desc' class='rupgradedesc'>
-						Rotations boost XP gain.
-					</p>
-					<p id='rupgrade2price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade2cap' class='rupgradecap'>
-						:3
-					</p>
+				<div id="rupgrade3">
+					<p id="rupgrade3title" class="rupgradetitle">Rotated BP</p>
+					<img src="assets/img/rupgrade3.png" class="rupgradeimage" />
+					<p id="rupgrade3desc" class="rupgradedesc">Rotations boost BoxPoint gain.</p>
+					<p id="rupgrade3price" class="rupgradeprice">:3</p>
+					<p id="rupgrade3cap" class="rupgradecap">:3</p>
 				</div>
-				<div id='rupgrade3'>
-					<p id='rupgrade3title' class='rupgradetitle'>
-						Rotated BP
-					</p>
-					<img src='rupgrade3.png' class='rupgradeimage'>
-					<p id='rupgrade3desc' class='rupgradedesc'>
-						Rotations boost BoxPoint gain.
-					</p>
-					<p id='rupgrade3price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade3cap' class='rupgradecap'>
-						:3
-					</p>
+				<div id="rupgrade4">
+					<p id="rupgrade4title" class="rupgradetitle">Uncapped I</p>
+					<img src="assets/img/rupgrade4.png" class="rupgradeimage" />
+					<p id="rupgrade4desc" class="rupgradedesc">The caps for 'Point Synergy' and 'Level-XP Synergy' are increased by 10.</p>
+					<p id="rupgrade4price" class="rupgradeprice">:3</p>
+					<p id="rupgrade4cap" class="rupgradecap">:3</p>
 				</div>
-				<div id='rupgrade4'>
-					<p id='rupgrade4title' class='rupgradetitle'>
-						Uncapped I
-					</p>
-					<img src='rupgrade4.png' class='rupgradeimage'>
-					<p id='rupgrade4desc' class='rupgradedesc'>
-						The caps for 'Point Synergy' and 'Level-XP Synergy' are increased by 10.
-					</p>
-					<p id='rupgrade4price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade4cap' class='rupgradecap'>
-						:3
-					</p>
+				<div id="rupgrade5">
+					<p id="rupgrade5title" class="rupgradetitle">Rotation Speed</p>
+					<img src="assets/img/rupgrade5.png" class="rupgradeimage" />
+					<p id="rupgrade5desc" class="rupgradedesc">Rotation gain is boosted by +100%.</p>
+					<p id="rupgrade5price" class="rupgradeprice">:3</p>
+					<p id="rupgrade5cap" class="rupgradecap">:3</p>
 				</div>
-				<div id='rupgrade5'>
-					<p id='rupgrade5title' class='rupgradetitle'>
-						Rotation Speed
-					</p>
-					<img src='rupgrade5.png' class='rupgradeimage'>
-					<p id='rupgrade5desc' class='rupgradedesc'>
-						Rotation gain is boosted by +100%.
-					</p>
-					<p id='rupgrade5price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade5cap' class='rupgradecap'>
-						:3
-					</p>
+				<div id="rupgrade6">
+					<p id="rupgrade6title" class="rupgradetitle">QoL+</p>
+					<img src="assets/img/rupgrade6.png" class="rupgradeimage" />
+					<p id="rupgrade6desc" class="rupgradedesc">Adds a couple of new QoL upgrades.</p>
+					<p id="rupgrade6price" class="rupgradeprice">:3</p>
+					<p id="rupgrade6cap" class="rupgradecap">:3</p>
 				</div>
-				<div id='rupgrade6'>
-					<p id='rupgrade6title' class='rupgradetitle'>
-						QoL+
-					</p>
-					<img src='rupgrade6.png' class='rupgradeimage'>
-					<p id='rupgrade6desc' class='rupgradedesc'>
-						Adds a couple of new QoL upgrades.
-					</p>
-					<p id='rupgrade6price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade6cap' class='rupgradecap'>
-						:3
-					</p>
+				<div id="rupgrade7">
+					<p id="rupgrade7title" class="rupgradetitle">Boxify+</p>
+					<img src="assets/img/rupgrade7.png" class="rupgradeimage" />
+					<p id="rupgrade7desc" class="rupgradedesc">Adds a couple of new Boxify upgrades.</p>
+					<p id="rupgrade7price" class="rupgradeprice">:3</p>
+					<p id="rupgrade7cap" class="rupgradecap">:3</p>
 				</div>
-				<div id='rupgrade7'>
-					<p id='rupgrade7title' class='rupgradetitle'>
-						Boxify+
-					</p>
-					<img src='rupgrade7.png' class='rupgradeimage'>
-					<p id='rupgrade7desc' class='rupgradedesc'>
-						Adds a couple of new Boxify upgrades.
-					</p>
-					<p id='rupgrade7price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade7cap' class='rupgradecap'>
-						:3
+				<div id="rupgrade8">
+					<p id="rupgrade8title" class="rupgradetitle">Rotated Rotations</p>
+					<img src="assets/img/rupgrade8.png" class="rupgradeimage" />
+					<p id="rupgrade8desc" class="rupgradedesc">Rotations boost... themselves.</p>
+					<p id="rupgrade8price" class="rupgradeprice">:3</p>
+					<p id="rupgrade8cap" class="rupgradecap">:3</p>
+				</div>
+				<div id="rupgrade9">
+					<p id="rupgrade9title" class="rupgradetitle">Roll+</p>
+					<img src="assets/img/rupgrade9.png" class="rupgradeimage" />
+					<p id="rupgrade9desc" class="rupgradedesc">Adds a new feature!</p>
+					<p id="rupgrade9price" class="rupgradeprice">:3</p>
+					<p id="rupgrade9cap" class="rupgradecap">:3</p>
+				</div>
+				<div id="rupgrade10">
+					<p id="rupgrade10title" class="rupgradetitle">IRev I</p>
+					<img src="assets/img/rupgrade10.png" class="rupgradeimage" />
+					<p id="rupgrade10desc" class="rupgradedesc">Lower IRev requirement based on Batteries.</p>
+					<p id="rupgrade10price" class="rupgradeprice">:3</p>
+					<p id="rupgrade10cap" class="rupgradecap">:3</p>
+				</div>
+				<div id="rupgrade11">
+					<p id="rupgrade11title" class="rupgradetitle">Energy I</p>
+					<img src="assets/img/rupgrade11.png" class="rupgradeimage" />
+					<p id="rupgrade11desc" class="rupgradedesc">Energy gain is boosted based on Rotations.</p>
+					<p id="rupgrade11price" class="rupgradeprice">:3</p>
+					<p id="rupgrade11cap" class="rupgradecap">:3</p>
+				</div>
+				<div id="rupgrade12">
+					<p id="rupgrade12title" class="rupgradetitle">Strike Boost III</p>
+					<img src="assets/img/rupgrade12.png" class="rupgradeimage" />
+					<p id="rupgrade12desc" class="rupgradedesc">Lower Strike requirement based on Revolutions.</p>
+					<p id="rupgrade12price" class="rupgradeprice">:3</p>
+					<p id="rupgrade12cap" class="rupgradecap">:3</p>
+				</div>
+				<div class="buttoncontainer">
+					<button id="rupgradebutton1" class="rupgradebutton">Buy 1!</button>
+				</div>
+			</div>
+			<div id="revolutionsbuilding">
+				<p id="revolutionstitle">Revolutions Building</p>
+				<img id="revolutioncircle" src="assets/img/revcircle.png" />
+				<div id="revolutionline"></div>
+				<div id="revpowerbar"></div>
+				<div id="revpowerbar2"></div>
+				<div id="revpowerdisplay">
+					<p id="revpowertext">
+						Streak: <br />
+						Boost:
 					</p>
 				</div>
-				<div id='rupgrade8'>
-					<p id='rupgrade8title' class='rupgradetitle'>
-						Rotated Rotations
-					</p>
-					<img src='rupgrade8.png' class='rupgradeimage'>
-					<p id='rupgrade8desc' class='rupgradedesc'>
-						Rotations boost... themselves.
-					</p>
-					<p id='rupgrade8price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade8cap' class='rupgradecap'>
-						:3
-					</p>
-				</div>
-				<div id='rupgrade9'>
-					<p id='rupgrade9title' class='rupgradetitle'>
-						Roll+
-					</p>
-					<img src='rupgrade9.png' class='rupgradeimage'>
-					<p id='rupgrade9desc' class='rupgradedesc'>
-						Adds a new feature!
-					</p>
-					<p id='rupgrade9price' class='rupgradeprice'>
-						:3
-					</p>
-					<p id='rupgrade9cap' class='rupgradecap'>
-						:3
-					</p>
-				</div>
-				<div class='buttoncontainer'>
-					<button id='rupgradebutton1' class='rupgradebutton'>
-						Buy 1!
-					</button>
-				</div>
-				</div>
-			<div id='revolutionsbuilding'>
-				<p id='revolutionstitle'>Revolutions Building</p>
-				<img id='revolutioncircle' src='revcircle.png'>
-				<div id='revolutionline'></div>
-				<div id='revpowerbar'></div>
-				<div id='revpowerbar2'></div>
-				<div id='revpowerdisplay'>
-					<p id='revpowertext'>Streak: <br> Boost:</p>
-				</div>
-				<button id='revbutton'>Stop!</button>
-				<span id='revdesc'>
-					Press stop when the blue line is in the yellow area and earn revolutions! You gain more revolutions based on your streak. At 150 revolutions roll no longer resets QoL upgrades.
+				<button id="revbutton">Stop!</button>
+				<span id="revdesc">
+					Press stop when the blue line is in the yellow area and earn revolutions! You gain more revolutions based on your streak. At 50
+					 revolutions
+					roll no longer resets QoL upgrades.
 				</span>
 			</div>
-			<div id='revolutionsselect'>
-				<p id='reveffecttitle'>Revolutions Effects</p>
-				<button id='reveffect1' class='reveffect'>:3</button>
-				<button id='reveffect2' class='reveffect'>:3</button>
-				<button id='reveffect3' class='reveffect'>:3</button>
-				<button id='reveffect4' class='reveffect'>:3</button>
-				<button id='reveffect5' class='reveffect'>:3</button>
-				<button id='reveffect6' class='reveffect'>:3</button>
+			<div id="revolutionsselect">
+				<p id="reveffecttitle">Revolutions Effects</p>
+				<button id="reveffect1" class="reveffect">:3</button>
+				<button id="reveffect2" class="reveffect">:3</button>
+				<button id="reveffect3" class="reveffect">:3</button>
+				<button id="reveffect4" class="reveffect">:3</button>
+				<button id="reveffect5" class="reveffect">:3</button>
+				<button id="reveffect6" class="reveffect">:3</button>
+				<button id="reveffect7" class="reveffect">:3</button>
+				<button id="reveffect8" class="reveffect">:3</button>
 			</div>
-			<div id='revupgradebuilding'>
-				<div id='revbuildingtitle' class='buildingtitle'>
-						Revolution Upgrades
+			<div id="revupgradebuilding">
+				<div id="revbuildingtitle" class="buildingtitle">Revolution Upgrades</div>
+				<button id="revarrow1" class="arrow1">&lt;</button>
+				<button id="revarrow2" class="arrow2">></button>
+				<div id="revupgrade1">
+					<p id="revupgrade1title" class="revupgradetitle">Special Pegs+</p>
+					<img src="assets/img/revupgrade1.png" class="revupgradeimage" />
+					<p id="revupgrade1desc" class="revupgradedesc">Unlock 3 Special Peg upgrades!</p>
+					<p id="revupgrade1price" class="revupgradeprice">:3</p>
+					<p id="revupgrade1cap" class="revupgradecap">:3</p>
 				</div>
-				<button id='revarrow1' class='arrow1'>
-						&lt;
-				</button>
-				<button id='revarrow2' class='arrow2'>
-						>
-				</button>
-				<div id='revupgrade1'>
-					<p id='revupgrade1title' class='revupgradetitle'>
-						Special Pegs+
-					</p>
-					<img src='revupgrade1.png' class='revupgradeimage'>
-					<p id='revupgrade1desc' class='revupgradedesc'>
-						Unlock 3 Special Peg upgrades! 
-					</p>
-					<p id='revupgrade1price' class='revupgradeprice'>
-						:3
-					</p>
-					<p id='revupgrade1cap' class='revupgradecap'>
-						:3
-					</p>
+				<div id="revupgrade2">
+					<p id="revupgrade2title" class="revupgradetitle">Special Pegs II</p>
+					<img src="assets/img/revupgrade2.png" class="revupgradeimage" />
+					<p id="revupgrade2desc" class="revupgradedesc">+x1.25 Special Peg gain. x3 SP every 10 purchases.</p>
+					<p id="revupgrade2price" class="revupgradeprice">:3</p>
+					<p id="revupgrade2cap" class="revupgradecap">:3</p>
 				</div>
-				<div id='revupgrade2'>
-					<p id='revupgrade2title' class='revupgradetitle'>
-						Special Pegs II
-					</p>
-					<img src='revupgrade2.png' class='revupgradeimage'>
-					<p id='revupgrade2desc' class='revupgradedesc'>
-						+x1.25 Special Peg gain. x3 SP every 10 purchases.
-					</p>
-					<p id='revupgrade2price' class='revupgradeprice'>
-						:3
-					</p>
-					<p id='revupgrade2cap' class='revupgradecap'>
-						:3
-					</p>
+				<div id="revupgrade3">
+					<p id="revupgrade3title" class="revupgradetitle">BP II</p>
+					<img src="assets/img/revupgrade3.png" class="revupgradeimage" />
+					<p id="revupgrade3desc" class="revupgradedesc">+50% BP gain. x2 BP every five purchases.</p>
+					<p id="revupgrade3price" class="revupgradeprice">:3</p>
+					<p id="revupgrade3cap" class="revupgradecap">:3</p>
 				</div>
-				<div id='revupgrade3'>
-					<p id='revupgrade3title' class='revupgradetitle'>
-						BP II
-					</p>
-					<img src='revupgrade3.png' class='revupgradeimage'>
-					<p id='revupgrade3desc' class='revupgradedesc'>
-						+50% BP gain. x2 BP every five purchases.
-					</p>
-					<p id='revupgrade3price' class='revupgradeprice'>
-						:3
-					</p>
-					<p id='revupgrade3cap' class='revupgradecap'>
-						:3
-					</p>
+				<div id="revupgrade4">
+					<p id="revupgrade4title" class="revupgradetitle">Rotations I</p>
+					<img src="assets/img/revupgrade4.png" class="revupgradeimage" />
+					<p id="revupgrade4desc" class="revupgradedesc">x2.5 Rotation gain. x5 Rotations every five purchases.</p>
+					<p id="revupgrade4price" class="revupgradeprice">:3</p>
+					<p id="revupgrade4cap" class="revupgradecap">:3</p>
 				</div>
-				<div id='revupgrade4'>
-					<p id='revupgrade4title' class='revupgradetitle'>
-						Rotations I
-					</p>
-					<img src='revupgrade4.png' class='revupgradeimage'>
-					<p id='revupgrade4desc' class='revupgradedesc'>
-						x2.5 Rotation gain. x5 Rotations every five purchases.
-					</p>
-					<p id='revupgrade4price' class='revupgradeprice'>
-						:3
-					</p>
-					<p id='revupgrade4cap' class='revupgradecap'>
-						:3
-					</p>
+				<div id="revupgrade5">
+					<p id="revupgrade5title" class="revupgradetitle">More Balls II</p>
+					<img src="assets/img/revupgrade5.png" class="revupgradeimage" />
+					<p id="revupgrade5desc" class="revupgradedesc">More Balls I but part 2... Im not describing what it does again. Read it there.</p>
+					<p id="revupgrade5price" class="revupgradeprice">:3</p>
+					<p id="revupgrade5cap" class="revupgradecap">:3</p>
 				</div>
-				<div id='revupgrade5'>
-					<p id='revupgrade5title' class='revupgradetitle'>
-						More Balls II
-					</p>
-					<img src='revupgrade5.png' class='revupgradeimage'>
-					<p id='revupgrade5desc' class='revupgradedesc'>
-						More Balls I but part 2... Im not describing what it does again. Read it there.
-					</p>
-					<p id='revupgrade5price' class='revupgradeprice'>
-						:3
-					</p>
-					<p id='revupgrade5cap' class='revupgradecap'>
-						:3
-					</p>
-				</div>
-				<div class='buttoncontainer'>
-					<button id='revupgradebutton1' class='revupgradebutton'>
-						Buy 1!
-					</button>
+				<div class="buttoncontainer">
+					<button id="revupgradebutton1" class="revupgradebutton">Buy 1!</button>
 				</div>
 			</div>
 		</div>
-		<div id='screen4'>
-			<div id='bouncereset'>
-				<p class='p' id='bounceresettext'>
+		<div id="screen4">
+			<div id="bouncereset">
+				<p class="p" id="bounceresettext">
 					Bounce
-					<br><br>
+					<br /><br />
 					:3
 				</p>
-				<button id='bounceresetbutton'>:3</button>
+				<button id="bounceresetbutton">:3</button>
 			</div>
-			<div id='bouncewall'>
-				<p id='bouncewalltext'> Bounce Upgrade Selector </p>
-				<div id='innerbouncewall'>
-					<p class='boupgradelabel'>Progression</p>
-					<button id='boupgrade1icon' class='boupgradeicon1'>I</button>
-					<button id='boupgrade2icon' class='boupgradeicon1'>II</button>
-					<button id='boupgrade3icon' class='boupgradeicon1'>III</button>
-					<button id='boupgrade4icon' class='boupgradeicon1'>IV</button>
-					<button id='boupgrade5icon' class='boupgradeicon1'>V</button>
-					<p class='boupgradelabel'>QoL</p>
-					<button id='boupgrade6icon' class='boupgradeicon2'>I</button>
-					<button id='boupgrade7icon' class='boupgradeicon2'>II</button>
-					<button id='boupgrade8icon' class='boupgradeicon2'>III</button>
-					<button id='boupgrade9icon' class='boupgradeicon2'>IV</button>
-					<button id='boupgrade10icon' class='boupgradeicon2'>V</button>
-					<p class='boupgradelabel'>Jump</p>
-					<button id='boupgrade11icon' class='boupgradeicon3'>I</button>
-					<button id='boupgrade12icon' class='boupgradeicon3'>II</button>
-					<button id='boupgrade13icon' class='boupgradeicon3'>III</button>
-					<button id='boupgrade14icon' class='boupgradeicon3'>IV</button>
-					<button id='boupgrade15icon' class='boupgradeicon3'>V</button>
-					<p class='boupgradelabel'>Synergy</p>
-					<button id='boupgrade16icon' class='boupgradeicon4'>I</button>
-					<button id='boupgrade17icon' class='boupgradeicon4'>II</button>
-					<button id='boupgrade18icon' class='boupgradeicon4'>III</button>
-					<button id='boupgrade19icon' class='boupgradeicon4'>IV</button>
-					<button id='boupgrade20icon' class='boupgradeicon4'>V</button>
-					<p class='boupgradelabel'>Other</p>
-					<button id='boupgrade21icon' class='boupgradeicon5'>I</button>
-					<button id='boupgrade22icon' class='boupgradeicon5'>II</button>
-					<button id='boupgrade23icon' class='boupgradeicon5'>III</button>
-					<button id='boupgrade24icon' class='boupgradeicon5'>IV</button>
-					<button id='boupgrade25icon' class='boupgradeicon5'>V</button>
-				</div>
-			</div>
-			<div id='bounceupgradebuilding'>
-				<div id='bouncebuildingtitle' class='buildingtitle'>
-						Bounce Upgrade Viewer
-				</div>
-				<div id='boupgrade'>
-					<p id='boupgradetitle' class='boupgradetitle'>
-						Nothing Selected...
-					</p>
-					<img src='boupgrade.png' class='boupgradeimage'>
-					<p id='boupgradedesc' class='boupgradedesc'>
-						:3
-					</p>
-					<p id='boupgradeprice' class='boupgradeprice'>
-						:3
-					</p>
-					<p id='boupgradecap' class='boupgradecap'>
-						:3
-					</p>
-				</div>
-				<div class='buttoncontainer'>
-					<button id='boupgradebutton1' class='revupgradebutton'>
-						Buy 1!
-					</button>
+			<div id="bouncewall">
+				<p id="bouncewalltext">Bounce Upgrade Selector</p>
+				<div id="innerbouncewall">
+					<p class="boupgradelabel">Progression</p>
+					<button id="boupgrade1icon" class="boupgradeicon1">I</button>
+					<button id="boupgrade2icon" class="boupgradeicon1">II</button>
+					<button id="boupgrade3icon" class="boupgradeicon1">III</button>
+					<button id="boupgrade4icon" class="boupgradeicon1">IV</button>
+					<button id="boupgrade5icon" class="boupgradeicon1">V</button>
+					<p class="boupgradelabel">QoL</p>
+					<button id="boupgrade6icon" class="boupgradeicon2">I</button>
+					<button id="boupgrade7icon" class="boupgradeicon2">II</button>
+					<button id="boupgrade8icon" class="boupgradeicon2">III</button>
+					<button id="boupgrade9icon" class="boupgradeicon2">IV</button>
+					<button id="boupgrade10icon" class="boupgradeicon2">V</button>
+					<p class="boupgradelabel">Jump</p>
+					<button id="boupgrade11icon" class="boupgradeicon3">I</button>
+					<button id="boupgrade12icon" class="boupgradeicon3">II</button>
+					<button id="boupgrade13icon" class="boupgradeicon3">III</button>
+					<button id="boupgrade14icon" class="boupgradeicon3">IV</button>
+					<button id="boupgrade15icon" class="boupgradeicon3">V</button>
+					<p class="boupgradelabel">Synergy</p>
+					<button id="boupgrade16icon" class="boupgradeicon4">I</button>
+					<button id="boupgrade17icon" class="boupgradeicon4">II</button>
+					<button id="boupgrade18icon" class="boupgradeicon4">III</button>
+					<button id="boupgrade19icon" class="boupgradeicon4">IV</button>
+					<button id="boupgrade20icon" class="boupgradeicon4">V</button>
+					<p class="boupgradelabel">Other</p>
+					<button id="boupgrade21icon" class="boupgradeicon5">I</button>
+					<button id="boupgrade22icon" class="boupgradeicon5">II</button>
+					<button id="boupgrade23icon" class="boupgradeicon5">III</button>
+					<button id="boupgrade24icon" class="boupgradeicon5">IV</button>
+					<button id="boupgrade25icon" class="boupgradeicon5">V</button>
 				</div>
 			</div>
-			<div id='bounceinforespec'>
-				<p id='infotext'>
-					Click on the boxes above to show a upgrade in the viewer. This lets you view what it does and lets you purchase it. Hold shift to view which upgrades you have already purchased in the selector. Bounce upgrades have a special property where the price increases based on the amount of upgrades bought in that row. Since the choices you make on which upgrades to buy and what order can be very bad, there is a respec button below to reset those upgrades. This will force a bounce reset and refund all upgrades. Have fun! :3
+			<div id="bounceupgradebuilding">
+				<div id="bouncebuildingtitle" class="buildingtitle">Bounce Upgrade Viewer</div>
+				<div id="boupgrade">
+					<p id="boupgradetitle" class="boupgradetitle">Nothing Selected...</p>
+					<img src="assets/img/boupgrade.png" class="boupgradeimage" />
+					<p id="boupgradedesc" class="boupgradedesc">:3</p>
+					<p id="boupgradeprice" class="boupgradeprice">:3</p>
+					<p id="boupgradecap" class="boupgradecap">:3</p>
+				</div>
+				<div class="buttoncontainer">
+					<button id="boupgradebutton1" class="revupgradebutton">Buy 1!</button>
+				</div>
+			</div>
+			<div id="bounceinforespec">
+				<p id="infotext">
+					Click on the boxes above to show a upgrade in the viewer. This lets you view what it does and lets you purchase it. Hold shift to view which
+					upgrades you have already purchased in the selector. Bounce upgrades have a special property where the price increases based on the amount
+					of upgrades bought in that row. Since the choices you make on which upgrades to buy and what order can be very bad, there is a respec button
+					below to reset those upgrades. This will force a bounce reset and refund all upgrades. Have fun! :3
 				</p>
-				<button id='respecbutton'>
-					Respec?
-				</button>
+				<button id="respecbutton">Respec?</button>
 			</div>
 		</div>
-		<div id='screen5'>
-			<div id='irevinfo'>
-				<div id='innerirevinfo'>
-					<span id='irevtext'>
-						:3
+		<div id="screen5">
+			<div id="irevinfo">
+				<div id="innerirevinfo">
+					<span id="irevtext"> :3 </span>
+				</div>
+			</div>
+			<div id="energyreset">
+				<p class="p" id="energyresettext">
+					-- Energy --
+					<br /><br />
+					:3
+				</p>
+				<button id="energyresetbutton">:3</button>
+			</div>
+			<div id="tasks">
+				<button id="task1" class="tasks">:3</button>
+				<button id="task2" class="tasks">:3</button>
+				<button id="task3" class="tasks">:3</button>
+			</div>
+			<div id="tasks2">
+				<div id="task1bar" class="taskbar"></div>
+				<div id="task2bar" class="taskbar"></div>
+				<div id="task3bar" class="taskbar"></div>
+			</div>
+			<div id="bounceextension">
+				<div id="innerbounceextension">
+					<button class="boupgradeicon6" id="boupgrade26icon">Progression VI</button>
+					<button class="boupgradeicon6" id="boupgrade27icon">QoL VI</button>
+					<button class="boupgradeicon6" id="boupgrade28icon">Jump VI</button>
+					<button class="boupgradeicon6" id="boupgrade29icon">Synergy VI</button>
+					<button class="boupgradeicon6" id="boupgrade30icon">Other VI</button>
+					<span id="bounceextensioninfo">
+						Select one of these and head back to the viewer. Everytime an upgrade is bought all other upgrades have their price increased.
 					</span>
 				</div>
-			</div>
-			<div id='energyreset'>
-				<p class='p' id='energyresettext'>
-					-- Energy --
-					<br><br>
-					:3
-				</p>
-				<button id='energyresetbutton'>:3</button>
-			</div>
-			<div id='tasks'>
-					<button id='task1' class='tasks'>
-						:3
-					</button>
-					<button id='task2' class='tasks'>
-						:3
-					</button>
-					<button id='task3' class='tasks'>
-						:3
-					</button>
-			</div>
-			<div id='tasks2'>
-				<div id='task1bar' class='taskbar'></div>
-				<div id='task2bar' class='taskbar'></div>
-				<div id='task3bar' class='taskbar'></div>
 			</div>
 		</div>
 		<div id="screen6">
 			<div id="challengebuilding">
 				<div id="innerchallengebuilding">
-					<button id='challenge1' class="challenge"></button>
-					<button id='challenge2' class="challenge"></button>
-					<button id='challenge3' class="challenge"></button>
-					<button id='challenge4' class="challenge"></button>
-					<button id='challenge5' class="challenge"></button>
-					<button id='challenge6' class="challenge"></button>
-					<button id='challenge7' class="challenge"></button>
-					<button id='challenge8' class="challenge"></button>
+					<button id="challenge1" class="challenge"></button>
+					<button id="challenge2" class="challenge"></button>
+					<button id="challenge3" class="challenge"></button>
+					<button id="challenge4" class="challenge"></button>
+					<button id="challenge5" class="challenge"></button>
+					<button id="challenge6" class="challenge"></button>
+					<button id="challenge7" class="challenge"></button>
+					<button id="challenge8" class="challenge"></button>
 				</div>
 			</div>
 			<div id="challengeselector">
 				<div id="innerchallengeselector">
-					<span id="challengeinfo">No challenges are selected. Select one and start it to apply it's debuffs. Finishing a challenge gives rewards to help you progress. All challenges force a bounce reset (only QoL is kept) with no reward unless specified. If you are stuck in a challenge just press the button below.</span>
+					<span id="challengeinfo"
+						>No challenges are selected. Select one and start it to apply it's debuffs. Finishing a challenge gives rewards to help you progress.
+						All challenges force a bounce reset (only QoL is kept) with no reward unless specified. If you are stuck in a challenge just press the
+						button below.</span
+					>
 				</div>
 				<button id="challengestart">Start!</button>
 			</div>
@@ -1157,13 +1013,122 @@
 			<div id="transferbuilding">
 				<span id="transferbuildingcontainer">
 					<span>Positive</span>
-					<input type="range" min="-100" max="100" value="0" step="1" class="slider" id="transferslider">
+					<input type="range" min="-100" max="100" value="0" step="1" class="slider" id="transferslider" />
 					<span>Negative</span>
 					<span id="transferamount"></span>
-					<span>Welcome to Transfer! From now on, Bouncing gives you 1 Battery, and that Battery combined with your Electricity amount boosts various currencies in the game! The catch is that you can only boost one chunk of currencies or the other. These chunks are the "Positive" and "Negative" side. With the slider, you can change the effect but go on one side and the other gets nerfed! The further it is on one side the heaver the buff/nerf is. Have fun!!11!11 (also batteries store energy on bounce btw) (also new challenges after 10 batteries)</span>
-					<br>
+					<span
+						>Welcome to Transfer! From now on, Bouncing gives you 1 Battery, and that Battery combined with your Electricity amount boosts various
+						currencies in the game! The catch is that you can only boost one chunk of currencies or the other. These chunks are the "Positive" and
+						"Negative" side. With the slider, you can change the effect but go on one side and the other gets nerfed! The further it is on one side
+						the heaver the buff/nerf is. Have fun!!11!11 (also batteries store energy on bounce btw) (also new challenges after 10 batteries)</span
+					>
+					<br />
 					<span id="transfereffect">:3</span>
-				</span>	
+				</span>
+			</div>
+			<div id="strikebuilding">
+				<div id="innerstrikebuilding">
+					<span id="striketext"> :3 </span>
+					<button id="strikereset">Strike!</button>
+				</div>
+			</div>
+		</div>
+		<div id="screen7">
+			<div id="hitmilestonebuilding">
+				<div id="innerhitmilestonebuilding">
+					<div id="hitmilestone1" class="hitmilestone">1 Hit ~ Keep QoL/QoL-Bounce Upgrades on bounce and respec. Unlock Roll automation.</div>
+					<div id="hitmilestone2" class="hitmilestone">2 Hits ~ Keep Challenge completions on Strike.</div>
+					<div id="hitmilestone3" class="hitmilestone">3 Hits ~ Jump and Battery gain is boosted by hits (capped at 100).</div>
+					<div id="hitmilestone4" class="hitmilestone">4 Hits ~ Keep one row of Bounce Upgrades per hit starting at 4 and ending at 8.</div>
+					<div id="hitmilestone5" class="hitmilestone">5 Hits ~ Change QoL 1's effect to 100% per second. Milestone 3 affects revolutions.</div>
+					<div id="hitmilestone6" class="hitmilestone">6 Hits ~ Keep Revolutions content on Bounce.</div>
+					<div id="hitmilestone7" class="hitmilestone">7 Hits ~ Boost the effect of tasks based on batteries. Keep bateries on strike.</div>
+					<div id="hitmilestone8" class="hitmilestone">8 Hits ~ Levels boost XP starting at Level 150.</div>
+					<div id="hitmilestone9" class="hitmilestone">9 Hits ~ Lower post-200 Level scaling based on XP.</div>
+					<div id="hitmilestone10" class="hitmilestone">10 Hits ~ Keep Point/Boxify/Special Pegs/Roll upgrades on Bounce.</div>
+					<div id="hitmilestone11" class="hitmilestone">
+						11 Hits ~ Gain 1 revolutions effect selector starting at 11 Hits and ending at 16 Hits. Gain 2 new revolution effects.
+					</div>
+					<div id="hitmilestone12" class="hitmilestone">12 Hits ~ Electricity is set to 1 on strike reset.</div>
+					<div id="hitmilestone13" class="hitmilestone">13 Hits ~ Positive terminal boosts special peg chance (capped at 20%)</div>
+					<div id="hitmilestone14" class="hitmilestone">14 Hits ~ Negative terminal boosts task speed</div>
+					<div id="hitmilestone15" class="hitmilestone">15 Hits ~ Unlock Annihilation.</div>
+					<div id="hitmilestone16" class="hitmilestone">16 Hits ~ Special Peg content is kept on all previous resets.</div>
+					<div id="hitmilestone17" class="hitmilestone">17 Hits ~ Lower Annihilation requirement based on Strike requirement.</div>
+					<div id="hitmilestone18" class="hitmilestone">18 Hits ~ Gain 1% of Energy per second.</div>
+					<div id="hitmilestone19" class="hitmilestone">19 Hits ~ Boost BallPoint gain based on total particles.</div>
+					<div id="hitmilestone20" class="hitmilestone">20 Hits ~ You can bulk complete Challenges</div>
+					<div id="hitmilestone21" class="hitmilestone">21 Hits ~ Get a hug. :3</div>
+					<div id="hitmilestone22" class="hitmilestone">22 Hits ~ Increase Milestone 18 to 100%.</div>
+					<div id="hitmilestone23" class="hitmilestone">23 Hits ~ Lower Strike requirement based on Annihlation requirement.</div>
+					<div id="hitmilestone24" class="hitmilestone">24 Hits ~ Energy resets nothing except rotations.</div>
+					<div id="hitmilestone25" class="hitmilestone">25 Hits ~ Reduce "Revolving Hell" requirement by x0.4.</div>
+					<div id="hitmilestone26" class="hitmilestone">26 Hits ~ Milestone 21's effect is better.</div>
+					<div id="hitmilestone27" class="hitmilestone">27 Hits ~ Gain 1% of Electricty per second.</div>
+					<div id="hitmilestone28" class="hitmilestone">28 Hits ~ Boost Milestone 21's effect based on BallPoints.</div>
+					<div id="hitmilestone29" class="hitmilestone">29 Hits ~ Boost Milestone 21's effect based on XP.</div>
+					<div id="hitmilestone30" class="hitmilestone">30 Hits ~ TBD (endgame)</div>
+				</div>
+			</div>
+			<div id="annihilationbuilding">
+				<div id="innerannihilationbuilding">
+					<span id="annihilationtext"> :3 </span>
+					<button id="annihilationreset">Annihilate!</button>
+				</div>
+			</div>
+			<div id="particletree">
+				<div id="innerparticletree">
+					<div id="particlerow1" class="particlerow">
+						<span style="height: 20%; font-size: 5vmin; color: white; opacity: 0.25">Row 1</span>
+						<button id="particleupgrade1" class="particleupgrade" style="border-left: transparent">Bounce-Roll Synergy</button>
+					</div>
+					<div id="particlerow2" class="particlerow">
+						<span style="height: 20%; font-size: 5vmin; color: white; opacity: 0.25">Row 2</span>
+						<button id="particleupgrade2" class="particleupgrade">Layer+</button>
+						<button id="particleupgrade3" class="particleupgrade">Revolution-SP Synergy</button>
+						<button id="particleupgrade4" class="particleupgrade">Energy+</button>
+					</div>
+					<div id="particlerow3" class="particlerow">
+						<span style="height: 20%; font-size: 5vmin; color: white; opacity: 0.25">Row 3</span>
+						<button id="particleupgrade5" class="particleupgrade">Ultra Peg Boost</button>
+						<button id="particleupgrade6" class="particleupgrade">Boxify++</button>
+						<button id="particleupgrade7" class="particleupgrade">SP-UP Synergy</button>
+						<button id="particleupgrade8" class="particleupgrade">Battery-Electricity Synergy</button>
+					</div>
+					<div id="particlerow4" class="particlerow">
+						<span style="height: 20%; font-size: 5vmin; color: white; opacity: 0.25">Row 4</span>
+						<button id="particleupgrade9" class="particleupgrade">Layer++</button>
+						<button id="particleupgrade10" class="particleupgrade">Roll++</button>
+						<button id="particleupgrade11" class="particleupgrade">BP-Electricity Synergy</button>
+						<button id="particleupgrade12" class="particleupgrade">Battery-Self Synergy</button>
+					</div>
+					<div id="particlerow5" class="particlerow">
+						<span style="height: 20%; font-size: 5vmin; color: white; opacity: 0.25">Row 5</span>
+						<button id="particleupgrade13" class="particleupgrade">PP Boost</button>
+						<button id="particleupgrade14" class="particleupgrade">UP-PP Synergy</button>
+						<button id="particleupgrade15" class="particleupgrade">Bounce++</button>
+						<button id="particleupgrade16" class="particleupgrade">Battery Boost</button>
+						<button id="particleupgrade17" class="particleupgrade">Energy-Electricity Synergy</button>
+						<button id="particleupgrade18" class="particleupgrade">Battery-PP Synergy</button>
+					</div>
+					<div id="particlerow6" class="particlerow">
+						<span style="height: 20%; font-size: 5vmin; color: white; opacity: 0.25">Row 6</span>
+						<button id="particleupgrade19" class="particleupgrade">Layer+++</button>
+					</div>
+				</div>
+			</div>
+			<div id="particleupgradebuilding">
+				<div id="particlebuildingtitle" class="buildingtitle">Particle Tree Viewer</div>
+				<div id="paupgrade">
+					<p id="paupgradetitle" class="paupgradetitle">Nothing Selected...</p>
+					<img src="assets/img/paupgrade.png" class="paupgradeimage" />
+					<p id="paupgradedesc" class="paupgradedesc">:3</p>
+					<p id="paupgradeprice" class="paupgradeprice">:3</p>
+					<p id="paupgradecap" class="paupgradecap">:3</p>
+				</div>
+				<div class="buttoncontainer">
+					<button id="paupgradebutton1" class="revupgradebutton">Buy 1!</button>
+				</div>
 			</div>
 		</div>
 	</div>
